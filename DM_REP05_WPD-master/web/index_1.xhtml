@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Login</title>
+        <h:outputStylesheet name="css/login.css"></h:outputStylesheet>
+    </h:head>
+    <h:body style="background-image: url('img/blue.jpg')">
+        <div class="login">
+            <h:form id="formLogin" style="text-align: center; ">            
+                <p:growl id="mensajeGeneral" 
+                         sticky="true"
+                         autoUpdate="true"
+                         showDetail="true" 
+                         life="3000" />
+                <p:panel  header="PORTAL PROVEEDORES" footer="&copy; 2019-DERECHOS RESERVADOS-COLOIDALES DUCHÉ."  
+                          widgetVar="dlg" style="text-align: center; font-size: 13px;">
+                    <b><p:outputLabel style="font-size: 20px" value=""></p:outputLabel></b><br></br>
+                    <br></br>
+                    <h:graphicImage url="/Images/logoduche.png" style="height: 150px"/>
+                    <br></br>
+                    <br></br>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:graphicImage url="/img/user.png" ></h:graphicImage>
+                        <p:inputText id="usuario" style="height: 30px;  width: 250px; background-color: #cccccc" value="#{loginBean.usuario.rfc}" 
+                                     placeholder="INGRESA TU USUARIO" required="true" label="username" requiredMessage="REQUIERE USUARIO" 
+                                     onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                        <h:graphicImage url="/img/key.png" />
+                        <p:password id="password" style="height: 30px;  width: 250px; background-color: #cccccc" placeholder="INGRESA TU CONTRASEÑA" 
+                                    value="#{loginBean.usuario.clave}" required="true" label="password" requiredMessage="REQUIERE CONTRASEÑA"/>
+                        <f:facet name="footer">
+                            <h:graphicImage url="/img/enter.png" />
+                            <p:commandButton id="inicio"
+                                             update="@all"
+                                             style="height: 40px; width: 260px"
+                                             value="LOGIN" 
+                                             actionListener="#{loginBean.login(event)}" 
+                                             onclick="PF('dlglogeuo').show()"
+                                             oncomplete="handleLoginRequest(xhr, status, args)">
+                            </p:commandButton>
+                            <br></br>
+                            <h:outputLink value="javascript:void(0)" onclick="PF('dlgRegistro').show();">Crear cuenta</h:outputLink>
+                            <p:spacer height="10" width="5"></p:spacer>
+                            <h:outputLink value="javascript:void(0)" onclick="PF('dlgPass').show();">Recuperar mi contraseña</h:outputLink>
+                            <p:tooltip id="toolTipTrack" for="inicio" value="LOGIN" trackMouse="true"></p:tooltip>
+                            <p:tooltip id="toolTipTrack1" for="password" value="INGRESA TU CONTRASEÑA" trackMouse="true"></p:tooltip>
+                            <p:tooltip id="toolTipTrack2" for="usuario" value="INGRESA TU USUARIO" trackMouse="true"></p:tooltip>
+                        </f:facet>  
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+            <h:form id="frmRegistro">
+                <p:growl id="mensaj" showSummary="true" showDetail="true"></p:growl>
+                <p:dialog style="font-size: 12px;" showEffect="scale" hideEffect="clip" id="dlgReg" 
+                          header="Registro de nuevo usuario" widgetVar="dlgRegistro" resizable="false" 
+                          modal="false">
+
+                    <p:blockUI block="pnl" trigger="registrar">   
+                        <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
+                        <p:graphicImage value="Images/load.gif" style="height: 150px; width: 200px"></p:graphicImage>
+                    </p:blockUI>
+
+                    <p:panel id="pnl">
+                        <p:panelGrid id="pnlGrid" columns="2" style="margin: 0 auto; width: 400px; text-align: right">
+
+                            <p:outputLabel for="correo" value="Correo"></p:outputLabel>
+                            <p:inputText id="correo" style="width: 220px;" validatorMessage="Correo inválido" value="#{registroBean.correo}"
+                                         required="true" requiredMessage="Correo requerido para registro" label="Correo requerido para registro" placeholder="Ingrese su e-mail">
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" ></f:validateRegex>
+                                <p:message for="correo"></p:message>
+                            </p:inputText>
+
+                            <p:outputLabel for="rfc" value="RFC"></p:outputLabel>
+                            <p:inputText id="rfc" style="width: 220px;" value="#{registroBean.rfc}"
+                                         required="true" requiredMessage="RFC requerido para registro" label="RFC requerido para registro" placeholder="Ingrese su RFC" onkeyup="javascript:this.value = this.value.toUpperCase();">
+                                <p:message for="rfc"></p:message>
+                            </p:inputText>
+
+                            <p:outputLabel for="tel" value="Teléfono"></p:outputLabel>
+                            <p:inputMask id="tel" style="width: 220px;" value="#{registroBean.telefono}" mask="(999) 999-9999"
+                                         required="true" requiredMessage="Teléfono requerido para registro" label="Teléfono requerido para registro" placeholder="Ingrese su Télefono" onkeyup="javascript:this.value = this.value.toUpperCase();">
+                                <p:message for="tel"></p:message>
+                            </p:inputMask>
+
+
+                            <p:outputLabel for="contraseña" value="Contraseña"></p:outputLabel>
+                            <p:password id="contraseña" match="contraseña1" style="width: 220px;" value="#{registroBean.clave}" required="true" weakLabel="Contraseña débil" 
+                                        strongLabel="Contraseña fuerte" label="Contraseña requerida para registro" requiredMessage="Contraseña requerida para registro"
+                                        feedback="true" promptLabel="Contraseña" placeholder="Ingrese contraseña">
+                                <p:message for="contraseña"></p:message>
+                            </p:password>
+
+
+                            <p:outputLabel for="contraseña1" value="Repita contraseña"></p:outputLabel>
+                            <p:password id="contraseña1" style="width: 220px;" value="#{registroBean.clave2}" required="true" weakLabel="Contraseña débil" 
+                                        strongLabel="Contraseña fuerte" label="Contraseña requerida para registro" requiredMessage="Contraseña requerida para registro"
+                                        feedback="true" promptLabel="Repita contrseña" placeholder="Repetir contraseña">
+                                <p:message for="contraseña1"></p:message>
+                            </p:password>
+
+                            <h:outputLink value="javascript:void(0)" onclick="PF('dialogVerAviso').show();">Ver aviso de privacidad</h:outputLink>
+                            <p:selectBooleanCheckbox required="true" validatorMessage="Aceptar aviso de privacidad" itemLabel="Aceptar aviso de privacidad" value="#{registroBean.aceptar}"></p:selectBooleanCheckbox>
+                            <p:spacer height="5px"></p:spacer>
+                            <p:commandButton id="registrar" value="Registrar" actionListener="#{registroBean.registrar()}" 
+                                             update="mensaj,pnlGrid">
+                            </p:commandButton>
+                            <!--                            <h:outputLink value="javascript:void(0)" onclick="PF('dlgActivar').show();">Ya tengo código de activación</h:outputLink>-->
+                        </p:panelGrid> 
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+
+            <!--FORMULARIO PARA RECUPERACIÓN DE CONTRASEÑA-->
+            <h:form id="frmPass">
+                <p:growl id="mensaj2" showSummary="true" showDetail="true"></p:growl>
+                <p:dialog style="font-size: 12px;" showEffect="scale" hideEffect="clip" id="dlgPwd" 
+                          header="Recuperación de contraseña" widgetVar="dlgPass" resizable="false" 
+                          modal="false">
+
+                    <p:blockUI block="pnl2" trigger="registrar">   
+                        <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
+                        <p:graphicImage value="Images/bird.gif" style="height: 150px; width: 200px"></p:graphicImage>
+                    </p:blockUI>
+
+                    <p:panel id="pnl2">
+                        <p:panelGrid id="pnlGrid2" columns="2" style="margin: 0 auto; width: 400px; height: 200px; text-align: right">
+                            <p:outputLabel for="correo2" value="Correo"></p:outputLabel>
+                            <p:inputText id="correo2" style="width: 220px;" validatorMessage="Correo inválido" value="#{resetearPassBean.correo}"
+                                         required="true" requiredMessage="Correo requerido" label="Correo requerido" placeholder="Ingrese su e-mail">
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" ></f:validateRegex>
+                                <p:message for="correo2"></p:message>
+                            </p:inputText>
+
+                            <p:outputLabel for="rfc2" value="RFC"></p:outputLabel>
+                            <p:inputText id="rfc2" style="width: 220px;" value="#{resetearPassBean.rfc}"
+                                         required="true" requiredMessage="RFC requerido" label="RFC requerido" placeholder="Ingrese su RFC" onkeyup="javascript:this.value = this.value.toUpperCase();">
+                                <p:message for="rfc2"></p:message>
+                            </p:inputText>
+
+                            <p:spacer height="5px"></p:spacer>
+                            <p:commandButton id="registrar" value="Enviar contraseña" actionListener="#{resetearPassBean.enviarPass()}" 
+                                             update="mensaj2,pnlGrid2">
+                            </p:commandButton>
+
+                        </p:panelGrid> 
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+
+            <!--FORMULARIO PARA RECUPERACIÓN DE CONTRASEÑA-->
+            <h:form id="fmrActivar">
+                <p:growl id="mens" showSummary="true" showDetail="true"></p:growl>
+                <p:dialog style="font-size: 12px;" showEffect="scale" hideEffect="clip" id="dlgAct" 
+                          header="Te hemos enviado el código de activación a tu correo electrónico." widgetVar="dlgActivar" resizable="false" 
+                          modal="false">
+
+                    <p:blockUI block="pnlAct" trigger="activar">   
+                        <h3 style="font-size: 15px; color: black">Activando cuenta, por favor espere...</h3>
+                        <p:graphicImage value="Images/loader.gif" style="height: 150px; width: 200px"></p:graphicImage>
+                    </p:blockUI>
+
+                    <p:panel id="pnlAct">
+                        <p:panelGrid id="pnlActiv" columns="1" style="margin: 0 auto; height: 200px; width: 250px;">
+
+                            <p:outputLabel for="codigo" value="Introduzca código para activar cuenta"></p:outputLabel>
+                            <p:inputTextarea id="codigo" value="#{registroBean.codactivacion}" required="true" style="width: 250px;" placeholder="Introduce el código de activación" requiredMessage="Código de activación requerido">
+                                <p:message for="codigo"></p:message>
+                            </p:inputTextarea>
+                            <p:commandButton id="activar" style="width: 200px" value="Activar cuenta" actionListener="#{registroBean.activar()}" 
+                                             update="mens,pnlAct">
+                            </p:commandButton>
+                        </p:panelGrid> 
+                    </p:panel>
+
+                </p:dialog>
+            </h:form>
+
+            <h:form id="frmVerAviso">
+                <p:growl id="mensaje" showSummary="true" showDetail="true"></p:growl>
+                <p:dialog style="font-size: 12px;" id="dlgVerAviso" header="Portal proveedores Duché" 
+                          widgetVar="dialogVerAviso" resizable="false" 
+                          showEffect="clip" hideEffect="clip" modal="false"
+                          closable="true" closeOnEscape="true"
+                          minimizable="true" maximizable="true">
+                    <p:panelGrid columns="1" style="margin: 0 auto">
+
+                        <p:outputLabel value="Aviso de privacidad"></p:outputLabel>
+                        <object type="application/pdf" data="Avisos/aviso.pdf" height="650px" width="900px" internalinstanceid="5">
+                            Your browser can't display pdf, <a href="Avisos/aviso.pdf">click</a> to download pdf instead.
+                        </object> 
+
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="logueo">
+                <p:dialog id="dialogologueo" widgetVar="dlglogeuo" closable="false" resizable="false">
+                    <h3 style="font-size: 13px; color: black">Validando credenciales...</h3>
+                    <img src="Images/newlogin.gif" alt="" style="height: 150px; width: 150px"/>                   
+                </p:dialog>   
+            </h:form>
+
+        </div>
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    jQuery('#formLogin').jq.effect("shake", {times: 1}, 100);
+                } else {
+                    location.href = args.ruta;
+                }
+            }
+        </script>
+
+    </h:body>
+</html>
+

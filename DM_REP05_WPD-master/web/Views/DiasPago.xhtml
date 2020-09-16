@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../Template/Template.xhtml">
+
+            <ui:define name="content">
+
+                <!--Formulario para buscar número de referencia-->
+                <h:form>
+                    <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value="Sesión iniciada: #{loginBean.usuario.correo}"/><br></br> 
+                    <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value=" RFC: #{loginBean.usuario.rfc}"/><br></br>    
+                    <label style="color: #FFFFFF !important; font-size: 14px">Cerrar sesión</label>
+                    <p:commandLink id="salir" 
+                                   title="CERRAR SESIÓN"
+                                   action="/index?faces-redirect=true" 
+                                   actionListener="#{loginBean.cerrarSesion()}">
+                        <h:graphicImage url="../img/exit.png" style="height: 35px"/> 
+                    </p:commandLink>
+                </h:form>
+                <h:form id="frmBuscar">
+
+                    <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
+                    <p:blockUI block="pnlBuscar" trigger="buscar">   
+                        <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
+                        <p:graphicImage value="../../Images/loader.gif" style="height: 150px; width: 200px"></p:graphicImage>
+                    </p:blockUI>
+                    <p:panel id="pnlBuscar" style="margin: 0 auto; text-align: center; font-size: 13px; width: 40%">
+                        <p:toolbar>
+                            <f:facet name="left">
+                                <label>AGREGAR DÍA DE PAGO </label>&nbsp;
+                                <p:commandButton style="height: 50px; width: 50px; background-image: url('../Images/pago.png') !important;background-size: 50px; background-repeat: no-repeat" 
+                                                 id="buscar" oncomplete="PF('dlgPago').show()" 
+                                                 update="frmBuscar,:frmPrincipal"  value="">
+                                </p:commandButton>
+                            </f:facet>
+                        </p:toolbar>                          
+                    </p:panel>
+                </h:form>
+                <!--Formulario para buscar número de referencia-->
+
+
+                <!--Formulario principal-->
+                <h:form id="frmPrincipal">
+                    <p:panel id="pnlPrincipal" header="DÍAS DE PAGO A PROVEEDORES"  
+                             style="margin: 0 auto; text-align: center; font-size: 13px; width: 40%">
+                        <p:layoutUnit id="tablaPrincipal" position="center" style="padding: 5px; text-align: center;">
+                            <p:dataTable id="tblPrincipal" paginator="true" rows="13" sortMode="multiple" paginatorPosition="top" 
+                                         var="tbl" value="#{pagoBean.listaPago}">                           
+                                <p:column headerText="Fecha de pago">
+                                    <h:outputText value="#{tbl.fechaPago}"></h:outputText>
+                                </p:column> 
+                                <p:column headerText="Reporte de pagos">                                 
+                                    <p:commandButton id="btnPagos" value=""  style="height: 35px; width: 35px;
+                                                     background-size: 35px;
+                                                     background-image: url('../Images/pagos.png') !important; 
+                                                     background-repeat: no-repeat"
+                                                     oncomplete="PF('dlgRepPago').show()" update="frmEliminarPago">
+                                        <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                    <p:tooltip id="toolPagos" for="btnPagos" value="Ver reporte de pagos" trackMouse="true"></p:tooltip>
+                                </p:column> 
+                                <p:column headerText="Borrar fecha de pago"> 
+                                    <p:commandButton id="btnBorrar" value=""  style="height: 35px; width: 35px;
+                                                     background-size: 35px;
+                                                     background-image: url('../Images/delete.png') !important; 
+                                                     background-repeat: no-repeat"
+                                                     oncomplete="PF('dialogEliminarPago').show()" update="frmEliminarPago">
+                                        <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                    <p:tooltip id="toolBorrar" for="btnBorrar" value="Borrar fecha de pago" trackMouse="true"></p:tooltip>
+                                </p:column>                             
+                            </p:dataTable>                      
+                        </p:layoutUnit>                    
+                    </p:panel>                
+                </h:form>
+                <!--Formulario principal-->
+
+                <!--Formulario para agregar día de pago-->
+                <h:form id="frmPago" style="font-size: 12px">
+                    <p:dialog id="dlgPago" widgetVar="dlgPago" header="Agregar fechas de pago"
+                              showEffect="clip" hideEffect="explode"  resizable="false" responsive="true">                       
+                        <p:panel id="pnlFact">
+                            <p:panelGrid id="pnlFactura" columns="2" style="margin: 0 auto">
+                                <p:outputLabel value="Fecha de pago"></p:outputLabel>
+                                <p:calendar  id="fecha_final" yearRange="2014:2025"  
+                                             effect="blind" effectDuration="13000" pages="2" showOn="button" 
+                                             style="width: 150px;" value="#{pagoBean.fecPago}" 
+                                             required="true" placeholder="Ingrese fecha de pago"
+                                             pattern="yyyy-MM-dd" mask="true">
+                                </p:calendar>               
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:spacer width="400" height="5"></p:spacer>
+                        <p:commandButton id="track" style="height: 35px; width: 35px; background-image: url('../Images/save.png') !important;background-size: 35px; background-repeat: no-repeat"  
+                                         value="" onclick="PF('dlgInfo').show()" update="frmBuscar:mensaje,frmPrincipal,frmPago" oncomplete="PF('dlgPago').hide()"  
+                                         actionListener="#{pagoBean.insertarPago()}" 
+                                         >
+                        </p:commandButton>
+                    </p:dialog>
+                </h:form>
+                <!--Formulario para agregar día de pago-->
+
+                <!--Formulario eliminar-->
+                <h:form id="frmEliminarPago">
+                    <p:growl id="mensaje" showSummary="true" showDetail="true"></p:growl>
+                    <p:dialog id="dlgEliminarPago" header="Eliminar fecha de pago" widgetVar="dialogEliminarPago" 
+                              resizable="false" showEffect="clip" hideEffect="clip" modal="true">
+                        <h:outputText style="color: #E60013; font-size: 16px; font-weight: bold" 
+                                      value="¿Desea eliminar este registro?"/><br></br><br></br>
+                        <p:commandButton value="NO" style="background-color: #045491; color: #FFFFFF; font-size: 17px" 
+                                         oncomplete="PF('dialogEliminarPago').hide();"/>
+                        <p:spacer width="100" height="10"/>
+                        <p:commandButton value="SI" style="background-color: #FF2F0B; color: #FFFFFF; font-size: 17px" 
+                                         actionListener="#{pagoBean.deletePago()}" 
+                                         update="frmPrincipal, mensaje" 
+                                         oncomplete="PF('dialogEliminarPago').hide();"/>
+                    </p:dialog>
+                </h:form>
+                <!--Formulario eliminar-->
+
+                <!--Formulario de reporte de pago-->
+                <h:form id="frmReportePago">
+                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
+                    <p:dialog id="dlgPago" header="" widgetVar="dlgRepPago" 
+                              resizable="false" showEffect="clip" hideEffect="clip" modal="true">
+                        <p:panel id="pnlPagos" header="REPORTE DE PAGOS"  
+                                 style="margin: 0 auto; text-align: center; font-size: 13px">
+                            <p:layoutUnit id="tablaPagos" position="center" style="padding: 5px; text-align: center;">
+                                <p:dataTable id="tblPagos" paginator="true" rows="13" sortMode="multiple" paginatorPosition="top" 
+                                             var="tbl" value="#{pagoBean.listaPago}">
+                                </p:dataTable>   
+                            </p:layoutUnit>
+                        </p:panel>
+                    </p:dialog>
+                </h:form>
+                <!--Formulario de reporte de pago-->
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
