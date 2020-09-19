@@ -28,6 +28,7 @@ public class PagoDaoImpl implements PagoDao {
     }
 
     @Override
+    @SuppressWarnings("null")
     public void InsertPago(DiasPago pago) {
         Session session = null;
         try {
@@ -48,6 +49,7 @@ public class PagoDaoImpl implements PagoDao {
     }
 
     @Override
+    @SuppressWarnings("null")
     public void UpdatePago(DiasPago pago) {
         Session session = null;
         try {
@@ -67,6 +69,7 @@ public class PagoDaoImpl implements PagoDao {
     }
 
     @Override
+    @SuppressWarnings("null")
     public void DeletePago(DiasPago pago) {
         Session session = null;
         try {

@@ -66,6 +66,11 @@ import mx.model.ConceptoPagosComp;
 import mx.model.FacturaComplemento;
 import mx.model.Pago;
 
+//Web Service SAT 
+import mx.sat.Acuse;
+import mx.sat.ConsultaCFDIService;
+import mx.sat.IConsultaCFDIService;
+
 @Named(value = "subirComplementoBean")
 @ViewScoped
 public class SubirComplementoBean extends DAO implements Serializable {
@@ -191,6 +196,11 @@ public class SubirComplementoBean extends DAO implements Serializable {
     private String validadUUID;
     private String validadUUIDVacio = "SI";
     private String idDocUUID;
+
+    //Web Service SAT
+    private ConsultaCFDIService consulta;
+    private IConsultaCFDIService respuesta;
+    private Acuse acuse;
 
     public SubirComplementoBean() {
         this.lista = new ArrayList<>();
@@ -998,50 +1008,30 @@ public class SubirComplementoBean extends DAO implements Serializable {
         this.validadUUIDVacio = validadUUIDVacio;
     }
 
-//    public void buscarRecepcion() throws SQLException {
-//        this.Conectar();
-//        this.Conectarprov();
-//        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
-//        Statement st = this.getCn().createStatement();
-//        ResultSet rs = st.executeQuery("SELECT CLAVE, DIASCRED FROM PROV01 WHERE RFC LIKE'%" + us.getRfc() + "%' AND STATUS='A'");
-//        while (rs.next()) {
-//            this.cveprov = rs.getString("CLAVE");
-//            this.diasCredito = rs.getInt("DIASCRED");
-//            Statement sta = this.getCnprov().createStatement();
-//            ResultSet rsa = sta.executeQuery("SELECT REFERENCIA FROM FACTURA WHERE RFC_E='" + us.getRfc() + "' AND REFERENCIA='" + this.referencia + "'");
-//            if (!rsa.isBeforeFirst()) {
-//                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " no existe!"));
-//            } else {
-//                while (rsa.next()) {
-//                    this.validarReferencia = rsa.getString("REFERENCIA");
-//                }
-//            }
-//            if (this.referencia.equals(this.validarReferencia)) {
-//                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " ya ha sido ingresado anteriormente!"));
-//
-//            } else {
-//                Statement stb = this.getCn().createStatement();
-//                ResultSet rsb = stb.executeQuery("SELECT CVE_DOC, SU_REFER, CAN_TOT, NUM_MONED, TIPCAMB, IMPORTE FROM COMPR01 WHERE CVE_DOC='" + this.referencia + "' AND CVE_CLPV='" + this.cveprov + "' AND STATUS<>'C'");
-//                if (!rsb.isBeforeFirst()) {
-//                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " no existe en el sistema, favor de verificarlo!"));
-//                } else {
-//                    while (rsb.next()) {
-//                        this.CVE_DOC = rsb.getString("CVE_DOC");
-//                        this.SU_REFER = rsb.getString("SU_REFER");
-//                        this.CAN_TOT = rsb.getFloat("CAN_TOT");
-//                        this.NUM_MONED = rsb.getInt("NUM_MONED");
-//                        this.TIPCAMB = rsb.getFloat("TIPCAMB");
-//                        this.IMPORTE = rsb.getFloat("IMPORTE");
-//                        //subimos el xml
-//                        RequestContext.getCurrentInstance().execute("PF('dlgXML').show()");
-//                    }
-//                }
-//            }
-//
-//        }
-//        //this.Cerrar();
-//        //this.Cerrarprov();
-//    }
+    public ConsultaCFDIService getConsulta() {
+        return consulta;
+    }
+
+    public void setConsulta(ConsultaCFDIService consulta) {
+        this.consulta = consulta;
+    }
+
+    public IConsultaCFDIService getRespuesta() {
+        return respuesta;
+    }
+
+    public void setRespuesta(IConsultaCFDIService respuesta) {
+        this.respuesta = respuesta;
+    }
+
+    public Acuse getAcuse() {
+        return acuse;
+    }
+
+    public void setAcuse(Acuse acuse) {
+        this.acuse = acuse;
+    }
+
     public void upload(FileUploadEvent event) throws SQLException, MessagingException, JDOMException, ParseException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         try {
 
@@ -1386,6 +1376,10 @@ public class SubirComplementoBean extends DAO implements Serializable {
         if (this.moneda == null) {
             this.moneda = "MXN";
         }
+        consulta = new ConsultaCFDIService();
+        respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
+        acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
+
         validarXML();///VALIDAMOS QUE EXISTA EL DOCUMENTO RELACIONADO CON LA FACTURA
 
         if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF)) {
@@ -1394,7 +1388,7 @@ public class SubirComplementoBean extends DAO implements Serializable {
             lista.clear();
             listaDoctoRel.clear();
             listaPagoComp.clear();
-        } else if (this.rfcR.equals("CDU590909BQ3") && this.validadUUIDVacio.equals("SI") && this.rfcE.equals(us.getRfc().replace(" ", ""))) {
+        } else if (this.rfcR.equals("CDU590909BQ3") && this.validadUUIDVacio.equals("SI") && this.rfcE.equals(us.getRfc().replace(" ", "")) && acuse.getEstado().getValue().equals("Vigente")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ S.A. DE C.V.", ""));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             insertarFactura();
@@ -1412,6 +1406,9 @@ public class SubirComplementoBean extends DAO implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en tu XML es diferente al dado de alta en nuestro sistema, favor de verificar."));
             } else if (this.validadUUIDVacio.equals("NO EXISTE")) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "No existe UUID en nuestro sistema que relacione al UUID del comprobante que intentas subir."));
+            } else if (!acuse.getEstado().getValue().equals("Vigente")) {
+                lista.clear();
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Hay diferencia en precio, Precio en XML:" + this.total + " Precio Sistema: " + this.IMPORTE));
                 lista.clear();
@@ -1541,6 +1538,7 @@ public class SubirComplementoBean extends DAO implements Serializable {
         //f.setFechaPago(pago);
         f.setEstatus("RECIBIDA");
         //Estatus SAT Validación CFDI
+        f.setEstatusSat(acuse.getEstado().getValue());
         f.setVersioncfd(Version);
         f.setUuid(UUIDTF);
 

@@ -6,7 +6,7 @@ import mx.model.Factura;
 public interface FacturaDao {
 
     public List<Factura> listaFactura();
-    
+
     public List<Factura> listaAdministrador();
 
     public List<Factura> listaFacRFC(String rfc);
@@ -30,4 +30,6 @@ public interface FacturaDao {
     public void UpdateFactura(Factura factura);
 
     public void DeleteFactura(Factura factura);
+
+
 }

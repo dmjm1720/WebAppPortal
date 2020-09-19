@@ -1473,7 +1473,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                 lista.clear();
             } else if (!acuse.getEstado().getValue().equals("Vigente")) {
                 lista.clear();
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó la validación de CFDI's en portal del SAT: " + acuse.getEstado().getValue()));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
                 //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estatus XML: " + acuse.getEstado().getValue()));
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Hay diferencia en precio, Precio en XML:" + this.total + " Precio Sistema: " + this.IMPORTE));
