@@ -6,9 +6,12 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import mx.dao.FacturaDao;
+import mx.dao.FacturaDaoImpl;
 import mx.dao.PagoDao;
 import mx.dao.PagoDaoImpl;
 import mx.model.DiasPago;
+import mx.model.Factura;
 
 @Named(value = "pagoBean")
 @ViewScoped
@@ -18,7 +21,9 @@ public class PagoBean implements Serializable {
     private List<DiasPago> listaPago;
     private String fecha;
     private Date fecPago;
-
+    private List<Factura> listaPagosPendientes;
+    private String tipoOC;
+    private String estatus;
 
     public PagoBean() {
         pago = new DiasPago();
@@ -58,6 +63,22 @@ public class PagoBean implements Serializable {
         this.listaPago = listaPago;
     }
 
+    public String getTipoOC() {
+        return tipoOC;
+    }
+
+    public void setTipoOC(String tipoOC) {
+        this.tipoOC = tipoOC;
+    }
+
+    public String getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        this.estatus = estatus;
+    }
+
     public void insertarPago() {
         PagoDao pDao = new PagoDaoImpl();
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,6 +101,12 @@ public class PagoBean implements Serializable {
         PagoDao pDao = new PagoDaoImpl();
         pDao.DeletePago(pago);
         pago = new DiasPago();
+    }
+
+    public List<Factura> getListaPagosPendientes() {
+        FacturaDao fDao = new FacturaDaoImpl();
+        listaPagosPendientes = fDao.listaPagosPendientes(fecha, fecha, fecha);
+        return listaPagosPendientes;
     }
 
 }

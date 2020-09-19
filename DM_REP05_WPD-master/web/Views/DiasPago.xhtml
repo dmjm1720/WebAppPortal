@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
 
     <body>
 
@@ -25,7 +26,6 @@
                     </p:commandLink>
                 </h:form>
                 <h:form id="frmBuscar">
-
                     <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
                     <p:blockUI block="pnlBuscar" trigger="buscar">   
                         <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
@@ -39,6 +39,39 @@
                                                  id="buscar" oncomplete="PF('dlgPago').show()" 
                                                  update="frmBuscar,:frmPrincipal"  value="">
                                 </p:commandButton>
+                            </f:facet>
+                        </p:toolbar>                          
+                    </p:panel>
+                </h:form>
+                <h:form id="frmBuscarPagos">
+                    <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
+                    <p:panel id="pnlBuscarPagos" style="margin: 0 auto; text-align: center; font-size: 13px; width: 40%">
+                        <p:toolbar>
+                            <!--                            <b:label value="{pagoBean.pago.fechaPago}"/>-->
+                            <f:facet name="left">
+
+                                <label>SELECCIONA TIPO DE ORDEN DE COMPRA</label>
+                                <b:form>
+                                    <p>Which Java version do you use?</p>
+                                    <b:panelGrid size="xs" columns="6">
+                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 7" itemValue="7" required="true" />
+                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 8(LTS)" itemValue="8" />
+                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 9" itemValue="9" disabled="true"/>
+                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 10" itemValue="10" disabled="true"/>
+                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 11(LTS)" itemValue="11" />
+                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 14" itemValue="14" />
+                                    </b:panelGrid>
+                                    <b:commandButton value="submit your choice" action="#{radiobuttonBean.submit}" look="primary" update="@form" />
+                                    <b:messages />
+                                    <b:message for="@form:@property(radiobuttonBean.javaVersion)" />
+                                </b:form>
+
+                            </f:facet>
+                            <f:facet name="right">
+
+                                <label>ESTATUS FACTURA</label>
+
+
                             </f:facet>
                         </p:toolbar>                          
                     </p:panel>
@@ -61,7 +94,7 @@
                                                      background-size: 35px;
                                                      background-image: url('../Images/pagos.png') !important; 
                                                      background-repeat: no-repeat"
-                                                     oncomplete="PF('dlgRepPago').show()" update="frmEliminarPago">
+                                                     oncomplete="PF('dlgRepPago').show()" update="frmBuscarPagos">
                                         <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"></f:setPropertyActionListener>
                                     </p:commandButton>
                                     <p:tooltip id="toolPagos" for="btnPagos" value="Ver reporte de pagos" trackMouse="true"></p:tooltip>
@@ -134,7 +167,7 @@
                                  style="margin: 0 auto; text-align: center; font-size: 13px">
                             <p:layoutUnit id="tablaPagos" position="center" style="padding: 5px; text-align: center;">
                                 <p:dataTable id="tblPagos" paginator="true" rows="13" sortMode="multiple" paginatorPosition="top" 
-                                             var="tbl" value="#{pagoBean.listaPago}">
+                                             var="tbl" value="#{pagoBean.listaPagosPendientes}">
                                 </p:dataTable>   
                             </p:layoutUnit>
                         </p:panel>

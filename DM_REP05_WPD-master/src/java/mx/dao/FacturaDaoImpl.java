@@ -238,4 +238,20 @@ public class FacturaDaoImpl implements FacturaDao {
         return lista;
     }
 
+    @Override
+    public List<Factura> listaPagosPendientes(String fechaPago, String estatus, String oc) {
+        List<Factura> lista = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM Factura WHERE fechaPago='" + fechaPago + "' AND estatus='" + estatus + "' AND oc like'" + oc + "%'";
+        try {
+            lista = session.createQuery(hql).setMaxResults(500).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
 }

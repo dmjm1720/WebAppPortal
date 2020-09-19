@@ -30,6 +30,7 @@ public interface FacturaDao {
     public void UpdateFactura(Factura factura);
 
     public void DeleteFactura(Factura factura);
-
+    
+    public List<Factura> listaPagosPendientes(String fechaPago, String estatus, String oc);
 
 }
