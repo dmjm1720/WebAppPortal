@@ -4,14 +4,18 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.HttpServletRequest;
 import mx.dao.FacturaDao;
 import mx.dao.FacturaDaoImpl;
 import mx.dao.PagoDao;
 import mx.dao.PagoDaoImpl;
 import mx.model.DiasPago;
 import mx.model.Factura;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "pagoBean")
 @ViewScoped
@@ -24,6 +28,8 @@ public class PagoBean implements Serializable {
     private List<Factura> listaPagosPendientes;
     private String tipoOC;
     private String estatus;
+
+    RequestContext facesContext = RequestContext.getCurrentInstance();
 
     public PagoBean() {
         pago = new DiasPago();
@@ -103,9 +109,20 @@ public class PagoBean implements Serializable {
         pago = new DiasPago();
     }
 
+    public void validar() {
+        if (estatus != null && tipoOC != null) {
+            RequestContext.getCurrentInstance().execute("PF('dlgRepPago').show()");
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Selecciona OC y Estatus"));
+        }
+    }
+
     public List<Factura> getListaPagosPendientes() {
         FacturaDao fDao = new FacturaDaoImpl();
-        listaPagosPendientes = fDao.listaPagosPendientes(fecha, fecha, fecha);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String es = request.getParameter("frmEstatus:estatus");
+        String oc = request.getParameter("frmOC:oc");
+        listaPagosPendientes = fDao.listaPagosPendientes(pago.getFechaPago(), estatus, tipoOC);
         return listaPagosPendientes;
     }
 

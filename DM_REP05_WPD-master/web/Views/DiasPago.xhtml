@@ -25,6 +25,8 @@
                         <h:graphicImage url="../img/exit.png" style="height: 35px"/> 
                     </p:commandLink>
                 </h:form>
+
+
                 <h:form id="frmBuscar">
                     <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
                     <p:blockUI block="pnlBuscar" trigger="buscar">   
@@ -35,48 +37,52 @@
                         <p:toolbar>
                             <f:facet name="left">
                                 <label>AGREGAR DÍA DE PAGO </label>&nbsp;
+
                                 <p:commandButton style="height: 50px; width: 50px; background-image: url('../Images/pago.png') !important;background-size: 50px; background-repeat: no-repeat" 
                                                  id="buscar" oncomplete="PF('dlgPago').show()" 
                                                  update="frmBuscar,:frmPrincipal"  value="">
                                 </p:commandButton>
-                            </f:facet>
-                        </p:toolbar>                          
-                    </p:panel>
-                </h:form>
-                <h:form id="frmBuscarPagos">
-                    <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
-                    <p:panel id="pnlBuscarPagos" style="margin: 0 auto; text-align: center; font-size: 13px; width: 40%">
-                        <p:toolbar>
-                            <!--                            <b:label value="{pagoBean.pago.fechaPago}"/>-->
-                            <f:facet name="left">
-
-                                <label>SELECCIONA TIPO DE ORDEN DE COMPRA</label>
-                                <b:form>
-                                    <p>Which Java version do you use?</p>
-                                    <b:panelGrid size="xs" columns="6">
-                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 7" itemValue="7" required="true" />
-                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 8(LTS)" itemValue="8" />
-                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 9" itemValue="9" disabled="true"/>
-                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 10" itemValue="10" disabled="true"/>
-                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 11(LTS)" itemValue="11" />
-                                        <b:radiobutton value="#{radiobuttonBean.javaVersion}" itemLabel="Java 14" itemValue="14" />
-                                    </b:panelGrid>
-                                    <b:commandButton value="submit your choice" action="#{radiobuttonBean.submit}" look="primary" update="@form" />
-                                    <b:messages />
-                                    <b:message for="@form:@property(radiobuttonBean.javaVersion)" />
-                                </b:form>
 
                             </f:facet>
                             <f:facet name="right">
+                                <label style="color: #045491">FILTROS DE PAGO</label>&nbsp;
+                                <h:form id="frmBuscarPagos">
+                                    <table border="0" style="width: 300px">
+                                        <thead>
+                                            <tr style="margin: 0 auto; text-align: center;">
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <h:form id="frmEstatus">
+                                                        <p:selectOneRadio id="console" value="#{pagoBean.estatus}">
+                                                            <f:selectItem itemValue="RECIBIDA"   itemLabel="Recibida" />
+                                                            <f:selectItem itemValue="PAGADA" itemLabel="Pagada" />
+                                                            <p:ajax listener="#{pagoBean.estatus}" />
+                                                        </p:selectOneRadio>
 
-                                <label>ESTATUS FACTURA</label>
-
-
+                                                    </h:form>
+                                                </td>
+                                                <td> 
+                                                    <h:form id="frmOC">
+                                                        <p:selectOneRadio id="console" value="#{pagoBean.tipoOC}">
+                                                            <f:selectItem itemValue="T"   itemLabel="Toluca" />
+                                                            <f:selectItem itemValue="M" itemLabel="México" />
+                                                            <p:ajax listener="#{pagoBean.tipoOC}" />
+                                                        </p:selectOneRadio>
+                                                    </h:form>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </h:form>
                             </f:facet>
                         </p:toolbar>                          
                     </p:panel>
                 </h:form>
-                <!--Formulario para buscar número de referencia-->
 
 
                 <!--Formulario principal-->
@@ -94,10 +100,11 @@
                                                      background-size: 35px;
                                                      background-image: url('../Images/pagos.png') !important; 
                                                      background-repeat: no-repeat"
-                                                     oncomplete="PF('dlgRepPago').show()" update="frmBuscarPagos">
-                                        <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"></f:setPropertyActionListener>
+                                                     actionListener="#{pagoBean.validar}"
+                                                     update="frmReportePago, frmBuscar:frmBuscarPagos">
+                                        <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"/>
                                     </p:commandButton>
-                                    <p:tooltip id="toolPagos" for="btnPagos" value="Ver reporte de pagos" trackMouse="true"></p:tooltip>
+                                    <p:tooltip id="toolPagos" for="btnPagos" value="Ver reporte de pagos" trackMouse="true"/>
                                 </p:column> 
                                 <p:column headerText="Borrar fecha de pago"> 
                                     <p:commandButton id="btnBorrar" value=""  style="height: 35px; width: 35px;
@@ -105,9 +112,9 @@
                                                      background-image: url('../Images/delete.png') !important; 
                                                      background-repeat: no-repeat"
                                                      oncomplete="PF('dialogEliminarPago').show()" update="frmEliminarPago">
-                                        <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"></f:setPropertyActionListener>
+                                        <f:setPropertyActionListener target="#{pagoBean.pago}" value="#{tbl}"/>
                                     </p:commandButton>
-                                    <p:tooltip id="toolBorrar" for="btnBorrar" value="Borrar fecha de pago" trackMouse="true"></p:tooltip>
+                                    <p:tooltip id="toolBorrar" for="btnBorrar" value="Borrar fecha de pago" trackMouse="true"/>
                                 </p:column>                             
                             </p:dataTable>                      
                         </p:layoutUnit>                    
@@ -130,9 +137,11 @@
                                 </p:calendar>               
                             </p:panelGrid>
                         </p:panel>
-                        <p:spacer width="400" height="5"></p:spacer>
+                        <p:spacer width="400" height="5"/>
                         <p:commandButton id="track" style="height: 35px; width: 35px; background-image: url('../Images/save.png') !important;background-size: 35px; background-repeat: no-repeat"  
-                                         value="" onclick="PF('dlgInfo').show()" update="frmBuscar:mensaje,frmPrincipal,frmPago" oncomplete="PF('dlgPago').hide()"  
+                                         value="" onclick="PF('dlgInfo').show()" 
+                                         update="frmBuscar:mensaje,frmPrincipal,frmPago" 
+                                         oncomplete="PF('dlgPago').hide()"  
                                          actionListener="#{pagoBean.insertarPago()}" 
                                          >
                         </p:commandButton>
@@ -161,13 +170,79 @@
                 <!--Formulario de reporte de pago-->
                 <h:form id="frmReportePago">
                     <p:growl id="mensaje" showSummary="true" showDetail="true"/>
+
                     <p:dialog id="dlgPago" header="" widgetVar="dlgRepPago" 
                               resizable="false" showEffect="clip" hideEffect="clip" modal="true">
+                        <p:outputLabel value="FECHA DE PAGO #{pagoBean.pago.fechaPago}" style="color: #0078A7; font-weight: bold"/><br></br>
+                        <p:outputLabel value="ESTATUS DE LA FACTURA: #{pagoBean.estatus}" style="color: #0078A7; font-weight: bold"/> <br></br>
+                        <p:outputLabel value="TIPO OC: #{pagoBean.tipoOC}" style="color: #0078A7; font-weight: bold"/><br></br>
+
                         <p:panel id="pnlPagos" header="REPORTE DE PAGOS"  
                                  style="margin: 0 auto; text-align: center; font-size: 13px">
+                            <p:tooltip id="toolExcel" for="xls" value="Exportar a Excel" trackMouse="true"/>
+                             <label>EXPORTAR REPORTE A EXCEL </label>&nbsp;
+                            <h:commandLink id="xls">
+                                <p:graphicImage url="../Images/excel.png" width="50"/>
+                                <p:dataExporter type="xls" target="tblPagos" fileName="Reporte_pagos"/>
+                            </h:commandLink>
                             <p:layoutUnit id="tablaPagos" position="center" style="padding: 5px; text-align: center;">
-                                <p:dataTable id="tblPagos" paginator="true" rows="13" sortMode="multiple" paginatorPosition="top" 
+                                <p:dataTable id="tblPagos" 
+                                             paginator="true" 
+                                             rows="10" 
+                                             sortMode="multiple"
+                                             paginatorPosition="top" 
+                                             currentPageReportTemplate="#{pagoBean.listaPagosPendientes.size()}"
+                                             rowsPerPageTemplate="20,40,100,500"
+                                             emptyMessage="No hay registros para tu búsqueda"
                                              var="tbl" value="#{pagoBean.listaPagosPendientes}">
+                                    <p:column  headerText="RFC">
+                                        <h:outputText value="#{tbl.rfcE}"/>
+                                    </p:column>
+                                    <p:column headerText="Nombre">
+                                        <h:outputText value="#{tbl.nombreE}"/>
+                                    </p:column>
+                                    <p:column headerText="Factura #">
+                                        <h:outputText value="#{tbl.factura}"/>
+                                    </p:column>
+                                    <p:column  headerText="Fecha factura">
+                                        <h:outputText value="#{tbl.fecha}"/>
+                                    </p:column>
+                                    <p:column  headerText="UUID Factura">
+                                        <h:outputText value="#{tbl.uuid}"/>
+                                    </p:column>
+                                    <p:column  headerText="UUID Comprobante">
+                                        <h:outputText value="#{tbl.uuidrel}"/>
+                                    </p:column>
+                                    <p:column headerText="$ Total a pagar">
+                                        <h:outputText value="#{tbl.total}">
+                                            <f:convertNumber currencySymbol="$" type="currency"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Recepción #">
+                                        <h:outputText value="#{tbl.referencia}"/>
+                                    </p:column>
+                                    <p:column headerText="OC">
+                                        <h:outputText value="#{tbl.oc}"/>
+                                    </p:column>
+                                    <p:column headerText="Cheque">
+                                        <h:outputText value="#{tbl.cheque}"/>
+                                    </p:column>
+                                    <p:column headerText="WCXP">
+                                        <h:outputText value="WCXP#{tbl.foliowcxp}"/>
+                                    </p:column>
+                                    <p:column  headerText="Fecha de recepción">
+                                        <h:outputText value="#{tbl.fechaRecepcion.substring(0,19)}"/>
+                                    </p:column>
+                                    <p:column  headerText="Fecha probable de pago">
+                                        <h:outputText value="#{tbl.fechaPago}"/>
+                                    </p:column>
+                                    <p:column headerText="Estatus">
+                                        <h:outputText value="#{tbl.estatus}"/>
+                                    </p:column>
+                                    <p:column headerText="Comprobante">
+                                        <h:outputText value="#{tbl.estatusCom}" style="#{tbl.estatusCom eq 'NO EMITIDO' ? 'color: black; background-color: #FF5733;font-weight: bold; font-size: 13px;'
+                                                               :(tbl.estatusCom eq 'PENDIENTE' ? 'color: black; background-color: #F9FF33;font-weight: bold; font-size: 13px;' : 'color: black; background-color: #37F728;font-weight: bold; font-size: 13px;')}"/>
+                                    </p:column>
                                 </p:dataTable>   
                             </p:layoutUnit>
                         </p:panel>
