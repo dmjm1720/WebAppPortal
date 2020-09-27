@@ -12,4 +12,6 @@ public interface ConceptoDao {
     public void UpdateConcepto(Concepto concepto);
 
     public void DeleteConcepto(Concepto concepto);
+    
+    public List<String> listaConceptoUUID(String uuid);
 }

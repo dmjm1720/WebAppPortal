@@ -1,5 +1,5 @@
 package mx.model;
-// Generated 15/09/2020 12:16:51 PM by Hibernate Tools 4.3.1
+// Generated 24/09/2020 09:46:10 PM by Hibernate Tools 4.3.1
 
 
 import java.math.BigDecimal;
@@ -66,6 +66,8 @@ public class Factura  implements java.io.Serializable {
      private String uuidrel;
      private String oc;
      private String cheque;
+     private String conceptos;
+     private String fcomp;
 
     public Factura() {
     }
@@ -74,7 +76,7 @@ public class Factura  implements java.io.Serializable {
     public Factura(int id) {
         this.id = id;
     }
-    public Factura(int id, String factura, String fecha, String folio, String serie, String versioncfdi, BigDecimal importe, BigDecimal total, BigDecimal tipoCambio, String moneda, String metodoPago, String tipoComprobante, String lugarExpedicion, String certificado, String noCertificado, String formaPago, String sello, String nombreE, String rfcE, String regimenFiscal, String nombreR, String rfcR, String usoCfdi, String impuesto, String tipoFactor, String tasaCouta, BigDecimal importeCouta, String referencia, String fechaRecepcion, String fechaPago, String estatus, String calle, String colonia, String estado, String municipio, String pais, String comentario, String comentarioProveedor, String estatusSat, String versioncfd, String uuid, String fechaTimbrado, String rfcProvCert, String selloCfd, String selloSat, String wcxp, String enviado, Integer foliowcxp, String claveProv, String nombreArchivo, String noCertificadoSat, String condicionesPago, String estatusCom, String uuidrel, String oc, String cheque) {
+    public Factura(int id, String factura, String fecha, String folio, String serie, String versioncfdi, BigDecimal importe, BigDecimal total, BigDecimal tipoCambio, String moneda, String metodoPago, String tipoComprobante, String lugarExpedicion, String certificado, String noCertificado, String formaPago, String sello, String nombreE, String rfcE, String regimenFiscal, String nombreR, String rfcR, String usoCfdi, String impuesto, String tipoFactor, String tasaCouta, BigDecimal importeCouta, String referencia, String fechaRecepcion, String fechaPago, String estatus, String calle, String colonia, String estado, String municipio, String pais, String comentario, String comentarioProveedor, String estatusSat, String versioncfd, String uuid, String fechaTimbrado, String rfcProvCert, String selloCfd, String selloSat, String wcxp, String enviado, Integer foliowcxp, String claveProv, String nombreArchivo, String noCertificadoSat, String condicionesPago, String estatusCom, String uuidrel, String oc, String cheque, String conceptos, String fcomp) {
        this.id = id;
        this.factura = factura;
        this.fecha = fecha;
@@ -131,6 +133,8 @@ public class Factura  implements java.io.Serializable {
        this.uuidrel = uuidrel;
        this.oc = oc;
        this.cheque = cheque;
+       this.conceptos = conceptos;
+       this.fcomp = fcomp;
     }
    
     public int getId() {
@@ -524,6 +528,20 @@ public class Factura  implements java.io.Serializable {
     
     public void setCheque(String cheque) {
         this.cheque = cheque;
+    }
+    public String getConceptos() {
+        return this.conceptos;
+    }
+    
+    public void setConceptos(String conceptos) {
+        this.conceptos = conceptos;
+    }
+    public String getFcomp() {
+        return this.fcomp;
+    }
+    
+    public void setFcomp(String fcomp) {
+        this.fcomp = fcomp;
     }
 
 

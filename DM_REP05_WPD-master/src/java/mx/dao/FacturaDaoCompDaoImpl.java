@@ -219,4 +219,21 @@ public class FacturaDaoCompDaoImpl implements FacturaCompDao {
         }
     }
 
+    @Override
+    public List<FacturaComplemento> listaFolioComprobante(String uuid) {
+        List<FacturaComplemento> lista = null;
+        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM FacturaComplemento WHERE uuid='" + uuid + "'";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
 }

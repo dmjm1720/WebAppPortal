@@ -59,6 +59,12 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import java.net.URL;
 import java.util.Date;
+import mx.sat.ConsultaCFDIService;
+
+//Web Service SAT 
+import mx.sat.Acuse;
+import mx.sat.ConsultaCFDIService;
+import mx.sat.IConsultaCFDIService;
 
 @Named(value = "subirGastosBean")
 @ViewScoped
@@ -173,6 +179,11 @@ public class SubirGastosBean extends DAO implements Serializable {
     private final String ruta = "C:\\public\\gastos\\";
     private final String rutaIp = "C:\\newPublic\\gastos\\";
     private List<String> lista;
+
+    //Web Service SAT
+    private ConsultaCFDIService consulta;
+    private IConsultaCFDIService respuesta;
+    private Acuse acuse;
 
     public SubirGastosBean() {
         this.lista = new ArrayList<>();
@@ -936,6 +947,30 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.condPago = condPago;
     }
 
+    public ConsultaCFDIService getConsulta() {
+        return consulta;
+    }
+
+    public void setConsulta(ConsultaCFDIService consulta) {
+        this.consulta = consulta;
+    }
+
+    public IConsultaCFDIService getRespuesta() {
+        return respuesta;
+    }
+
+    public void setRespuesta(IConsultaCFDIService respuesta) {
+        this.respuesta = respuesta;
+    }
+
+    public Acuse getAcuse() {
+        return acuse;
+    }
+
+    public void setAcuse(Acuse acuse) {
+        this.acuse = acuse;
+    }
+
     public void buscarRecepcion() throws SQLException {
         this.Conectar();
         this.Conectarprov();
@@ -1293,7 +1328,11 @@ public class SubirGastosBean extends DAO implements Serializable {
             this.moneda = "MXN";
         }
 
-        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF)) {
+        consulta = new ConsultaCFDIService();
+        respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
+        acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
+
+        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Factura ingresada anteriormente"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             lista.clear();
@@ -1306,6 +1345,10 @@ public class SubirGastosBean extends DAO implements Serializable {
             insertarConcepto();
             generarPDF();
             enviarAviso();
+        } else if (!acuse.getEstado().getValue().equals("Vigente")) {
+            lista.clear();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
+            //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estatus XML: " + acuse.getEstado().getValue()));
         } else {
             if (!this.rfcR.equals("CDU590909BQ3")) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en el XML no corresponde a Coloidales Duché"));
@@ -1404,6 +1447,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setFechaPago(pago);
         f.setEstatus("RECIBIDA");
         //Estatus SAT Validación CFDI
+        f.setEstatusSat(acuse.getEstado().getValue());
         f.setVersioncfd(Version);
         f.setUuid(UUIDTF);
         f.setFechaTimbrado(FechaTimbrado);
@@ -1693,7 +1737,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.ClaveUnidad = null;
         this.facturaSAE = null;
         this.condPago = null;
-        this.ClaveProdServ=null;
+        this.ClaveProdServ = null;
         this.Cerrar();
         this.Cerrarprov();
         //variables para el CFDI

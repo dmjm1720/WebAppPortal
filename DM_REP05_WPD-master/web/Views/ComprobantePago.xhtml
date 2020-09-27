@@ -20,7 +20,7 @@
                 <h:form>
                     <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value="Sesión iniciada: #{loginBean.usuario.correo}"/><br></br> 
                     <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value=" RFC: #{loginBean.usuario.rfc}"/><br></br>    
-                   <label style="color: #FFFFFF !important; font-size: 14px">Cerrar sesión</label>
+                    <label style="color: #FFFFFF !important; font-size: 14px">Cerrar sesión</label>
                     <p:commandLink id="salir" 
                                    title="CERRAR SESIÓN"
                                    action="/index?faces-redirect=true" 
@@ -72,6 +72,9 @@
                             <p:dataTable  style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
                                           paginatorPosition="top" var="tbl" value="#{subirComplementoBean.listaFacturaComplementos}">                           
                                 <p:ajax event="sort" skipChildren="false" />
+                                <p:column  headerText="ESTATUS SAT">
+                                    <h:outputText value="#{tbl.estatusSat}"/>
+                                </p:column>
                                 <p:column  filterBy="#{tbl.factura}" sortBy="#{tbl.factura}" headerText="COMPROBANTE DE PAGO NO.">
                                     <h:outputText value="#{tbl.factura}"></h:outputText>
                                 </p:column>

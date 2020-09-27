@@ -29,4 +29,5 @@ public interface FacturaCompDao {
 
     public void DeleteFactura(FacturaComplemento factura);
 
+    public List<FacturaComplemento> listaFolioComprobante(String uuid);
 }

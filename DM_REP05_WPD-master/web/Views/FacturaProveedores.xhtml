@@ -28,10 +28,10 @@
                     </p:commandLink>
                 </h:form>
                 <h:form id="frmBuscar">
-                    <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
+                    <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"/>
                     <p:blockUI block="pnlBuscar" trigger="buscar">   
                         <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
-                        <p:graphicImage value="../Images/loader.gif" style="height: 200px; width: 200px"></p:graphicImage>
+                        <p:graphicImage value="../Images/loader.gif" style="height: 200px; width: 200px"/>
                     </p:blockUI>
                     <p:panel id="pnlBuscar">
                         <p:toolbar>
@@ -105,6 +105,9 @@
                                           resizeMode="fit"
                                           value="#{facturaBean.listaFactura}">                           
                                 <p:ajax event="sort" skipChildren="false" />
+                                <p:column  headerText="ESTATUS SAT">
+                                    <h:outputText value="#{tbl.estatusSat}"/>
+                                </p:column>
                                 <p:column  filterBy="#{tbl.factura}" sortBy="#{tbl.factura}" headerText="Factura #">
                                     <h:outputText value="#{tbl.factura}"/>
                                 </p:column>

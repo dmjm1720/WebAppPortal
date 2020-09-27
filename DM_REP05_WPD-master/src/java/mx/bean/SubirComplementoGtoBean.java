@@ -68,6 +68,11 @@ import mx.model.ConceptoPagosCompGto;
 import mx.model.FacturaComplementoGto;
 import mx.model.PagoGto;
 
+//Web Service SAT 
+import mx.sat.Acuse;
+import mx.sat.ConsultaCFDIService;
+import mx.sat.IConsultaCFDIService;
+
 @Named(value = "subirComplementoGtoBean")
 @ViewScoped
 public class SubirComplementoGtoBean extends DAO implements Serializable {
@@ -93,6 +98,11 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
     private String mes;
     private String año;
     private String miFecha;
+
+    //Web Service SAT
+    private ConsultaCFDIService consulta;
+    private IConsultaCFDIService respuesta;
+    private Acuse acuse;
 
     //variables para el CFDI
     public String getUuid() {
@@ -998,6 +1008,30 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         this.validadUUIDVacio = validadUUIDVacio;
     }
 
+    public ConsultaCFDIService getConsulta() {
+        return consulta;
+    }
+
+    public void setConsulta(ConsultaCFDIService consulta) {
+        this.consulta = consulta;
+    }
+
+    public IConsultaCFDIService getRespuesta() {
+        return respuesta;
+    }
+
+    public void setRespuesta(IConsultaCFDIService respuesta) {
+        this.respuesta = respuesta;
+    }
+
+    public Acuse getAcuse() {
+        return acuse;
+    }
+
+    public void setAcuse(Acuse acuse) {
+        this.acuse = acuse;
+    }
+
 //    public void buscarRecepcion() throws SQLException {
 //        this.Conectar();
 //        this.Conectarprov();
@@ -1386,9 +1420,14 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         if (this.moneda == null) {
             this.moneda = "MXN";
         }
+
+        consulta = new ConsultaCFDIService();
+        respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
+        acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
+
         validarXML();///VALIDAMOS QUE EXISTA EL DOCUMENTO RELACIONADO CON LA FACTURA
 
-        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF)) {
+        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Comprobante de pago ingresado anteriormente"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             lista.clear();
@@ -1414,6 +1453,10 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
             //    }                    
             else if (this.validadUUIDVacio.equals("NO EXISTE")) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "No existe UUID en nuestro sistema que relacione al UUID del comprobante que intentas subir."));
+            } else if (!acuse.getEstado().getValue().equals("Vigente")) {
+                lista.clear();
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
+                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estatus XML: " + acuse.getEstado().getValue()));
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Hay diferencia en precio, Precio en XML:" + this.total + " Precio Sistema: " + this.IMPORTE));
                 lista.clear();
@@ -1545,6 +1588,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         //f.setFechaPago(pago);
         f.setEstatus("RECIBIDA");
         //Estatus SAT Validación CFDI
+        f.setEstatusSat(acuse.getEstado().getValue());
         f.setVersioncfd(Version);
         f.setUuid(UUIDTF);
 

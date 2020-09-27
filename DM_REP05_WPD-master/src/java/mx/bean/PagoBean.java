@@ -2,19 +2,20 @@ package mx.bean;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
-import javax.servlet.http.HttpServletRequest;
 import mx.dao.FacturaDao;
 import mx.dao.FacturaDaoImpl;
 import mx.dao.PagoDao;
 import mx.dao.PagoDaoImpl;
 import mx.model.DiasPago;
 import mx.model.Factura;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "pagoBean")
@@ -28,11 +29,19 @@ public class PagoBean implements Serializable {
     private List<Factura> listaPagosPendientes;
     private String tipoOC;
     private String estatus;
+    private List<Factura> listaCompleta;
+    private String f1;
+    private String f2;
+    private Date fecha1;
+    private Date fecha2;
 
     RequestContext facesContext = RequestContext.getCurrentInstance();
 
     public PagoBean() {
         pago = new DiasPago();
+        this.listaCompleta = new ArrayList<>();
+        this.listaPago = new ArrayList<>();
+        this.listaPagosPendientes = new ArrayList<>();
     }
 
     public DiasPago getPago() {
@@ -85,6 +94,46 @@ public class PagoBean implements Serializable {
         this.estatus = estatus;
     }
 
+    public List<Factura> getListaCompleta() {
+        return listaCompleta;
+    }
+
+    public void setListaCompleta(List<Factura> listaCompleta) {
+        this.listaCompleta = listaCompleta;
+    }
+
+    public String getF1() {
+        return f1;
+    }
+
+    public void setF1(String f1) {
+        this.f1 = f1;
+    }
+
+    public String getF2() {
+        return f2;
+    }
+
+    public void setF2(String f2) {
+        this.f2 = f2;
+    }
+
+    public Date getFecha1() {
+        return fecha1;
+    }
+
+    public void setFecha1(Date fecha1) {
+        this.fecha1 = fecha1;
+    }
+
+    public Date getFecha2() {
+        return fecha2;
+    }
+
+    public void setFecha2(Date fecha2) {
+        this.fecha2 = fecha2;
+    }
+
     public void insertarPago() {
         PagoDao pDao = new PagoDaoImpl();
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
@@ -110,20 +159,44 @@ public class PagoBean implements Serializable {
     }
 
     public void validar() {
-        if (estatus != null && tipoOC != null) {
+        if (tipoOC != null && estatus != null) {
             RequestContext.getCurrentInstance().execute("PF('dlgRepPago').show()");
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Selecciona OC y Estatus"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Selecciona OC México o Toluca"));
         }
     }
 
     public List<Factura> getListaPagosPendientes() {
         FacturaDao fDao = new FacturaDaoImpl();
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String es = request.getParameter("frmEstatus:estatus");
-        String oc = request.getParameter("frmOC:oc");
         listaPagosPendientes = fDao.listaPagosPendientes(pago.getFechaPago(), estatus, tipoOC);
         return listaPagosPendientes;
+    }
+
+    public List<Factura> listarAll() {
+        FacturaDao fDao = new FacturaDaoImpl();
+        if (listaCompleta.size() > 0) {
+            listaCompleta.clear();
+            RequestContext.getCurrentInstance().update("fmrFecRep:tablaPagos");
+           // RequestContext.getCurrentInstance().execute("PF('tblPagosRep').clearFilters()");
+        }
+        if (fecha1 != null && fecha2 != null) {
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+            f1 = formato.format(fecha1);
+            f2 = formato.format(fecha2);
+            listaCompleta = fDao.listarFechaRecep(f1, f2);
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Selecciona fecha inicial y fecha final"));
+        }
+        fecha1 = null;
+        fecha2 = null;
+        f1 = null;
+        f2 = null;
+
+        return listaCompleta;
+    }
+
+    public void mensaje() {
+        System.out.println("Mensaje");
     }
 
 }

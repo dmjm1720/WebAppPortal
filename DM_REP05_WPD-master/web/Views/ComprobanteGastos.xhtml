@@ -60,6 +60,9 @@
                             <p:dataTable  style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
                                           paginatorPosition="top" var="tbl" value="#{subirComplementoGtoBean.listaFacturaComplementos}">                           
                                 <p:ajax event="sort" skipChildren="false" />
+                                <p:column  headerText="ESTATUS SAT">
+                                    <h:outputText value="#{tbl.estatusSat}"/>
+                                </p:column>
                                 <p:column  filterBy="#{tbl.factura}" sortBy="#{tbl.factura}" headerText="COMPLEMENTO PAGO NO.">
                                     <h:outputText value="#{tbl.factura}"></h:outputText>
                                 </p:column>

@@ -37,7 +37,7 @@
                     <p:panel id="pnlBuscar">
                         <p:toolbar>
                             <f:facet name="left">
-                                 <label>SUBIR XML DE GASTOS </label>&nbsp;
+                                <label>SUBIR XML DE GASTOS </label>&nbsp;
                                 <p:commandButton style="height: 50px; width: 50px; background-image: url('../Images/upload.png') !important;background-size: 50px; background-repeat: no-repeat" 
                                                  id="buscar" oncomplete="PF('dlgXML').show()" 
                                                  update="frmBuscar,:frmPrincipal"  value="">
@@ -60,6 +60,9 @@
                             <p:dataTable  style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
                                           paginatorPosition="top" var="tbl" value="#{subirGastosBean.listaFactura}">                           
                                 <p:ajax event="sort" skipChildren="false" />
+                                <p:column  headerText="ESTATUS SAT">
+                                    <h:outputText value="#{tbl.estatusSat}"/>
+                                </p:column>
                                 <p:column  filterBy="#{tbl.factura}" sortBy="#{tbl.factura}" headerText="No. factura">
                                     <h:outputText value="#{tbl.factura}"></h:outputText>
                                 </p:column>

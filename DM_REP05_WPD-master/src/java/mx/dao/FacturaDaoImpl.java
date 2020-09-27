@@ -254,4 +254,73 @@ public class FacturaDaoImpl implements FacturaDao {
         return lista;
     }
 
+    @Override
+    public List<Factura> listaFaturaActualizarConcepto() {
+        List<Factura> lista = null;
+        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM Factura WHERE conceptos IS NULL AND uuid <>''";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
+    @Override
+    public void actualizarFacturaConcepto(String concepto, String uuid) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            String hql = "UPDATE factura SET conceptos='" + concepto + "' WHERE uuid='" + uuid + "'";
+            session.createSQLQuery(hql).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+
+        }
+    }
+
+    @Override
+    public void actualizarFolioComprobante(String folio, String uuid) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            String hql = "UPDATE factura SET fcomp='" + folio + "' WHERE uuidrel='" + uuid + "'";
+            session.createSQLQuery(hql).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+
+        }
+    }
+
+    @Override
+    public List<Factura> listaFaturaFolioComprobante() {
+        List<Factura> lista = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM Factura WHERE fcomp IS NULL AND uuidrel <>''";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
 }

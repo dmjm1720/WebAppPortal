@@ -37,7 +37,6 @@ public class ConceptoDaoImpl implements ConceptoDao {
             session.beginTransaction();
             session.save(concepto);
             session.getTransaction().commit();
-            
 
         } catch (HibernateException e) {
             System.out.println(e.getMessage());
@@ -85,6 +84,22 @@ public class ConceptoDaoImpl implements ConceptoDao {
                 session.close();
             }
         }
+    }
+
+    @Override
+    public List<String> listaConceptoUUID(String uuid) {
+        List<String> lista = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "SELECT descripcion FROM Concepto WHERE uuid='" + uuid + "'";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
     }
 
 }

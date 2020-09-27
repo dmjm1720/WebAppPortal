@@ -67,6 +67,9 @@
                             <p:dataTable style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
                                          paginatorPosition="top" var="tbl" value="#{filterByBean.listaCompleta}">                           
                                 <p:ajax event="sort" skipChildren="false" />
+                                <p:column  headerText="ESTATUS SAT">
+                                    <h:outputText value="#{tbl.estatusSat}"/>
+                                </p:column>
                                 <p:column  headerText="RFC">
                                     <h:outputText value="#{tbl.rfcE}"/>
                                 </p:column>
@@ -255,7 +258,7 @@
                               showEffect="puff" hideEffect="clip" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Fecha inicial" />
-                            <p:calendar  id="fecha_inicio" yearRange="2014:2025"  
+                            <p:calendar  id="fecha_inicio" yearRange="2014:2030"  
                                          effect="blind" effectDuration="13000" pages="2" showOn="button" 
                                          style="width: 150px;" value="#{filterByBean.filterFec1}" 
                                          required="true" placeholder="Ingrese fecha inicial"
@@ -290,7 +293,7 @@
                               showEffect="puff" hideEffect="clip" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Fecha inicial" />
-                            <p:calendar  id="fecha_ini" yearRange="2014:2025"  
+                            <p:calendar  id="fecha_ini" yearRange="2014:2030"  
                                          effect="blind" effectDuration="13000" pages="2" showOn="button" 
                                          style="width: 150px;" value="#{filterByBean.filterFec3}" 
                                          required="true" placeholder="Ingrese fecha inicial"

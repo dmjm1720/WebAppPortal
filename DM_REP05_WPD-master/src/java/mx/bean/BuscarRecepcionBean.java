@@ -1577,7 +1577,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setEstatus("RECIBIDA");
         //Estatus SAT Validación CFDI
         f.setEstatusSat(acuse.getEstado().getValue());
-        System.out.println(acuse.getEstado().getValue());
+        //System.out.println(acuse.getEstado().getValue());
         f.setVersioncfd(Version);
         f.setUuid(UUIDTF);
         f.setFechaTimbrado(FechaTimbrado);

@@ -10,10 +10,15 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import mx.dao.ConceptoDao;
+import mx.dao.ConceptoDaoImpl;
 import mx.dao.DAO;
+import mx.dao.FacturaCompDao;
 import mx.dao.FacturaDao;
+import mx.dao.FacturaDaoCompDaoImpl;
 import mx.dao.FacturaDaoImpl;
 import mx.model.Factura;
+import mx.model.FacturaComplemento;
 
 @Named(value = "filterByBean")
 @ViewScoped
@@ -42,6 +47,8 @@ public class FilterByBean extends DAO implements Serializable {
     private String f4;
 
     private Factura factura;
+
+    private List<Factura> listaConceptoFactura;
 
     public FilterByBean() {
         factura = new Factura();
@@ -363,6 +370,46 @@ public class FilterByBean extends DAO implements Serializable {
         FacturaDao fDao = new FacturaDaoImpl();
         listaCompleta = fDao.listaAdministrador();
         return listaCompleta;
+    }
+
+    public List<Factura> getListaConceptoFactura() {
+        return listaConceptoFactura;
+    }
+    
+    public void actualizarDatos(){
+        actualizarDatosConceptos();
+        actualizarDatosFolio();
+    }
+
+    public void actualizarDatosConceptos() {
+        FacturaDao fDao = new FacturaDaoImpl();
+        listaConceptoFactura = new ArrayList<>();
+        listaConceptoFactura = fDao.listaFaturaActualizarConcepto();
+        List<String> listaConcepto = new ArrayList<>();
+        for (int i = 0; i < listaConceptoFactura.size(); i++) {
+            ConceptoDao cDao = new ConceptoDaoImpl();
+            listaConcepto = cDao.listaConceptoUUID(listaConceptoFactura.get(i).getUuid());
+            FacturaDao fd = new FacturaDaoImpl();
+            fd.actualizarFacturaConcepto(listaConcepto.toString().replace("'", "''"), listaConceptoFactura.get(i).getUuid());
+            //System.out.println(listaConcepto.toString());
+        }
+
+    }
+
+    public void actualizarDatosFolio() {
+        FacturaDao fDao = new FacturaDaoImpl();
+        listaConceptoFactura = new ArrayList<>();
+        listaConceptoFactura = fDao.listaFaturaFolioComprobante();
+        List<FacturaComplemento> lista = new ArrayList<>();
+
+        for (int i = 0; i < listaConceptoFactura.size(); i++) {
+            FacturaCompDao compDao = new FacturaDaoCompDaoImpl();
+            lista = compDao.listaFolioComprobante(listaConceptoFactura.get(i).getUuidrel());
+            for (int j = 0; j < lista.size(); j++) {
+                FacturaDao dao = new FacturaDaoImpl();
+                dao.actualizarFolioComprobante(lista.get(j).getFolio(), lista.get(j).getUuid());
+            }
+        }
     }
 
 }
