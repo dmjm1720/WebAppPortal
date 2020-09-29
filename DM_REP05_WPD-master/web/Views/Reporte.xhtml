@@ -68,7 +68,10 @@
                             <p:dataTable style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
                                          paginatorPosition="top" var="tbl" value="#{filterByBean.listaCompleta}">                           
                                 <p:ajax event="sort" skipChildren="false" />
-                                <p:column  headerText="NO">
+                                <p:column  headerText="TIPO POLIZA">
+                                    <h:outputText value="#{tbl.oc.contains('T') ? 'ET' : 'EB'}"/>
+                                </p:column>
+                                <p:column filterBy="#{tbl.cheque}" sortBy="#{tbl.cheque}" headerText="NO">
                                     <h:outputText value="#{tbl.cheque}"/>
                                 </p:column>
                                 <p:column  headerText="Fecha">
@@ -83,13 +86,13 @@
                                 <p:column  headerText="Folio">
                                     <h:outputText value="#{tbl.rfcE}"/>
                                 </p:column>
-                                <p:column  headerText="UUID Comprobante">
+                                <p:column filterBy="#{tbl.uuidrel}" sortBy="#{tbl.uuidrel}"  headerText="UUID Comprobante">
                                     <h:outputText value="#{tbl.uuidrel}"/>
                                 </p:column>
                                 <p:column  headerText="Nombre">
                                     <h:outputText value="#{tbl.nombreE}"/>
                                 </p:column>
-                                <p:column  headerText="RFC">
+                                <p:column filterBy="#{tbl.rfcE}" sortBy="#{tbl.rfcE}"  headerText="RFC">
                                     <h:outputText value="#{tbl.rfcE}"/>
                                 </p:column>
                                 <p:column  headerText="Proveedor, Servicios, Arrendador">
@@ -101,15 +104,36 @@
                                 <p:column  headerText="Concepto">
                                     <h:outputText value="#{tbl.conceptos}"/>
                                 </p:column>
-                                <p:column headerText="$ Total a pagar">
+                                <p:column headerText="Tipo cambio">
+                                    <h:outputText value="#{tbl.tipoCambio}"/>
+                                </p:column>
+                                <p:column headerText="Base">
+                                    <h:outputText value="#{tbl.importe}"/>
+                                </p:column>
+                                <p:column headerText="IVA">
+                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                </p:column>
+                                <p:column headerText="IVA RETENIDO">
+                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                </p:column>
+                                <p:column headerText="ISR">
+                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                </p:column>
+                                <p:column headerText="IEPS">
+                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                </p:column>
+                                <p:column headerText="CHEQUE, TRANSFERENCIA">
+                                    <h:outputText value="CHEQUE NOMINATIVO"/>
+                                </p:column>
+                                <p:column headerText="BANCO">
+                                    <h:outputText value="HSBC"/>
+                                </p:column>
+                                <p:column headerText="$ IMPORTE">
                                     <h:outputText value="#{tbl.total}">
                                         <f:convertNumber currencySymbol="$" type="currency"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column   headerText="Tipo cambio">
-                                    <h:outputText value="#{tbl.tipoCambio}"/>
-                                </p:column>
-                                <p:column headerText="Ver factura" exportable="false">
+                                <p:column headerText="Factura" exportable="false">
                                     <p:commandButton value="" disabled="#{tbl.wcxp!=NULL}"
                                                      oncomplete="PF('dialogVerXML').show();" update="frmVerXML"
                                                      style="height: 35px; width: 35px;
@@ -119,7 +143,7 @@
                                         <f:setPropertyActionListener target="#{filterByBean.factura}" value="#{tbl}"/>
                                     </p:commandButton>
                                 </p:column>
-                                <p:column headerText="Ver complemento" exportable="false">
+                                <p:column headerText="Complemento" exportable="false">
                                     <p:commandButton value="" disabled="#{tbl.wcxp!=NULL}"
                                                      oncomplete="PF('dialogVerComp').show();" update="frmVerComp"
                                                      style="height: 35px; width: 35px;

@@ -185,6 +185,12 @@ public class SubirGastosBean extends DAO implements Serializable {
     private IConsultaCFDIService respuesta;
     private Acuse acuse;
 
+    //IMPUESTOS ISR
+    private String impuestoIsr;
+    private String tipoFactorIsr;
+    private String tasaCoutaIsr;
+    private String importeCuotaIsr;
+
     public SubirGastosBean() {
         this.lista = new ArrayList<>();
         f = new FacturaGastos();
@@ -971,6 +977,38 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.acuse = acuse;
     }
 
+    public String getImpuestoIsr() {
+        return impuestoIsr;
+    }
+
+    public void setImpuestoIsr(String impuestoIsr) {
+        this.impuestoIsr = impuestoIsr;
+    }
+
+    public String getTipoFactorIsr() {
+        return tipoFactorIsr;
+    }
+
+    public void setTipoFactorIsr(String tipoFactorIsr) {
+        this.tipoFactorIsr = tipoFactorIsr;
+    }
+
+    public String getTasaCoutaIsr() {
+        return tasaCoutaIsr;
+    }
+
+    public void setTasaCoutaIsr(String tasaCoutaIsr) {
+        this.tasaCoutaIsr = tasaCoutaIsr;
+    }
+
+    public String getImporteCuotaIsr() {
+        return importeCuotaIsr;
+    }
+
+    public void setImporteCuotaIsr(String importeCuotaIsr) {
+        this.importeCuotaIsr = importeCuotaIsr;
+    }
+
     public void buscarRecepcion() throws SQLException {
         this.Conectar();
         this.Conectarprov();
@@ -1288,6 +1326,21 @@ public class SubirGastosBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
+                        impuestoIsr = campo2.getAttributeValue("impuesto");
+                        if (impuestoIsr == null) {
+                            impuestoIsr = campo2.getAttributeValue("Impuesto");
+                        }
+                        tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                        if (tasaCoutaIsr == null) {
+                            tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                        }
+                        importeCuotaIsr = campo2.getAttributeValue("importe");
+                        if (importeCuotaIsr == null) {
+                            importeCuotaIsr = campo2.getAttributeValue("Importe");
+                        }
+                        BaseTraslado = campo2.getAttributeValue("Base");
+                    }
+                    if (valor3.equals("Retenciones")) {
                         this.impuestoRet = campo2.getAttributeValue("impuesto");
                         this.importeRet = campo2.getAttributeValue("importe");
                     }
@@ -1344,7 +1397,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             buscarWCXP();
             insertarConcepto();
             generarPDF();
-            enviarAviso();
+           // enviarAviso();
         } else if (!acuse.getEstado().getValue().equals("Vigente")) {
             lista.clear();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
@@ -1459,6 +1512,11 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setFoliowcxp(0);
         f.setUsuario(us.getCorreo());
         f.setNoCertificadoSat(NoCertificadoSAT);
+        f.setImpuestoIsr(impuestoIsr);
+        f.setTasaCuotaIsr(tasaCoutaIsr);
+        if (importeCuotaIsr != null) {
+            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
+        }
         fDao.InsertFactura(f);
         //Limpiamos las variables
         //limpiarVariables();
@@ -1555,7 +1613,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         props.put("mail.smtp.host", "smtp.alestraune.net.mx");
         props.setProperty("mail.smtp.starttls.enable", "true");
         props.setProperty("mail.smtp.port", "587");
-        props.setProperty("mail.smtp.user", "proveedor@duche.com");
+        props.setProperty("mail.smtp.user", "portalproveedores@duche.com");
         props.setProperty("mail.smtp.auth", "true");
         Session session = Session.getDefaultInstance(props, null);
         session.setDebug(false);
@@ -1607,7 +1665,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         MimeMessage message = new MimeMessage(session);
 
 // Se rellena el From
-        message.setFrom(new InternetAddress("proveedor@duche.com"));
+        message.setFrom(new InternetAddress("portalproveedores@duche.com"));
 
 // Se rellenan los destinatarios
         message.addRecipients(Message.RecipientType.TO, us.getCorreo());
@@ -1620,7 +1678,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         message.setContent(multiParte);
 
         Transport t = session.getTransport("smtp");
-        t.connect("proveedor@duche.com", "turtle");
+        t.connect("portalproveedores@duche.com", "ML310gen11");
         t.sendMessage(message, message.getAllRecipients());
         t.close();
         limpiarVariables();

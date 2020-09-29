@@ -58,7 +58,7 @@
                         </h:commandLink>
                         <p:layoutUnit id="tablaPrincipal" position="center" style="padding: 5px; text-align: center;">
                             <p:dataTable  style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
-                                          paginatorPosition="top" var="tbl" value="#{filterGastosByBean.listarUltRecep()}">                           
+                                          paginatorPosition="top" var="tbl" value="#{gastosBean.listarUltRecep}">                           
                                 <p:ajax event="sort" skipChildren="false" />
                                 <p:column filterBy="#{tbl.rfcE}" sortBy="#{tbl.rfcE}"  headerText="RFC">
                                     <h:outputText value="#{tbl.rfcE}"></h:outputText>
@@ -100,12 +100,12 @@
                                                      background-size: 35px;
                                                      background-image: url('../Images/factura.png') !important; 
                                                      background-repeat: no-repeat">
-                                        <f:setPropertyActionListener target="#{filterGastosByBean.factura}" value="#{tbl}"></f:setPropertyActionListener>
+                                        <f:setPropertyActionListener target="#{gastosBean.factura}" value="#{tbl}"></f:setPropertyActionListener>
                                     </p:commandButton>
 
                                     <!--                                    <p:commandButton value="PDF" disabled="{tbl.foliowcxp eq NULL}"
                                                                                          oncomplete="PF('dialogVerXML').show();" update="frmVerXML">
-                                                                            <f:setPropertyActionListener target="{filterGastosByBean.factura}" value="{tbl}"></f:setPropertyActionListener>
+                                                                            <f:setPropertyActionListener target="{gastosBean.factura}" value="{tbl}"></f:setPropertyActionListener>
                                                                         </p:commandButton>-->
                                 </p:column>
                                 <p:column headerText="Ver complemento" exportable="false">
@@ -115,7 +115,7 @@
                                                      background-size: 35px;
                                                      background-image: url('../Images/factura.png') !important; 
                                                      background-repeat: no-repeat">
-                                        <f:setPropertyActionListener target="#{filterGastosByBean.factura}" value="#{tbl}"></f:setPropertyActionListener>
+                                        <f:setPropertyActionListener target="#{gastosBean.factura}" value="#{tbl}"></f:setPropertyActionListener>
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>                      
@@ -131,14 +131,14 @@
                               showEffect="clip" hideEffect="size" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="UUID"></p:outputLabel>
-                            <p:inputText id="uuid" value="#{filterGastosByBean.factura.uuid}" style="width: 250px" readonly="true"></p:inputText>
+                            <p:inputText id="uuid" value="#{gastosBean.factura.uuid}" style="width: 250px" readonly="true"></p:inputText>
                         </p:panelGrid><br></br>
                         <p:spacer width="100px" height="5px"></p:spacer>
                         <h:commandLink id="reporte" 
                                        value="" 
                                        style="height: 30px;  font-size: 16px" 
                                        target="_blank" 
-                                       actionListener="#{filterGastosByBean.visualizarCFDI_PDF()}" onclick="PF('dialogVerXML').hide()">
+                                       actionListener="#{gastosBean.visualizarCFDI_PDF()}" onclick="PF('dialogVerXML').hide()">
                             <h:graphicImage url="/Images/printer.png" style="height: 80px"/> 
                         </h:commandLink>                       
                     </p:dialog>
@@ -152,14 +152,14 @@
                               showEffect="clip" hideEffect="size" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="UUID"></p:outputLabel>
-                            <p:inputText id="uuidrel" value="#{filterGastosByBean.factura.uuidrel}" style="width: 250px" readonly="true"></p:inputText>
+                            <p:inputText id="uuidrel" value="#{gastosBean.factura.uuidrel}" style="width: 250px" readonly="true"></p:inputText>
                         </p:panelGrid><br></br>
                         <p:spacer width="100px" height="5px"></p:spacer>
                         <h:commandLink id="reporte" 
                                        value="" 
                                        style="height: 30px;  font-size: 16px" 
                                        target="_blank" 
-                                       actionListener="#{filterGastosByBean.visualizarCFDI_COMP()}" onclick="PF('dialogVerComp').hide()">
+                                       actionListener="#{gastosBean.visualizarCFDI_COMP()}" onclick="PF('dialogVerComp').hide()">
                             <h:graphicImage url="/Images/printer.png" style="height: 80px"/> 
                         </h:commandLink>                       
                     </p:dialog>
@@ -177,14 +177,14 @@
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Seleccionar RFC" for="byRFC" />
                             <p:autoComplete id="byRFC" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterGastosByBean.filterRFC}" 
-                                            completeMethod="#{filterGastosByBean.completeRFC}"/>                    
+                                            dropdown="true" value="#{gastosBean.filterRFC}" 
+                                            completeMethod="#{gastosBean.completeRFC}"/>                    
                         </p:panelGrid><br></br>
                         <p:spacer width="140px" height="5px"></p:spacer>
                         <p:commandButton id="buscarRFC" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png'); background-size: 40px; background-repeat: no-repeat" 
-                                         actionListener="#{filterGastosByBean.listarAll()}" 
+                                         actionListener="#{gastosBean.listarAll()}" 
                                          update="frmPrincipal" 
                                          oncomplete="PF('dlgFilterByRFC').hide()">
                             <p:tooltip for="buscarRFC" value="Clic para buscar factura por RFC" trackMouse="true"></p:tooltip>
@@ -202,14 +202,14 @@
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Seleccionar Factura" for="byFactura" />
                             <p:autoComplete id="byFactura" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterGastosByBean.filterFactura}" 
-                                            completeMethod="#{filterGastosByBean.completeFactura}"/>                    
+                                            dropdown="true" value="#{gastosBean.filterFactura}" 
+                                            completeMethod="#{gastosBean.completeFactura}"/>                    
                         </p:panelGrid><br></br>
                         <p:spacer width="140px" height="5px"></p:spacer>
                         <p:commandButton id="buscarFac" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png'); background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterGastosByBean.listarAll()}" 
+                                         actionListener="#{gastosBean.listarAll()}" 
                                          update="frmPrincipal" 
                                          oncomplete="PF('dlgFilterByFactura').hide()">
                             <p:tooltip for="buscarFac" value="Clic para buscar factura" trackMouse="true"></p:tooltip>
@@ -228,13 +228,13 @@
                             <p:outputLabel value="Fecha inicial" ></p:outputLabel>
                             <p:calendar  id="fecha_inicio" yearRange="2014:2025"  
                                          effect="blind" effectDuration="13000" pages="2" showOn="button" 
-                                         style="width: 150px;" value="#{filterGastosByBean.filterFec1}" 
+                                         style="width: 150px;" value="#{gastosBean.filterFec1}" 
                                          required="true" placeholder="Ingrese fecha inicial"
                                          pattern="yyyy-MMMM-dd" mask="true">
                             </p:calendar>                   
                             <p:calendar  id="fecha_final" yearRange="2014:2025"  
                                          effect="blind" effectDuration="13000" pages="2" showOn="button" 
-                                         style="width: 150px;" value="#{filterGastosByBean.filterFec2}" 
+                                         style="width: 150px;" value="#{gastosBean.filterFec2}" 
                                          required="true" placeholder="Ingrese fecha final"
                                          pattern="yyyy-MMMM-dd" mask="true">
                             </p:calendar>                   
@@ -243,7 +243,7 @@
                         <p:commandButton id="buscarFec" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png'); background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterGastosByBean.listarAll()}" 
+                                         actionListener="#{gastosBean.listarAll()}" 
                                          update="frmPrincipal" 
                                          oncomplete="PF('dlgFilterByFechas').hide()">
                             <p:tooltip for="buscarFec" value="Clic para buscar factura" trackMouse="true"></p:tooltip>
@@ -261,14 +261,14 @@
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Seleccionar Recepción" for="byRecepcion" />
                             <p:autoComplete id="byRecepcion" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterGastosByBean.filterNoRec}" 
-                                            completeMethod="#{filterGastosByBean.completeRecepcion}"/>                    
+                                            dropdown="true" value="#{gastosBean.filterNoRec}" 
+                                            completeMethod="#{gastosBean.completeRecepcion}"/>                    
                         </p:panelGrid><br></br>
                         <p:spacer width="140px" height="5px"></p:spacer>
                         <p:commandButton id="buscarRec" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png'); background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterGastosByBean.listarAll()}" 
+                                         actionListener="#{gastosBean.listarAll()}" 
                                          update="frmPrincipal" 
                                          oncomplete="PF('dlgFilterByRecepcion').hide()">
                             <p:tooltip for="buscarRec" value="Clic para buscar Recepción" trackMouse="true"></p:tooltip>
@@ -287,14 +287,14 @@
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Seleccionar WCXP" for="byWCXP" />
                             <p:autoComplete id="byWCXP" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterGastosByBean.filterFolio}" 
-                                            completeMethod="#{filterGastosByBean.completeFolio}"/>                    
+                                            dropdown="true" value="#{gastosBean.filterFolio}" 
+                                            completeMethod="#{gastosBean.completeFolio}"/>                    
                         </p:panelGrid><br></br>
                         <p:spacer width="140px" height="5px"></p:spacer>
                         <p:commandButton id="buscarWCXP" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png'); background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterGastosByBean.listarAll()}" 
+                                         actionListener="#{gastosBean.listarAll()}" 
                                          update="frmPrincipal" 
                                          oncomplete="PF('dlgFilterByWCXP').hide()">
                             <p:tooltip for="buscarWCXP" value="Clic para buscar WCXP" trackMouse="true"></p:tooltip>
@@ -312,14 +312,14 @@
                         <p:panelGrid columns="1" style="margin: 0 auto">
                             <p:outputLabel value="Seleccionar Estatus" for="byEstatus" />
                             <p:autoComplete id="byEstatus" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterGastosByBean.filterEstatus}" 
-                                            completeMethod="#{filterGastosByBean.completeEstatus}"/>                    
+                                            dropdown="true" value="#{gastosBean.filterEstatus}" 
+                                            completeMethod="#{gastosBean.completeEstatus}"/>                    
                         </p:panelGrid><br></br>
                         <p:spacer width="140px" height="5px"></p:spacer>
                         <p:commandButton id="buscarEstatus" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png'); background-size: 40px; background-repeat: no-repeat" 
-                                         actionListener="#{filterGastosByBean.listarAll()}" 
+                                         actionListener="#{gastosBean.listarAll()}" 
                                          update="frmPrincipal" 
                                          oncomplete="PF('dlgFilterByEstatus').hide()">
                             <p:tooltip for="buscarEstatus" value="Clic para buscar por Estatus" trackMouse="true"></p:tooltip>

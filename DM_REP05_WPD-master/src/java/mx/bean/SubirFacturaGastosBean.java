@@ -37,13 +37,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import mx.dao.ConceptoGastosDao;
-import mx.dao.ConceptoGastosDaoImpl;
 import mx.dao.DAO;
-import mx.dao.FacturaGastosDao;
-import mx.dao.FacturaGastosDaoImpl;
-import mx.model.ConceptoGastos;
-import mx.model.FacturaGastos;
 import mx.model.Usuario;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -179,6 +173,12 @@ public class SubirFacturaGastosBean extends DAO implements Serializable {
     private final String ruta = "C:\\public\\gastos\\";
     private final String rutaIp = "C:\\newPublic\\gastos\\";
     private List<String> lista;
+
+    //IMPUESTOS ISR
+    private String impuestoIsr;
+    private String tipoFactorIsr;
+    private String tasaCoutaIsr;
+    private String importeCuotaIsr;
 
     public SubirFacturaGastosBean() {
         this.lista = new ArrayList<>();
@@ -942,6 +942,38 @@ public class SubirFacturaGastosBean extends DAO implements Serializable {
         this.condPago = condPago;
     }
 
+    public String getImpuestoIsr() {
+        return impuestoIsr;
+    }
+
+    public void setImpuestoIsr(String impuestoIsr) {
+        this.impuestoIsr = impuestoIsr;
+    }
+
+    public String getTipoFactorIsr() {
+        return tipoFactorIsr;
+    }
+
+    public void setTipoFactorIsr(String tipoFactorIsr) {
+        this.tipoFactorIsr = tipoFactorIsr;
+    }
+
+    public String getTasaCoutaIsr() {
+        return tasaCoutaIsr;
+    }
+
+    public void setTasaCoutaIsr(String tasaCoutaIsr) {
+        this.tasaCoutaIsr = tasaCoutaIsr;
+    }
+
+    public String getImporteCuotaIsr() {
+        return importeCuotaIsr;
+    }
+
+    public void setImporteCuotaIsr(String importeCuotaIsr) {
+        this.importeCuotaIsr = importeCuotaIsr;
+    }
+
     public void upload(FileUploadEvent event) throws SQLException, MessagingException, JDOMException, ParseException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         try {
 
@@ -1214,6 +1246,21 @@ public class SubirFacturaGastosBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
+                        impuestoIsr = campo2.getAttributeValue("impuesto");
+                        if (impuestoIsr == null) {
+                            impuestoIsr = campo2.getAttributeValue("Impuesto");
+                        }
+                        tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                        if (tasaCoutaIsr == null) {
+                            tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                        }
+                        importeCuotaIsr = campo2.getAttributeValue("importe");
+                        if (importeCuotaIsr == null) {
+                            importeCuotaIsr = campo2.getAttributeValue("Importe");
+                        }
+                        BaseTraslado = campo2.getAttributeValue("Base");
+                    }
+                    if (valor3.equals("Retenciones")) {
                         this.impuestoRet = campo2.getAttributeValue("impuesto");
                         this.importeRet = campo2.getAttributeValue("importe");
                     }
@@ -1378,6 +1425,9 @@ public class SubirFacturaGastosBean extends DAO implements Serializable {
         f.setNombreArchivo(nombreCFDI);
         f.setFoliowcxp(0);
         //f.setUsuario(us.getCorreo());
+//         if (importeCuotaIsr != null) {
+//            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
+//        }
         f.setNoCertificadoSat(NoCertificadoSAT);
         fDao.InsertFactura(f);
         //Limpiamos las variables

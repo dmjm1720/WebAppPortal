@@ -1,5 +1,5 @@
 package mx.model;
-// Generated 24/09/2020 09:46:10 PM by Hibernate Tools 4.3.1
+// Generated 28/09/2020 09:59:44 AM by Hibernate Tools 4.3.1
 
 
 import java.math.BigDecimal;
@@ -65,6 +65,10 @@ public class FacturaGastos  implements java.io.Serializable {
      private String condicionesPago;
      private String estatusCom;
      private String uuidrel;
+     private String impuestoIsr;
+     private String tipoFactorIsr;
+     private String tasaCuotaIsr;
+     private BigDecimal importeCuotaIsr;
 
     public FacturaGastos() {
     }
@@ -73,7 +77,7 @@ public class FacturaGastos  implements java.io.Serializable {
     public FacturaGastos(int id) {
         this.id = id;
     }
-    public FacturaGastos(int id, String factura, String fecha, String folio, String serie, String versioncfdi, BigDecimal importe, BigDecimal total, BigDecimal tipoCambio, String moneda, String metodoPago, String tipoComprobante, String lugarExpedicion, String certificado, String noCertificado, String formaPago, String sello, String nombreE, String rfcE, String regimenFiscal, String nombreR, String rfcR, String usoCfdi, String impuesto, String tipoFactor, String tasaCouta, BigDecimal importeCouta, String referencia, String fechaRecepcion, String fechaPago, String estatus, String calle, String colonia, String estado, String municipio, String pais, String comentario, String comentarioProveedor, String estatusSat, String versioncfd, String uuid, String fechaTimbrado, String rfcProvCert, String selloCfd, String selloSat, String wcxp, String enviado, Integer foliowcxp, String claveProv, String nombreArchivo, String usuario, String noCertificadoSat, String condicionesPago, String estatusCom, String uuidrel) {
+    public FacturaGastos(int id, String factura, String fecha, String folio, String serie, String versioncfdi, BigDecimal importe, BigDecimal total, BigDecimal tipoCambio, String moneda, String metodoPago, String tipoComprobante, String lugarExpedicion, String certificado, String noCertificado, String formaPago, String sello, String nombreE, String rfcE, String regimenFiscal, String nombreR, String rfcR, String usoCfdi, String impuesto, String tipoFactor, String tasaCouta, BigDecimal importeCouta, String referencia, String fechaRecepcion, String fechaPago, String estatus, String calle, String colonia, String estado, String municipio, String pais, String comentario, String comentarioProveedor, String estatusSat, String versioncfd, String uuid, String fechaTimbrado, String rfcProvCert, String selloCfd, String selloSat, String wcxp, String enviado, Integer foliowcxp, String claveProv, String nombreArchivo, String usuario, String noCertificadoSat, String condicionesPago, String estatusCom, String uuidrel, String impuestoIsr, String tipoFactorIsr, String tasaCuotaIsr, BigDecimal importeCuotaIsr) {
        this.id = id;
        this.factura = factura;
        this.fecha = fecha;
@@ -129,6 +133,10 @@ public class FacturaGastos  implements java.io.Serializable {
        this.condicionesPago = condicionesPago;
        this.estatusCom = estatusCom;
        this.uuidrel = uuidrel;
+       this.impuestoIsr = impuestoIsr;
+       this.tipoFactorIsr = tipoFactorIsr;
+       this.tasaCuotaIsr = tasaCuotaIsr;
+       this.importeCuotaIsr = importeCuotaIsr;
     }
    
     public int getId() {
@@ -515,6 +523,34 @@ public class FacturaGastos  implements java.io.Serializable {
     
     public void setUuidrel(String uuidrel) {
         this.uuidrel = uuidrel;
+    }
+    public String getImpuestoIsr() {
+        return this.impuestoIsr;
+    }
+    
+    public void setImpuestoIsr(String impuestoIsr) {
+        this.impuestoIsr = impuestoIsr;
+    }
+    public String getTipoFactorIsr() {
+        return this.tipoFactorIsr;
+    }
+    
+    public void setTipoFactorIsr(String tipoFactorIsr) {
+        this.tipoFactorIsr = tipoFactorIsr;
+    }
+    public String getTasaCuotaIsr() {
+        return this.tasaCuotaIsr;
+    }
+    
+    public void setTasaCuotaIsr(String tasaCuotaIsr) {
+        this.tasaCuotaIsr = tasaCuotaIsr;
+    }
+    public BigDecimal getImporteCuotaIsr() {
+        return this.importeCuotaIsr;
+    }
+    
+    public void setImporteCuotaIsr(BigDecimal importeCuotaIsr) {
+        this.importeCuotaIsr = importeCuotaIsr;
     }
 
 

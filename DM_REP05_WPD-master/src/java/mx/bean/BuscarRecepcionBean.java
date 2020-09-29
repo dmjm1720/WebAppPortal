@@ -90,6 +90,12 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
     private String año;
     private String miFecha;
 
+    //IMPUESTOS ISR
+    private String impuestoIsr;
+    private String tipoFactorIsr;
+    private String tasaCoutaIsr;
+    private String importeCuotaIsr;
+
     //variables para el CFDI
     public String getUuid() {
         return uuid;
@@ -984,6 +990,38 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         this.acuse = acuse;
     }
 
+    public String getImpuestoIsr() {
+        return impuestoIsr;
+    }
+
+    public void setImpuestoIsr(String impuestoIsr) {
+        this.impuestoIsr = impuestoIsr;
+    }
+
+    public String getTipoFactorIsr() {
+        return tipoFactorIsr;
+    }
+
+    public void setTipoFactorIsr(String tipoFactorIsr) {
+        this.tipoFactorIsr = tipoFactorIsr;
+    }
+
+    public String getTasaCoutaIsr() {
+        return tasaCoutaIsr;
+    }
+
+    public void setTasaCoutaIsr(String tasaCoutaIsr) {
+        this.tasaCoutaIsr = tasaCoutaIsr;
+    }
+
+    public String getImporteCuotaIsr() {
+        return importeCuotaIsr;
+    }
+
+    public void setImporteCuotaIsr(String importeCuotaIsr) {
+        this.importeCuotaIsr = importeCuotaIsr;
+    }
+
     public void buscarRecepcion() throws SQLException {
         this.Conectar();
         this.Conectarprov();
@@ -1302,6 +1340,21 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
+                        impuestoIsr = campo2.getAttributeValue("impuesto");
+                        if (impuestoIsr == null) {
+                            impuestoIsr = campo2.getAttributeValue("Impuesto");
+                        }
+                        tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                        if (tasaCoutaIsr == null) {
+                            tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                        }
+                        importeCuotaIsr = campo2.getAttributeValue("importe");
+                        if (importeCuotaIsr == null) {
+                            importeCuotaIsr = campo2.getAttributeValue("Importe");
+                        }
+                        BaseTraslado = campo2.getAttributeValue("Base");
+                    }
+                    if (valor3.equals("Retenciones")) {
                         this.impuestoRet = campo2.getAttributeValue("impuesto");
                         this.importeRet = campo2.getAttributeValue("importe");
                     }
@@ -1430,13 +1483,14 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
 
         consulta = new ConsultaCFDIService();
         respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
+
         acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
 
         if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Factura ingresada anteriormente"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             lista.clear();
-        } else if (dato <= dato2 && dato >= dato3 && this.rfcR.equals("CDU590909BQ3") && this.NUM_MONED == this.validarMoneda && this.rfcE.equals(us.getRfc().replace(" ", "")) && acuse.getEstado().getValue().equals("Vigente")) {
+        } else if (dato <= dato2 && dato >= dato3 && this.rfcR.equals("CDU590909BQ3") && this.NUM_MONED == this.validarMoneda && this.rfcE.equals(us.getRfc().replace(" ", "")) && acuse.getEstado().getValue().equals("Vigente") || acuse.getEstado().getValue().equals("No Encontrado")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ S.A. DE C.V.", "Se ha procesado su factura para pago"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             insertarFactura();
@@ -1471,7 +1525,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
             } else if (!this.rfcE.equals(us.getRfc().replace(" ", ""))) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en tu XML es diferente al dado de alta en nuestro sistema, favor de verificar."));
                 lista.clear();
-            } else if (!acuse.getEstado().getValue().equals("Vigente")) {
+            } else if (!acuse.getEstado().getValue().equals("Vigente") || !acuse.getEstado().getValue().equals("No Encontrado")) {
                 lista.clear();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
                 //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estatus XML: " + acuse.getEstado().getValue()));
@@ -1576,7 +1630,12 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setFechaPago(pagoDuche);
         f.setEstatus("RECIBIDA");
         //Estatus SAT Validación CFDI
-        f.setEstatusSat(acuse.getEstado().getValue());
+        if (acuse.getEstado().getValue().equals("No Encontrado")) {
+            f.setEstatusSat("Vigente");
+        } else {
+            f.setEstatusSat(acuse.getEstado().getValue());
+        }
+
         //System.out.println(acuse.getEstado().getValue());
         f.setVersioncfd(Version);
         f.setUuid(UUIDTF);
@@ -1590,6 +1649,11 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setNoCertificadoSat(NoCertificadoSAT);
         f.setEstatusCom("NO EMITIDO");
         f.setOc(this.DOC_ANT);
+        f.setImpuestoIsr(impuestoIsr);
+        f.setTasaCuotaIsr(tasaCoutaIsr);
+        if (importeCuotaIsr != null) {
+            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
+        }
         fDao.InsertFactura(f);
         //Limpiamos las variables
         //limpiarVariables();

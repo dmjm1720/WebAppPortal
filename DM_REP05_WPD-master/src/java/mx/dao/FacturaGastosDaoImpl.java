@@ -9,8 +9,11 @@ import mx.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.primefaces.context.RequestContext;
 
 public class FacturaGastosDaoImpl implements FacturaGastosDao {
+
+    RequestContext facesContext = RequestContext.getCurrentInstance();
 
     @Override
     public List<FacturaGastos> listaFactura() {
@@ -151,7 +154,7 @@ public class FacturaGastosDaoImpl implements FacturaGastosDao {
             session.save(factura);
             session.getTransaction().commit();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Factura agregada correctamente"));
-
+            facesContext.execute("Swal.fire({position: 'top-center', icon: 'success', showConfirmButton: false, timer: 4000, title: 'Validación XML con estatus Vigente', showClass: {popup: 'animate__animated animate__fadeInDown'},hideClass: {popup: 'animate__animated animate__fadeOutUp'}})");
         } catch (HibernateException e) {
             System.out.println(e.getMessage());
             session.getTransaction().rollback();

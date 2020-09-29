@@ -1,5 +1,5 @@
 package mx.model;
-// Generated 24/09/2020 09:46:10 PM by Hibernate Tools 4.3.1
+// Generated 28/09/2020 09:59:44 AM by Hibernate Tools 4.3.1
 
 
 import java.math.BigDecimal;

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/09/2020 09:46:11 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 28/09/2020 09:59:46 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="mx.model.FacturaGastos" table="FACTURA_GASTOS" schema="dbo" catalog="PortalProvNac" optimistic-lock="version">
         <id name="id" type="int">
             <column name="ID" />
-            <generator class="assigned" />
+            <generator class="native" />
         </id>
         <property name="factura" type="string">
             <column name="FACTURA" length="50" />
@@ -169,6 +169,18 @@
         </property>
         <property name="uuidrel" type="string">
             <column name="UUIDREL" length="200" />
+        </property>
+        <property name="impuestoIsr" type="string">
+            <column name="IMPUESTO_ISR" length="20" />
+        </property>
+        <property name="tipoFactorIsr" type="string">
+            <column name="TIPO_FACTOR_ISR" length="20" />
+        </property>
+        <property name="tasaCuotaIsr" type="string">
+            <column name="TASA_CUOTA_ISR" length="20" />
+        </property>
+        <property name="importeCuotaIsr" type="big_decimal">
+            <column name="IMPORTE_CUOTA_ISR" scale="4" />
         </property>
     </class>
 </hibernate-mapping>
