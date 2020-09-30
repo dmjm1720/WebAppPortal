@@ -64,13 +64,23 @@
                                             </th>
                                             <th>   
                                                 <p:spacer height="50"/>
+
+                                                <h:commandLink id="compr">
+                                                    <a href="/proveedores/Views/ComprobantePago.duche">COMPROBANTE DE PAGO</a>
+                                                    <p:graphicImage value="../img/comp.png" style="height: 55px; width: 55px"/>
+                                                </h:commandLink>
+                                            </th>
+                                            <th>   
+                                                <p:spacer height="50"/>
                                                 <p:commandButton style="height: 50px; width: 50px; background-image: url('../img/address-book.png') !important;background-size: 50px; background-repeat: no-repeat" 
                                                                  id="manual" oncomplete="PF('dialogVerManual').show()" 
                                                                  value="">
                                                 </p:commandButton>
-                                                <p:tooltip id="toolTipTrackmanual" for="manual" trackMouse="true" value="VER MANUAL DE USUARIO"></p:tooltip>    
-                                                <p:tooltip id="toolTipBuscar" for="buscar" trackMouse="true" value="VALIDAR RECEPCIÓN Y SUBIR XML"></p:tooltip>    
+                                                <p:tooltip id="toolTipTrackmanual" for="manual" trackMouse="true" value="VER MANUAL DE USUARIO"/>    
+                                                <p:tooltip id="toolTipCompr" for="compr" trackMouse="true" value="SUBIR COMPROBANTE DE PAGO"/>    
+                                                <p:tooltip id="toolTipBuscar" for="buscar" trackMouse="true" value="VALIDAR RECEPCIÓN Y SUBIR XML"/>
                                             </th>
+
                                         </tr>
                                     </thead>
                                     <tbody>

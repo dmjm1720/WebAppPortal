@@ -2,14 +2,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaPDF" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f9df871-7b2d-4755-9d8f-da3bec7b82d0">
 	<property name="ireport.zoom" value="1.3636363636363638"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="267"/>
+	<property name="ireport.y" value="242"/>
 	<parameter name="uuid" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT        dbo.FACTURA.IMPORTE, dbo.FACTURA.IMPORTE_COUTA, dbo.FACTURA.VERSIONCFDI, dbo.FACTURA.FACTURA, dbo.FACTURA.UUID, dbo.FACTURA.RFC_E, dbo.FACTURA.NOMBRE_E, dbo.FACTURA.ESTATUS_SAT,dbo.FACTURA.TOTAL, dbo.FACTURA.FECHA,
 				dbo.FACTURA.NOMBRE_R, dbo.FACTURA.RFC_R, dbo.FACTURA.LUGAR_EXPEDICION, dbo.FACTURA.SELLO_CFD, dbo.FACTURA.SELLO_SAT, dbo.FACTURA.FECHA_TIMBRADO, dbo.FACTURA.CERTIFICADO, dbo.FACTURA.VERSIONCFD,
-				dbo.FACTURA.NO_CERTIFICADO, dbo.FACTURA.RFC_PROV_CERT, dbo.FACTURA.TIPO_CAMBIO, dbo.FACTURA.MONEDA, dbo.FACTURA.TIPO_COMPROBANTE, dbo.FACTURA.METODO_PAGO, dbo.FACTURA.FORMA_PAGO,dbo.FACTURA.NO_CERTIFICADO_SAT,dbo.FACTURA.CONDICIONES_PAGO,dbo.FACTURA.USO_CFDI,     FACTURA.IMPORTE_CUOTA_ISR,
+				dbo.FACTURA.NO_CERTIFICADO, dbo.FACTURA.RFC_PROV_CERT, dbo.FACTURA.TIPO_CAMBIO, dbo.FACTURA.MONEDA, dbo.FACTURA.TIPO_COMPROBANTE, dbo.FACTURA.METODO_PAGO, dbo.FACTURA.FORMA_PAGO,dbo.FACTURA.NO_CERTIFICADO_SAT,dbo.FACTURA.CONDICIONES_PAGO,dbo.FACTURA.USO_CFDI,     FACTURA.IMPORTE_CUOTA_ISR,FACTURA.IVA_RET,
 				dbo.CONCEPTO.CANTIDAD, dbo.CONCEPTO.CLAVE_UNIDAD, dbo.CONCEPTO.DESCRIPCION, dbo.CONCEPTO.IMPORTE as IMP, dbo.CONCEPTO.PRECIO_UNITARIO, dbo.CONCEPTO.UNIDAD,dbo.CONCEPTO.CLAVE_PROD
 FROM            dbo.FACTURA INNER JOIN
                          dbo.CONCEPTO ON dbo.FACTURA.UUID = dbo.CONCEPTO.UUID where dbo.FACTURA.UUID=$P{uuid}]]>
@@ -43,6 +43,7 @@ FROM            dbo.FACTURA INNER JOIN
 	<field name="CONDICIONES_PAGO" class="java.lang.String"/>
 	<field name="USO_CFDI" class="java.lang.String"/>
 	<field name="IMPORTE_CUOTA_ISR" class="java.math.BigDecimal"/>
+	<field name="IVA_RET" class="java.math.BigDecimal"/>
 	<field name="CANTIDAD" class="java.lang.String"/>
 	<field name="CLAVE_UNIDAD" class="java.lang.String"/>
 	<field name="DESCRIPCION" class="java.lang.String"/>
@@ -654,12 +655,12 @@ FROM            dbo.FACTURA INNER JOIN
 				<text><![CDATA[ISR:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="467" y="57" width="44" height="11" forecolor="#000000" backcolor="#CC0033" uuid="199d3932-6cb7-4de6-af32-45a5846db488"/>
+				<reportElement mode="Transparent" x="439" y="57" width="72" height="11" forecolor="#000000" backcolor="#CC0033" uuid="199d3932-6cb7-4de6-af32-45a5846db488"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[TUA:]]></text>
+				<text><![CDATA[IVA RETENIDO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="467" y="69" width="44" height="11" forecolor="#000000" backcolor="#CC0033" uuid="1dc32adf-c793-48ce-85c2-59e155316e7a"/>
@@ -720,6 +721,14 @@ FROM            dbo.FACTURA INNER JOIN
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTE_CUOTA_ISR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="511" y="57" width="59" height="12" forecolor="#000000" backcolor="#CCCCCC" uuid="ea73751d-186c-4a7b-a11e-f0ccfd2780bd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IVA_RET}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

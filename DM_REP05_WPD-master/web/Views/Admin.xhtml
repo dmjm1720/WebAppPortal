@@ -41,13 +41,15 @@
                                 <!--                                <p:commandButton id="rfc" oncomplete="PF('dlgFilterByRFC').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="RFC"/>-->
                                 <!--                                <p:commandButton id="nfactura" oncomplete="PF('dlgFilterByFactura').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="No Factura"/>-->
                                 <p:commandButton id="frecepcion" oncomplete="PF('dlgFilterByFechas').show();" style="height: 35px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Fechas de recepción"/>
-                                <p:commandButton id="fpago" oncomplete="PF('dlgFilterByPago').show();" style="height: 35px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Fechas de pago"/>
+
                                 <!--                                <p:commandButton id="nrecepcion" oncomplete="PF('dlgFilterByRecepcion').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="No de recepción"/>
                                                                 <p:commandButton id="fwcxp" oncomplete="PF('dlgFilterByWCXP').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Folio WCXP"/>
                                                                 <p:commandButton id="estatus" oncomplete="PF('dlgFilterByEstatus').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Estatus"/>
                                                                 <p:commandButton id="pdfP" disabled="{loginBean.usuario.rfc!='developer'}" actionListener="{generarPDFBean.pdfProveedores()}" style="height: 25px;" value="Generar PDF Prov"/>
                                                                 <p:commandButton id="pdfG" disabled="{loginBean.usuario.rfc!='developer'}" actionListener="{generarPDFBean.pdfGastos()}" style="height: 25px;"  value="Generar PDF Gastos"/>-->
-                                <p:commandButton value="Actualizar" actionListener="#{filterByBean.actualizarDatos()}"/>
+                                <p:commandButton value="Actualizar" actionListener="#{filterByBean.revisarComprobantes()}"/>
+                                <p:commandButton value="Revisar comprobantes" actionListener="#{filterByBean.actualizarDatosFolio()}"/>
+                                <p:commandButton value="Revisar Conceptos" actionListener="#{filterByBean.actualizarDatosConceptos()}"/>
                             </f:facet>
                         </p:toolbar>                          
                     </p:panel>
@@ -69,68 +71,68 @@
                                          paginatorPosition="top" var="tbl" value="#{filterByBean.listaCompleta}">                           
                                 <p:ajax event="sort" skipChildren="false" />
                                 <p:column  headerText="TIPO POLIZA">
-                                    <h:outputText value="#{tbl.oc.contains('T') ? 'ET' : 'EB'}"/>
+                                    <h:outputText value="#{tbl.oc.contains('T') ? 'ET' : 'EB'}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column filterBy="#{tbl.cheque}" sortBy="#{tbl.cheque}" headerText="NO">
-                                    <h:outputText value="#{tbl.cheque}"/>
+                                    <h:outputText value="#{tbl.cheque}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Fecha">
-                                    <h:outputText value="#{tbl.fechaPago}"/>
+                                    <h:outputText value="#{tbl.fechaPago}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Folio">
-                                    <h:outputText value="#{tbl.folio}"/>
+                                    <h:outputText value="#{tbl.folio}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Fecha">
-                                    <h:outputText value="#{tbl.fecha}"/>
+                                    <h:outputText value="#{tbl.fecha}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Folio">
-                                    <h:outputText value="#{tbl.rfcE}"/>
+                                    <h:outputText value="#{tbl.fcomp}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column filterBy="#{tbl.uuidrel}" sortBy="#{tbl.uuidrel}"  headerText="UUID Comprobante">
-                                    <h:outputText value="#{tbl.uuidrel}"/>
+                                    <h:outputText value="#{tbl.uuidrel}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Nombre">
-                                    <h:outputText value="#{tbl.nombreE}"/>
+                                    <h:outputText value="#{tbl.nombreE}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column filterBy="#{tbl.rfcE}" sortBy="#{tbl.rfcE}"  headerText="RFC">
-                                    <h:outputText value="#{tbl.rfcE}"/>
+                                    <h:outputText value="#{tbl.rfcE}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Proveedor, Servicios, Arrendador">
-                                    <h:outputText value="Proveedor"/>
+                                    <h:outputText value="Proveedor" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="UUID Factura">
-                                    <h:outputText value="#{tbl.uuid}"/>
+                                    <h:outputText value="#{tbl.uuid}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Concepto">
-                                    <h:outputText value="#{tbl.conceptos}"/>
+                                    <h:outputText value="#{tbl.conceptos}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="Tipo cambio">
-                                    <h:outputText value="#{tbl.tipoCambio}"/>
+                                    <h:outputText value="#{tbl.tipoCambio}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="Base">
-                                    <h:outputText value="#{tbl.importe}"/>
+                                    <h:outputText value="#{tbl.importe}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="IVA">
-                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                    <h:outputText value="#{tbl.importeCouta}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="IVA RETENIDO">
-                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                    <h:outputText value="#{tbl.ivaRet}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="ISR">
-                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                    <h:outputText value="#{tbl.importeCuotaIsr}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="IEPS">
-                                    <h:outputText value="#{tbl.importeCouta}"/>
+                                    <h:outputText value="" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="CHEQUE, TRANSFERENCIA">
-                                    <h:outputText value="CHEQUE NOMINATIVO"/>
+                                    <h:outputText value="CHEQUE NOMINATIVO" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="BANCO">
-                                    <h:outputText value="HSBC"/>
+                                    <h:outputText value="HSBC" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
-                                <p:column headerText="$ IMPORTE">
-                                    <h:outputText value="#{tbl.total}">
-                                        <f:convertNumber currencySymbol="$" type="currency"/>
+                                <p:column headerText="$ TOTAL">
+                                    <h:outputText value="#{tbl.total}" style="color: #E60013; font-weight: bold">
+                                        <f:convertNumber currencySymbol="$" type="currency" />
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="Factura" exportable="false">

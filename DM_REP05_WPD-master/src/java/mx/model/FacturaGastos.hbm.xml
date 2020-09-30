@@ -182,5 +182,8 @@
         <property name="importeCuotaIsr" type="big_decimal">
             <column name="IMPORTE_CUOTA_ISR" scale="4" />
         </property>
+        <property name="ivaRet" type="big_decimal">
+            <column name="IVA_RET" scale="4" />
+        </property>
     </class>
 </hibernate-mapping>

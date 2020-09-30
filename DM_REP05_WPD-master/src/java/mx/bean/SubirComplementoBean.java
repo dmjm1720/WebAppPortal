@@ -97,15 +97,6 @@ public class SubirComplementoBean extends DAO implements Serializable {
     private String año;
     private String miFecha;
 
-    //variables para el CFDI
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     private String serie;
     private String folio;
     private String fecha;
@@ -210,6 +201,15 @@ public class SubirComplementoBean extends DAO implements Serializable {
         part = new ConceptoComplemento();
         pag = new ConceptoPagosComp();
         pagoComp = new Pago();
+    }
+
+    //variables para el CFDI
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getMiUUID() {
@@ -1571,7 +1571,7 @@ public class SubirComplementoBean extends DAO implements Serializable {
 
     public void actualizarEstadoComplemento(String estado, String idDoc) throws SQLException {
         this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS_COM='" + estado + "', UUIDREL='" + UUIDTF + "' WHERE UUID='" + idDoc + "'");
+        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS_COM='" + estado + "', UUIDREL='" + UUIDTF + "', FCOMP='" + folio + "' WHERE UUID='" + idDoc + "'");
         ps.executeUpdate();
         //this.Cerrarprov();
     }

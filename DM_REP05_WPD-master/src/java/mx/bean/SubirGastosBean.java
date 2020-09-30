@@ -1326,24 +1326,27 @@ public class SubirGastosBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
-                        impuestoIsr = campo2.getAttributeValue("impuesto");
-                        if (impuestoIsr == null) {
-                            impuestoIsr = campo2.getAttributeValue("Impuesto");
+                        if (campo2.getAttributeValue("Impuesto").equals("001")) {
+                            impuestoIsr = campo2.getAttributeValue("impuesto");
+                            if (impuestoIsr == null) {
+                                impuestoIsr = campo2.getAttributeValue("Impuesto");
+                            }
+                            tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                            if (tasaCoutaIsr == null) {
+                                tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                            }
+                            importeCuotaIsr = campo2.getAttributeValue("importe");
+                            if (importeCuotaIsr == null) {
+                                importeCuotaIsr = campo2.getAttributeValue("Importe");
+                            }
+                            BaseTraslado = campo2.getAttributeValue("Base");
                         }
-                        tasaCoutaIsr = campo2.getAttributeValue("tasa");
-                        if (tasaCoutaIsr == null) {
-                            tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
-                        }
-                        importeCuotaIsr = campo2.getAttributeValue("importe");
-                        if (importeCuotaIsr == null) {
-                            importeCuotaIsr = campo2.getAttributeValue("Importe");
-                        }
-                        BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
-                        this.impuestoRet = campo2.getAttributeValue("impuesto");
-                        this.importeRet = campo2.getAttributeValue("importe");
+                        this.impuestoRet = campo2.getAttributeValue("Impuesto");
+                        this.importeRet = campo2.getAttributeValue("Importe");
                     }
+
                     if (valor3.equals("Aerolineas")) {
                         this.TotalCargos = campo2.getAttributeValue("TotalCargos");
                         List otros2 = campo2.getChildren();
@@ -1397,7 +1400,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             buscarWCXP();
             insertarConcepto();
             generarPDF();
-           // enviarAviso();
+            // enviarAviso();
         } else if (!acuse.getEstado().getValue().equals("Vigente")) {
             lista.clear();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
@@ -1516,6 +1519,12 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setTasaCuotaIsr(tasaCoutaIsr);
         if (importeCuotaIsr != null) {
             f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
+            this.importeRet = null;
+        }
+        if (impuestoIsr != "001") {
+            if (importeRet != null) {
+                f.setIvaRet(new BigDecimal(importeRet));
+            }
         }
         fDao.InsertFactura(f);
         //Limpiamos las variables
@@ -1796,6 +1805,11 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.facturaSAE = null;
         this.condPago = null;
         this.ClaveProdServ = null;
+        this.impuestoIsr = null;
+        this.tipoFactorIsr = null;
+        this.tasaCoutaIsr = null;
+        this.importeCuotaIsr = null;
+        this.importeRet = null;
         this.Cerrar();
         this.Cerrarprov();
         //variables para el CFDI

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaPDF" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f9df871-7b2d-4755-9d8f-da3bec7b82d0">
-	<property name="ireport.zoom" value="3.536921536500002"/>
+	<property name="ireport.zoom" value="1.8150000000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="447"/>
+	<property name="ireport.y" value="531"/>
 	<parameter name="uuid" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -10,6 +10,7 @@
 		<![CDATA[SELECT        dbo.FACTURA_GASTOS.IMPORTE, dbo.FACTURA_GASTOS.IMPORTE_COUTA, dbo.FACTURA_GASTOS.VERSIONCFDI, dbo.FACTURA_GASTOS.FACTURA, dbo.FACTURA_GASTOS.UUID, dbo.FACTURA_GASTOS.RFC_E, dbo.FACTURA_GASTOS.NOMBRE_E, dbo.FACTURA_GASTOS.ESTATUS_SAT,dbo.FACTURA_GASTOS.TOTAL, dbo.FACTURA_GASTOS.FECHA,
 				dbo.FACTURA_GASTOS.NOMBRE_R, dbo.FACTURA_GASTOS.RFC_R, dbo.FACTURA_GASTOS.LUGAR_EXPEDICION, dbo.FACTURA_GASTOS.SELLO_CFD, dbo.FACTURA_GASTOS.SELLO_SAT, dbo.FACTURA_GASTOS.FECHA_TIMBRADO, dbo.FACTURA_GASTOS.CERTIFICADO, dbo.FACTURA_GASTOS.VERSIONCFD,
 				dbo.FACTURA_GASTOS.NO_CERTIFICADO, dbo.FACTURA_GASTOS.RFC_PROV_CERT, dbo.FACTURA_GASTOS.TIPO_CAMBIO, dbo.FACTURA_GASTOS.MONEDA, dbo.FACTURA_GASTOS.TIPO_COMPROBANTE, dbo.FACTURA_GASTOS.METODO_PAGO, dbo.FACTURA_GASTOS.FORMA_PAGO,dbo.FACTURA_GASTOS.NO_CERTIFICADO_SAT,dbo.FACTURA_GASTOS.CONDICIONES_PAGO,dbo.FACTURA_GASTOS.USO_CFDI,
+FACTURA_GASTOS.IMPORTE_CUOTA_ISR,FACTURA_GASTOS.IVA_RET,
 				dbo.CONCEPTO_GASTOS.CANTIDAD, dbo.CONCEPTO_GASTOS.CLAVE_UNIDAD, dbo.CONCEPTO_GASTOS.DESCRIPCION, dbo.CONCEPTO_GASTOS.IMPORTE as IMP, dbo.CONCEPTO_GASTOS.PRECIO_UNITARIO, dbo.CONCEPTO_GASTOS.UNIDAD,dbo.CONCEPTO_GASTOS.CLAVE_PROD
 FROM            dbo.FACTURA_GASTOS INNER JOIN
                          dbo.CONCEPTO_GASTOS ON dbo.FACTURA_GASTOS.UUID = dbo.CONCEPTO_GASTOS.UUID where dbo.FACTURA_GASTOS.UUID=$P{uuid}]]>
@@ -42,6 +43,8 @@ FROM            dbo.FACTURA_GASTOS INNER JOIN
 	<field name="NO_CERTIFICADO_SAT" class="java.lang.String"/>
 	<field name="CONDICIONES_PAGO" class="java.lang.String"/>
 	<field name="USO_CFDI" class="java.lang.String"/>
+	<field name="IMPORTE_CUOTA_ISR" class="java.math.BigDecimal"/>
+	<field name="IVA_RET" class="java.math.BigDecimal"/>
 	<field name="CANTIDAD" class="java.lang.String"/>
 	<field name="CLAVE_UNIDAD" class="java.lang.String"/>
 	<field name="DESCRIPCION" class="java.lang.String"/>
@@ -650,15 +653,15 @@ FROM            dbo.FACTURA_GASTOS INNER JOIN
 					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ISH:]]></text>
+				<text><![CDATA[ISR:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="467" y="57" width="44" height="11" forecolor="#000000" backcolor="#CC0033" uuid="199d3932-6cb7-4de6-af32-45a5846db488"/>
+				<reportElement mode="Transparent" x="429" y="57" width="82" height="11" forecolor="#000000" backcolor="#CC0033" uuid="199d3932-6cb7-4de6-af32-45a5846db488"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[TUA:]]></text>
+				<text><![CDATA[IVA RETENIDO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="467" y="69" width="44" height="11" forecolor="#000000" backcolor="#CC0033" uuid="1dc32adf-c793-48ce-85c2-59e155316e7a"/>
@@ -712,6 +715,22 @@ FROM            dbo.FACTURA_GASTOS INNER JOIN
 				</textElement>
 				<text><![CDATA[$0.0000]]></text>
 			</staticText>
+			<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="511" y="57" width="60" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="f0baadcf-1261-4e84-98a2-cffb9f9517f6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IVA_RET}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="511" y="45" width="60" height="12" forecolor="#000000" backcolor="#CCCCCC" uuid="2dcb90c1-a61a-4608-91e5-57f66ed60d08"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IMPORTE_CUOTA_ISR}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

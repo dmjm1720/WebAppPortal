@@ -32,7 +32,7 @@
                     <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
                     <p:blockUI block="pnlBuscar" trigger="buscar">   
                         <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
-                        <p:graphicImage value="../Images/loader.gif" style="height: 150px; width: 200px"></p:graphicImage>
+                        <p:graphicImage value="../Images/loader.gif" style="height: 200px; width: 200px"></p:graphicImage>
                     </p:blockUI>
                     <p:panel id="pnlBuscar">
                         <p:toolbar>
@@ -98,7 +98,7 @@
                                 <p:column headerText="Cancelar factura">
                                     <p:commandButton disabled="#{tbl.estatus=='PAGADA' || tbl.estatus=='CANCELADA'}"  style="height: 20px; width: 20px; background-image: url('../Images/cancel.png');background-size: 17px; background-repeat: no-repeat" 
                                                      value="" oncomplete="PF('dlgEdit').show();" update="frmEdit">
-                                        <f:setPropertyActionListener target="#{facturaBean.factura}" value="#{tbl}"></f:setPropertyActionListener>
+                                        <f:setPropertyActionListener target="#{facturaBean.factura}" value="#{tbl}"/>
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>                      
@@ -111,7 +111,7 @@
                 <h:form id="frmXML">                    
                     <p:dialog style="font-size: 12px;" header="Subir archivo XML al sistema" widgetVar="dlgXML" 
                               showEffect="slide" 
-                              hideEffect="explode"  height="200" width="500" resizable="false" closable="false" modal="true">
+                              hideEffect="explode"  height="200" width="500" resizable="false" closable="true" modal="true">
                         <p:panelGrid columns="2" style="margin: 0 auto">
                             <h:form id="form"> 
                                 <p:growl id="mensajes" life="10000" showSummary="true" showDetail="true"></p:growl> 
