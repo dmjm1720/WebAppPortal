@@ -4,89 +4,41 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.mail.MessagingException;
-import mx.dao.ConceptoCompDao;
-import mx.dao.ConceptoCompDaoImpl;
-import mx.dao.ConceptoCompPagoDao;
-import mx.dao.ConceptoCompPagoDaoImpl;
-import mx.dao.ConceptoDao;
-import mx.dao.ConceptoDaoImpl;
-import mx.dao.ConceptoGastosDao;
-import mx.dao.ConceptoGastosDaoImpl;
 import mx.dao.DAO;
-import mx.dao.FacturaCompDao;
 import mx.dao.FacturaDao;
-import mx.dao.FacturaDaoCompDaoImpl;
 import mx.dao.FacturaDaoImpl;
-import mx.dao.FacturaGastosDao;
-import mx.dao.FacturaGastosDaoImpl;
-import mx.dao.PagoComDao;
-import mx.dao.PagoComDaoImpl;
-import mx.model.ConceptoComplemento;
-import mx.model.ConceptoPagosComp;
+import mx.model.Concepto;
 import mx.model.Factura;
-import mx.model.FacturaComplemento;
-import mx.model.FacturaGastos;
-import mx.model.Pago;
 import mx.model.Usuario;
-import mx.sat.Acuse;
-import mx.sat.ConsultaCFDIService;
-import mx.sat.IConsultaCFDIService;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.primefaces.context.RequestContext;
+import mx.dao.FacturaGastosDao;
+import mx.dao.FacturaGastosDaoImpl;
 
-@Named(value = "filterByBean")
+//Web Service SAT 
+import mx.sat.Acuse;
+import mx.sat.ConsultaCFDIService;
+import mx.sat.IConsultaCFDIService;
+
+@Named(value = "impuestos")
 @ViewScoped
-public class FilterByBean extends DAO implements Serializable {
-//**VARIABLES DEL BEAN**//
+public class ImpuestosBean extends DAO implements Serializable {
 
-    List<String> listarTodo = new ArrayList();
-    private List<Factura> listaCompleta;
-    private String filterRFC;
-    private String filterFactura;
-    private Date filterFec1;
-    private Date filterFec2;
-    private Date filterFec3;
-    private Date filterFec4;
-    private String filterNoRec;
-    private String filterFolio;
-    private String filterEstatus;
-    private String resultadoRFC;
-    private String resultadoFactura;
-    private String resultadoRecepcion;
-    private String resultadoFolio;
-    private String resultadoEstatus;
-    private String f1;
-    private String f2;
-    private String f3;
-    private String f4;
-    private Factura factura;
-    private List<Factura> listaConceptoFactura;
-    private List<FacturaGastos> listaConceptoFacturaGastos;
-
-    //**VARIABLES  PARA EL COMPROBANTE**//
-    private FacturaComplemento f;
-    private ConceptoComplemento part;
-    private ConceptoPagosComp pag;
-    private List<FacturaComplemento> listaFactura;
-    private List<String> listaPagoComp;
+    private Factura f;
+    private Concepto part;
+    private List<Factura> listaFactura;
     private String referencia;
     private String validarReferencia;
     private String validarFactura;
@@ -98,11 +50,33 @@ public class FilterByBean extends DAO implements Serializable {
     private int NUM_MONED;
     private float TIPCAMB;
     private float IMPORTE;
+    private String DOC_ANT;
     private String avisoCorreo;
     private String uuid;
     private String mes;
     private String año;
     private String miFecha;
+
+    //IMPUESTOS ISR
+    private String impuestoIsr;
+    private String tipoFactorIsr;
+    private String tasaCoutaIsr;
+    private String importeCuotaIsr;
+
+    private List<Double> imp04 = new ArrayList<>();
+    private List<Double> imp06 = new ArrayList<>();
+    private List<Double> imp10isr = new ArrayList<>();
+    private List<Double> tasa0 = new ArrayList<>();
+
+    //variables para el CFDI
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     private String serie;
     private String folio;
     private String fecha;
@@ -169,6 +143,7 @@ public class FilterByBean extends DAO implements Serializable {
     private int diasCredito;
     private Calendar hoy;
     private String pago;
+    private String pagoDuche;
     private int dia;
     private int folioWcxp;
     private float miTotal;
@@ -179,209 +154,20 @@ public class FilterByBean extends DAO implements Serializable {
     private String facturaSAE;
     private int tamcadena;
     private String condPago;
-    private final String ruta = "C:\\public\\comprobantes\\";
-    private final String rutaIp = "C:\\newPublic\\comprobantes\\";
+
     private List<String> lista;
-    private List<String> listaDoctoRel;
-    private String miUUID;
-    private Pago pagoComp;
-    private String validadUUID;
-    private String validadUUIDVacio = "SI";
-    private String idDocUUID;
 
     //Web Service SAT
     private ConsultaCFDIService consulta;
     private IConsultaCFDIService respuesta;
     private Acuse acuse;
 
-    //CONSTRUCTOR
-    public FilterByBean() {
-        factura = new Factura();
+    RequestContext facesContext = RequestContext.getCurrentInstance();
+
+    public ImpuestosBean() {
         this.lista = new ArrayList<>();
-        this.listaDoctoRel = new ArrayList<>();
-        this.listaPagoComp = new ArrayList<>();
-        f = new FacturaComplemento();
-        part = new ConceptoComplemento();
-        pag = new ConceptoPagosComp();
-        pagoComp = new Pago();
-
-    }
-
-    public String getFilterRFC() {
-        return filterRFC;
-    }
-
-    public void setFilterRFC(String filterRFC) {
-        this.filterRFC = filterRFC;
-    }
-
-    public String getFilterFactura() {
-        return filterFactura;
-    }
-
-    public void setFilterFactura(String filterFactura) {
-        this.filterFactura = filterFactura;
-    }
-
-    public Date getFilterFec1() {
-        return filterFec1;
-    }
-
-    public void setFilterFec1(Date filterFec1) {
-        this.filterFec1 = filterFec1;
-    }
-
-    public Date getFilterFec2() {
-        return filterFec2;
-    }
-
-    public void setFilterFec2(Date filterFec2) {
-        this.filterFec2 = filterFec2;
-    }
-
-    public String getFilterNoRec() {
-        return filterNoRec;
-    }
-
-    public void setFilterNoRec(String filterNoRec) {
-        this.filterNoRec = filterNoRec;
-    }
-
-    public String getFilterFolio() {
-        return filterFolio;
-    }
-
-    public void setFilterFolio(String filterFolio) {
-        this.filterFolio = filterFolio;
-    }
-
-    public String getFilterEstatus() {
-        return filterEstatus;
-    }
-
-    public void setFilterEstatus(String filterEstatus) {
-        this.filterEstatus = filterEstatus;
-    }
-
-    public String getResultadoRFC() {
-        return resultadoRFC;
-    }
-
-    public void setResultadoRFC(String resultadoRFC) {
-        this.resultadoRFC = resultadoRFC;
-    }
-
-    public Factura getFactura() {
-        return factura;
-    }
-
-    public void setFactura(Factura factura) {
-        this.factura = factura;
-    }
-
-    public List<Factura> getListaCompleta() {
-        return listaCompleta;
-    }
-
-    public void setListaCompleta(List<Factura> listaCompleta) {
-        this.listaCompleta = listaCompleta;
-    }
-
-    public String getResultadoFactura() {
-        return resultadoFactura;
-    }
-
-    public void setResultadoFactura(String resultadoFactura) {
-        this.resultadoFactura = resultadoFactura;
-    }
-
-    public String getF1() {
-        return f1;
-    }
-
-    public void setF1(String f1) {
-        this.f1 = f1;
-    }
-
-    public String getF2() {
-        return f2;
-    }
-
-    public void setF2(String f2) {
-        this.f2 = f2;
-    }
-
-    public String getResultadoRecepcion() {
-        return resultadoRecepcion;
-    }
-
-    public void setResultadoRecepcion(String resultadoRecepcion) {
-        this.resultadoRecepcion = resultadoRecepcion;
-    }
-
-    public String getResultadoFolio() {
-        return resultadoFolio;
-    }
-
-    public void setResultadoFolio(String resultadoFolio) {
-        this.resultadoFolio = resultadoFolio;
-    }
-
-    public String getResultadoEstatus() {
-        return resultadoEstatus;
-    }
-
-    public void setResultadoEstatus(String resultadoEstatus) {
-        this.resultadoEstatus = resultadoEstatus;
-    }
-
-    public Date getFilterFec3() {
-        return filterFec3;
-    }
-
-    public void setFilterFec3(Date filterFec3) {
-        this.filterFec3 = filterFec3;
-    }
-
-    public Date getFilterFec4() {
-        return filterFec4;
-    }
-
-    public void setFilterFec4(Date filterFec4) {
-        this.filterFec4 = filterFec4;
-    }
-
-    public String getF3() {
-        return f3;
-    }
-
-    public void setF3(String f3) {
-        this.f3 = f3;
-    }
-
-    public String getF4() {
-        return f4;
-    }
-
-    public void setF4(String f4) {
-        this.f4 = f4;
-    }
-
-    //**GET Y SET COMPROBANTE**//
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getMiUUID() {
-        return miUUID;
-    }
-
-    public void setMiUUID(String miUUID) {
-        this.miUUID = miUUID;
+        f = new Factura();
+        part = new Concepto();
     }
 
     public String getMiFecha() {
@@ -416,29 +202,29 @@ public class FilterByBean extends DAO implements Serializable {
         this.avisoCorreo = avisoCorreo;
     }
 
-    public FacturaComplemento getF() {
+    public Factura getF() {
         return f;
     }
 
-    public void setF(FacturaComplemento f) {
+    public void setF(Factura f) {
         this.f = f;
     }
 
-    public ConceptoComplemento getPart() {
+    public Concepto getPart() {
         return part;
     }
 
-    public void setPart(ConceptoComplemento part) {
+    public void setPart(Concepto part) {
         this.part = part;
     }
 
-    public List<FacturaComplemento> getListaFacturaComplementos() {
-        FacturaCompDao fDao = new FacturaDaoCompDaoImpl();
+    public List<Factura> getListaFactura() {
+        FacturaDao fDao = new FacturaDaoImpl();
         listaFactura = fDao.listaFactura();
         return listaFactura;
     }
 
-    public void setListaFactura(List<FacturaComplemento> listaFactura) {
+    public void setListaFactura(List<Factura> listaFactura) {
         this.listaFactura = listaFactura;
     }
 
@@ -1132,44 +918,20 @@ public class FilterByBean extends DAO implements Serializable {
         this.tamcadena = tamcadena;
     }
 
+    public String getPagoDuche() {
+        return pagoDuche;
+    }
+
+    public void setPagoDuche(String pagoDuche) {
+        this.pagoDuche = pagoDuche;
+    }
+
     public String getCondPago() {
         return condPago;
     }
 
     public void setCondPago(String condPago) {
         this.condPago = condPago;
-    }
-
-    public Pago getPagoComp() {
-        return pagoComp;
-    }
-
-    public void setPagoComp(Pago pagoComp) {
-        this.pagoComp = pagoComp;
-    }
-
-    public String getValidadUUID() {
-        return validadUUID;
-    }
-
-    public void setValidadUUID(String validadUUID) {
-        this.validadUUID = validadUUID;
-    }
-
-    public String getIdDocUUID() {
-        return idDocUUID;
-    }
-
-    public void setIdDocUUID(String idDocUUID) {
-        this.idDocUUID = idDocUUID;
-    }
-
-    public String getValidadUUIDVacio() {
-        return validadUUIDVacio;
-    }
-
-    public void setValidadUUIDVacio(String validadUUIDVacio) {
-        this.validadUUIDVacio = validadUUIDVacio;
     }
 
     public ConsultaCFDIService getConsulta() {
@@ -1196,235 +958,93 @@ public class FilterByBean extends DAO implements Serializable {
         this.acuse = acuse;
     }
 
-//**LISTAS POR RFC **//
-    public List<String> completeRFC(String rfc) throws SQLException {
-        List<String> resultRFC = new ArrayList<>();
-        this.Conectarprov();
-        PreparedStatement st = this.getCnprov().prepareStatement("SELECT DISTINCT (RFC_E) FROM FACTURA WHERE  RFC_E LIKE '" + rfc + "%'");
-        ResultSet rs = st.executeQuery();
-        listarTodo = new ArrayList<>();
-        if (!rs.isBeforeFirst()) {
-            listarTodo.add("No hay resultados para tu búsqueda");
-        } else {
-            while (rs.next()) {
-                listarTodo.add(this.resultadoRFC = rs.getString("RFC_E"));
-            }
-        }
-        for (int i = 0; i < listarTodo.size(); i++) {
-            resultRFC.add(listarTodo.get(i));
-        }
-
-        this.Cerrarprov();
-        return resultRFC;
+    public String getImpuestoIsr() {
+        return impuestoIsr;
     }
 
-    public List<String> completeFactura(String factura) throws SQLException {
-        List<String> resultFactura = new ArrayList<>();
-        this.Conectarprov();
-        PreparedStatement st = this.getCnprov().prepareStatement("SELECT DISTINCT (FACTURA) FROM FACTURA WHERE FACTURA LIKE '" + factura + "%'");
-        ResultSet rs = st.executeQuery();
-        listarTodo = new ArrayList<>();
-        if (!rs.isBeforeFirst()) {
-            listarTodo.add("No hay resultados para tu búsqueda");
-        } else {
-            while (rs.next()) {
-                listarTodo.add(this.resultadoFactura = rs.getString("FACTURA"));
-            }
-        }
-        for (int i = 0; i < listarTodo.size(); i++) {
-            resultFactura.add(listarTodo.get(i));
-        }
-
-        this.Cerrarprov();
-        return resultFactura;
+    public void setImpuestoIsr(String impuestoIsr) {
+        this.impuestoIsr = impuestoIsr;
     }
 
-    public List<String> completeRecepcion(String recepcion) throws SQLException {
-        List<String> resultRecepcion = new ArrayList<>();
-        this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("SELECT DISTINCT (REFERENCIA) FROM FACTURA WHERE REFERENCIA LIKE '" + recepcion + "%'");
-        ResultSet rs = ps.executeQuery();
-        listarTodo = new ArrayList<>();
-        if (!rs.isBeforeFirst()) {
-            listarTodo.add("No hay resultados para tu búsqueda");
-        } else {
-            while (rs.next()) {
-                listarTodo.add(this.resultadoRecepcion = rs.getString("REFERENCIA"));
-            }
-        }
-        for (int i = 0; i < listarTodo.size(); i++) {
-            resultRecepcion.add(listarTodo.get(i));
-        }
-        this.Cerrarprov();
-        return resultRecepcion;
+    public String getTipoFactorIsr() {
+        return tipoFactorIsr;
     }
 
-    public List<String> completeFolio(String folio) throws SQLException {
-        List<String> resultFolio = new ArrayList<>();
-        this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("SELECT DISTINCT (FOLIOWCXP) FROM FACTURA WHERE FOLIOWCXP LIKE '" + folio + "%'");
-        ResultSet rs = ps.executeQuery();
-        listarTodo = new ArrayList<>();
-        if (!rs.isBeforeFirst()) {
-            listarTodo.add("No hay resultados para tu búesqueda");
-        } else {
-            while (rs.next()) {
-                listarTodo.add(this.resultadoFolio = rs.getString("FOLIOWCXP"));
-            }
-        }
-        for (int i = 0; i < listarTodo.size(); i++) {
-            resultFolio.add(listarTodo.get(i));
-        }
-        this.Cerrarprov();
-        return resultFolio;
+    public void setTipoFactorIsr(String tipoFactorIsr) {
+        this.tipoFactorIsr = tipoFactorIsr;
     }
 
-    public List<String> completeEstatus(String estatus) throws SQLException {
-        List<String> resultEstatus = new ArrayList<>();
-        this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("SELECT DISTINCT (ESTATUS) FROM FACTURA WHERE ESTATUS LIKE '" + estatus + "%'");
-        ResultSet rs = ps.executeQuery();
-        listarTodo = new ArrayList<>();
-        if (!rs.isBeforeFirst()) {
-            listarTodo.add("No har resultados para tu búsqueda");
-        } else {
-            while (rs.next()) {
-                listarTodo.add(this.resultadoEstatus = rs.getString("ESTATUS"));
-            }
-
-        }
-        for (int i = 0; i < listarTodo.size(); i++) {
-            resultEstatus.add(listarTodo.get(i));
-        }
-        this.Cerrarprov();
-        return resultEstatus;
+    public String getTasaCoutaIsr() {
+        return tasaCoutaIsr;
     }
 
-    public List<Factura> listarAll() {
-        FacturaDao fDao = new FacturaDaoImpl();
-        if (filterRFC != null) {
-            listaCompleta = fDao.listaFacRFC(filterRFC);
-        } else if (filterFactura != null) {
-            listaCompleta = fDao.listarFact(filterFactura);
-        } else if (filterFec1 != null && filterFec2 != null) {
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            f1 = formato.format(filterFec1);
-            f2 = formato.format(filterFec2);
-            listaCompleta = fDao.listarFechaRecep(f1, f2);
-        } else if (filterFec3 != null && filterFec4 != null) {
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            f3 = formato.format(filterFec3);
-            f4 = formato.format(filterFec4);
-            listaCompleta = fDao.listarFechaPago(f3, f4);
-        } else if (filterNoRec != null) {
-            listaCompleta = fDao.listarNoRecep(filterNoRec);
-        } else if (filterFolio != null) {
-            listaCompleta = fDao.listarFolioWCXP(filterFolio);
-        } else if (filterEstatus != null) {
-            listaCompleta = fDao.listarEstatus(filterEstatus);
-        }
-        filterRFC = null;
-        filterFactura = null;
-        filterFec1 = null;
-        filterFec2 = null;
-        filterFec3 = null;
-        filterFec4 = null;
-        filterNoRec = null;
-        filterFolio = null;
-        filterEstatus = null;
-        f1 = null;
-        f2 = null;
-        f3 = null;
-        f4 = null;
-        return listaCompleta;
-
-    }
-    //**LISTAS POR RFC **//
-
-    public void actualizarFechaPago() {
-        FacturaDao fDao = new FacturaDaoImpl();
-        fDao.UpdateFactura(factura);
-        factura = new Factura();
+    public void setTasaCoutaIsr(String tasaCoutaIsr) {
+        this.tasaCoutaIsr = tasaCoutaIsr;
     }
 
-    public List<Factura> listarUltRecep() {
-        FacturaDao fDao = new FacturaDaoImpl();
-        listaCompleta = fDao.listaAdministrador();
-        return listaCompleta;
+    public String getImporteCuotaIsr() {
+        return importeCuotaIsr;
     }
 
-    public List<Factura> getListaConceptoFactura() {
-        return listaConceptoFactura;
+    public void setImporteCuotaIsr(String importeCuotaIsr) {
+        this.importeCuotaIsr = importeCuotaIsr;
     }
 
-    public List<FacturaGastos> getListaConceptoFacturaGastos() {
-        return listaConceptoFacturaGastos;
+    public List<Double> getImp04() {
+        return imp04;
     }
 
-    public void actualizarDatos() {
-        actualizarDatosConceptos();
-        //actualizarDatosFolio();
+    public void setImp04(List<Double> imp04) {
+        this.imp04 = imp04;
     }
 
-    public void actualizarDatosConceptos() {
-        FacturaDao fDao = new FacturaDaoImpl();
-        listaConceptoFactura = new ArrayList<>();
-        listaConceptoFactura = fDao.listaFaturaActualizarConcepto();
-        List<String> listaConcepto = new ArrayList<>();
-        for (int i = 0; i < listaConceptoFactura.size(); i++) {
-            ConceptoDao cDao = new ConceptoDaoImpl();
-            listaConcepto = cDao.listaConceptoUUID(listaConceptoFactura.get(i).getUuid());
-            FacturaDao fd = new FacturaDaoImpl();
-            fd.actualizarFacturaConcepto(listaConcepto.toString().replace("'", "''"), listaConceptoFactura.get(i).getUuid());
-            //System.out.println(listaConcepto.toString());
-        }
+    public List<Double> getImp06() {
+        return imp06;
     }
 
-    public void actualizarDatosConceptosGastos() {
-        FacturaGastosDao fDao = new FacturaGastosDaoImpl();
-        listaConceptoFacturaGastos = new ArrayList<>();
-        listaConceptoFacturaGastos = fDao.listaFaturaActualizarConcepto();
-        List<String> listaConcepto = new ArrayList<>();
-        for (int i = 0; i < listaConceptoFacturaGastos.size(); i++) {
-            ConceptoGastosDao cDao = new ConceptoGastosDaoImpl();
-            listaConcepto = cDao.listaConceptoUUID(listaConceptoFacturaGastos.get(i).getUuid());
-            FacturaGastosDao fd = new FacturaGastosDaoImpl();
-            fd.actualizarFacturaConcepto(listaConcepto.toString().replace("'", "''"), listaConceptoFacturaGastos.get(i).getUuid());
-            System.out.println(listaConcepto.toString());
-        }
+    public void setImp06(List<Double> imp06) {
+        this.imp06 = imp06;
     }
 
-    public void actualizarDatosFolio() {
-        FacturaDao fDao = new FacturaDaoImpl();
-        listaConceptoFactura = new ArrayList<>();
-        listaConceptoFactura = fDao.listaFaturaFolioComprobante();
-        List<FacturaComplemento> lista = new ArrayList<>();
-
-        for (int i = 0; i < listaConceptoFactura.size(); i++) {
-            FacturaCompDao compDao = new FacturaDaoCompDaoImpl();
-            lista = compDao.listaFolioComprobante(listaConceptoFactura.get(i).getUuidrel());
-            for (int j = 0; j < lista.size(); j++) {
-                FacturaDao dao = new FacturaDaoImpl();
-                dao.actualizarFolioComprobante(lista.get(j).getFolio(), lista.get(j).getUuid());
-            }
-        }
+    public List<Double> getImp10isr() {
+        return imp10isr;
     }
 
-    final File carpeta = new File("C:\\newPublic\\comprobantes");
+    public void setImp10isr(List<Double> imp10isr) {
+        this.imp10isr = imp10isr;
+    }
 
-    public void revisarComprobantes() throws JDOMException, IOException, SQLException, ParseException, InterruptedException, MessagingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<Double> getTasa0() {
+        return tasa0;
+    }
+
+    public void setTasa0(List<Double> tasa0) {
+        this.tasa0 = tasa0;
+    }
+
+    final File carpeta = new File("C:\\newPublic\\proveedores");
+    //final File carpeta = new File("C:\\newPublic\\gastos");
+    final File carpetaGastos = new File("C:\\newPublic\\gastos");
+
+    public void revisarImpuestos() throws JDOMException, IOException, SQLException, ParseException, InterruptedException, MessagingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         listarFicherosPorCarpeta(carpeta);
+    }
+
+    public void revisarImpuestosGastos() throws JDOMException, IOException, SQLException, ParseException, InterruptedException, MessagingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        listarFicherosPorCarpeta(carpetaGastos);
     }
 
     public void listarFicherosPorCarpeta(final File carpeta) throws JDOMException, IOException, SQLException, ParseException, InterruptedException, MessagingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
         for (final File ficheroEntrada : carpeta.listFiles()) {
+            System.out.println(carpeta.list().length);
             if (ficheroEntrada.isDirectory()) {
                 listarFicherosPorCarpeta(ficheroEntrada);
             } else {
                 if (ficheroEntrada.getName().endsWith(".xml") || ficheroEntrada.getName().endsWith(".XML")) {
                     try {
                         leerCFDI(ficheroEntrada.getPath());
+                        insertarFactura();
                     } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException | InterruptedException | SQLException | ParseException | MessagingException | JDOMException e) {
                         System.err.println(e.getMessage());
                     }
@@ -1436,7 +1056,7 @@ public class FilterByBean extends DAO implements Serializable {
     }
 
     public void leerCFDI(String Rutaxml) throws JDOMException, IOException, SQLException, ParseException, InterruptedException, MessagingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        //Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
+        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         SAXBuilder builder = new SAXBuilder();
         File xmlFile = new File(Rutaxml);
         Document document = (Document) builder.build(xmlFile);
@@ -1469,8 +1089,8 @@ public class FilterByBean extends DAO implements Serializable {
         if (this.certificado == null) {
             certificado = rootNode.getAttributeValue("Certificado");
         }
-
         condPago = rootNode.getAttributeValue("CondicionesDePago");
+
         subTotal = rootNode.getAttributeValue("subTotal");
         if (this.subTotal == null) {
             subTotal = rootNode.getAttributeValue("SubTotal");
@@ -1570,7 +1190,6 @@ public class FilterByBean extends DAO implements Serializable {
                     if (UUIDTF == null) {
                         UUIDTF = campo.getAttributeValue("UUID");
                     }
-                    this.miUUID = this.UUIDTF;
                     FechaTimbrado = campo.getAttributeValue("fechaTimbrado");
                     if (FechaTimbrado == null) {
                         FechaTimbrado = campo.getAttributeValue("FechaTimbrado");
@@ -1624,11 +1243,40 @@ public class FilterByBean extends DAO implements Serializable {
 
                 }
 
+                List impuestoRet1 = campo.getChildren();
+
+                for (int r = 0; r < impuestoRet1.size(); r++) {
+
+                    Element campoRet = (Element) impuestoRet1.get(r);
+                    List impRet = campoRet.getChildren();
+                    for (int p = 0; p < impRet.size(); p++) {
+                        Element campoImpRet = (Element) impRet.get(p);
+                        String valorRet = campoImpRet.getName();
+                        if (valorRet.equals("Retenciones")) {
+                            List valorRe = campoImpRet.getChildren();
+                            for (int d = 0; d < valorRe.size(); d++) {
+                                Element v = (Element) valorRe.get(d);
+                                String TasaOCuota1 = v.getAttributeValue("TasaOCuota");
+                                String Impuest = v.getAttributeValue("Impuesto");
+                                if (TasaOCuota1.contains("0.04") && Impuest.equals("002")) {
+                                    this.imp04.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                } else if (TasaOCuota1.contains("0.06") && Impuest.equals("002")) {
+                                    this.imp06.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                } else if (TasaOCuota1.contains("0.10") && Impuest.equals("001")) {
+                                    this.imp10isr.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                } else if (TasaOCuota1.contains("0.00") && Impuest.equals("002")) {
+                                    this.tasa0.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                }
+                            }
+                        }
+
+                    }
+                }
+
                 List otros = campo.getChildren();
                 for (int k = 0; k < otros.size(); k++) {
                     Element campo2 = (Element) otros.get(k);
                     String valor3 = campo.getName();
-
                     if (valor3.equals("Traslados")) {
                         Impuesto = campo2.getAttributeValue("impuesto");
                         if (Impuesto == null) {
@@ -1645,40 +1293,26 @@ public class FilterByBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
-                        this.impuestoRet = campo2.getAttributeValue("impuesto");
-                        this.importeRet = campo2.getAttributeValue("importe");
-                    }
-
-                    listaPagoComp.add(campo2.getAttributeValue("FechaPago"));
-                    listaPagoComp.add(campo2.getAttributeValue("FormaDePagoP"));
-                    listaPagoComp.add(campo2.getAttributeValue("MonedaP"));
-                    listaPagoComp.add(campo2.getAttributeValue("Monto"));
-                    listaPagoComp.add(campo2.getAttributeValue("NumOperacion"));
-                    listaPagoComp.add(campo2.getAttributeValue("RfcEmisorCtaBen"));
-                    listaPagoComp.add(campo2.getAttributeValue("CtaBeneficiario"));
-
-                    if (valor3.equals("Pagos")) {
-
-                        List comPagos = campo2.getChildren();
-                        for (int c = 0; c < comPagos.size(); c++) {
-                            Element camPa = (Element) comPagos.get(c);
-                            String valorComple = camPa.getName();
-                            if (valorComple.equals("DoctoRelacionado")) {
-
-                                listaDoctoRel.add(camPa.getAttributeValue("IdDocumento"));
-                                listaDoctoRel.add(camPa.getAttributeValue("Serie"));
-                                listaDoctoRel.add(camPa.getAttributeValue("Folio"));
-                                listaDoctoRel.add(camPa.getAttributeValue("MonedaDR"));
-                                listaDoctoRel.add(camPa.getAttributeValue("MetodoDePagoDR"));
-                                listaDoctoRel.add(camPa.getAttributeValue("NumParcialidad"));
-                                listaDoctoRel.add(camPa.getAttributeValue("ImpSaldoAnt"));
-                                listaDoctoRel.add(camPa.getAttributeValue("ImpPagado"));
-                                listaDoctoRel.add(camPa.getAttributeValue("ImpSaldoInsoluto"));
-
+                        if (campo2.getAttributeValue("Impuesto").equals("001")) {
+                            impuestoIsr = campo2.getAttributeValue("impuesto");
+                            if (impuestoIsr == null) {
+                                impuestoIsr = campo2.getAttributeValue("Impuesto");
                             }
+                            tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                            if (tasaCoutaIsr == null) {
+                                tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                            }
+                            importeCuotaIsr = campo2.getAttributeValue("importe");
+                            if (importeCuotaIsr == null) {
+                                importeCuotaIsr = campo2.getAttributeValue("Importe");
+                            }
+                            BaseTraslado = campo2.getAttributeValue("Base");
                         }
                     }
-
+                    if (valor3.equals("Retenciones")) {
+                        this.impuestoRet = campo2.getAttributeValue("Impuesto");
+                        this.importeRet = campo2.getAttributeValue("Importe");
+                    }
                     if (valor3.equals("Aerolineas")) {
                         this.TotalCargos = campo2.getAttributeValue("TotalCargos");
                         List otros2 = campo2.getChildren();
@@ -1698,8 +1332,11 @@ public class FilterByBean extends DAO implements Serializable {
             }
 
         }
+        //Cambiar dato,dato2 y 3
+        float dato = Float.parseFloat(this.total);
+        float dato2 = this.IMPORTE + 7;
+        float dato3 = this.IMPORTE - 7;
 
-        buscarFolioFactura();
         if (this.serie == null) {
             this.serie = "0";
         }
@@ -1716,295 +1353,74 @@ public class FilterByBean extends DAO implements Serializable {
             this.moneda = "MXN";
         }
 
-        validarXML();///VALIDAMOS QUE EXISTA EL DOCUMENTO RELACIONADO CON LA FACTURA
-
-        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF)) {
-
-            lista.clear();
-            listaDoctoRel.clear();
-            listaPagoComp.clear();
-        } else if (this.rfcR.equals("CDU590909BQ3") && this.validadUUIDVacio.equals("SI")) {
-
-            insertarFactura();
-            actualizarFolio();
-            //buscarWCXP();
-            insertarConcepto();
-            insertarConceptoPago();
-            insertarCamposPago();
-
-        } else {
-            if (!this.rfcR.equals("CDU590909BQ3")) {
-                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en el XML no corresponde a Coloidales Duché"));
-            } else if (this.validadUUIDVacio.equals("NO EXISTE")) {
-                // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "No existe UUID en nuestro sistema que relacione al UUID del comprobante que intentas subir."));
-            } else {
-                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Hay diferencia en precio, Precio en XML:" + this.total + " Precio Sistema: " + this.IMPORTE));
-                lista.clear();
-                listaDoctoRel.clear();
-                listaPagoComp.clear();
-            }
-            // RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
-            limpiarVariables();
-            lista.clear();
-            listaDoctoRel.clear();
-            listaPagoComp.clear();
-        }
-    }
-
-    public void validarXML() {
-
-        ConceptoCompPagoDao cDao = new ConceptoCompPagoDaoImpl();
-        int a = 0;//idDocumento
-
-        int tamaño = listaDoctoRel.size() / 9;
-        for (String ap : listaDoctoRel) {
-            while (tamaño > 0) {
-                try {
-                    this.Conectarprov();
-                    Statement st = this.getCnprov().createStatement();
-                    ResultSet rs = st.executeQuery("SELECT UUID FROM FACTURA WHERE UUID='" + this.listaDoctoRel.get(a) + "' ");
-                    if (!rs.isBeforeFirst()) {
-                        this.validadUUIDVacio = "NO EXISTE";
-                        //System.out.println(this.validadUUIDVacio);
-                    } else {
-                        while (rs.next()) {
-                            this.validadUUID = rs.getString("UUID");
-                            this.validadUUIDVacio = "SI";
-                            System.out.println(this.validadUUID);
-                        }
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(SubirComplementoBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                a = a + 9;
-                tamaño = tamaño - 1;
-            }
-        }
-
-    }
-
-    public void buscarFolioFactura() throws SQLException {
-        this.Conectarprov();
-        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
-        Statement st = this.getCnprov().createStatement();
-        ResultSet rs = st.executeQuery("SELECT FACTURA, UUID FROM FACTURA_COMPLEMENTO WHERE UUID='" + this.UUIDTF + "'");
-        if (!rs.isBeforeFirst()) {
-        } else {
-            while (rs.next()) {
-                this.validarFactura = rs.getString("FACTURA");
-                this.validarUUID = rs.getString("UUID");
-            }
-        }
     }
 
     public void insertarFactura() throws SQLException, ParseException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        FacturaDao fDao = new FacturaDaoImpl();
+        FacturaGastosDao dao = new FacturaGastosDaoImpl();
 
-        this.hoy = Calendar.getInstance();
-        this.dia = this.hoy.get(Calendar.DAY_OF_WEEK);
-        this.hoy.add(Calendar.DATE, diasCredito);
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
-        this.pago = formatoFecha.format(this.hoy.getTime());
-        FacturaCompDao fDao = new FacturaDaoCompDaoImpl();
-        if (this.serie == null && this.folio == null || this.serie.equals("0") && this.folio.equals("0")) {
-            f.setFactura(UUIDTF);
-        } else {
-            if (this.serie.equals("0")) {
-                this.serie = "";
-            }
-            if (this.folio.equals("o")) {
-                this.folio = "";
-            }
-            f.setFactura(serie + " " + folio);
+        if (importeCuotaIsr != null) {
+            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
+            this.importeRet = null;
         }
-        f.setFecha(fecha);
-        f.setFolio(folio);
-        f.setSerie(serie);
-        f.setVersioncfdi(VersionSAT);
-        BigDecimal bdImporte = new BigDecimal(this.subTotal);
-        f.setImporte(bdImporte);
-        BigDecimal bdTotal = new BigDecimal(this.total);
-        f.setTotal(bdTotal);
-        if (this.TipoCambio == null) {
-            this.TipoCambio = "0";
-        }
-        BigDecimal bdTC = new BigDecimal(this.TipoCambio);
-        f.setTipoCambio(bdTC);
-        f.setMoneda(moneda);
-        f.setMetodoPago(metodoDePago);
-        f.setTipoComprobante(tipoDeComprobante);
-        f.setLugarExpedicion(LugarExpedicion);
-        f.setCertificado(certificado);
-        f.setNoCertificado(noCertificado);
-        f.setCondicionesPago(condPago);
-        f.setFormaPago(formaDePago);
-        f.setSello(sello);
-        f.setNombreE(nombreE);
-        f.setRfcE(rfcE);
-        f.setRegimenFiscal(RegimenFiscal);
-        f.setNombreR(nombreR);
-        f.setRfcR(rfcR);
-        f.setUsoCfdi(UsoCFDI);
-        f.setImpuesto(Impuesto);
-        f.setTipoFactor(TipoFactor);
-        f.setTasaCouta(TasaOCuota);
-        if (this.ImporteTraslado == null) {
-            this.ImporteTraslado = "0";
-        }
-        BigDecimal bdIC = new BigDecimal(this.ImporteTraslado);
-        f.setImporteCouta(bdIC);
-        f.setReferencia(referencia);
-        //FechaRecepción
-        f.setFechaRecepcion(pago);
-        //f.setFechaPago(pago);
-        f.setEstatus("RECIBIDA");
-        //Estatus SAT Validación CFDI
-        //f.setEstatusSat(acuse.getEstado().getValue());
-        f.setVersioncfd(Version);
-        f.setUuid(UUIDTF);
 
-        f.setFechaTimbrado(FechaTimbrado);
-        f.setRfcProvCert(RfcProvCertif);
-        f.setSelloCfd(SelloCFD);
-        f.setSelloSat(SelloSAT);
-        f.setClaveProv(cveprov);
-        f.setNombreArchivo(nombreCFDI);
-        f.setFoliowcxp(0);
-        //f.setUsuario(us.getCorreo());
-        // f.setNoCertificadoSat(NoCertificadoSAT);
-        fDao.InsertFactura(f);
+        Double i04 = 0.0;
+        Double i06 = 0.0;
+        Double i10isr = 0.0;
+        Double t0 = 0.0;
+
+        if (imp04.size() > 0) {
+            for (int q = 0; q < imp04.size(); q++) {
+                i04 += imp04.get(q);
+            }
+        }
+
+        if (imp06.size() > 0) {
+            for (int w = 0; w < imp06.size(); w++) {
+                i06 += imp06.get(w);
+            }
+        }
+        if (imp10isr.size() > 0) {
+            for (int t = 0; t < imp10isr.size(); t++) {
+                i10isr += imp10isr.get(t);
+            }
+        }
+        if (tasa0.size() > 0) {
+            for (int h = 0; h < tasa0.size(); h++) {
+                t0 += tasa0.get(h);
+            }
+        }
+
+        if (!i04.toString().equals("null")) {
+            f.setIvaRet04(i04.toString());
+        }
+
+        if (!i06.toString().equals("null")) {
+            f.setIvaRet06(i06.toString());
+        }
+        if (!t0.toString().equals("null")) {
+            f.setIvaTasa0(t0.toString());
+        }
+
+        String imp = importeCuotaIsr;
+        if (imp == null) {
+            imp = "0.0";
+        }
+
+        System.out.println("UUID: " + this.UUIDTF + " ISR: " + imp + " RET04: " + i04.toString() + " RET06: " + i06.toString() + " RFC: " + rfcE);
+        //PROVEEDORES
+        //fDao.actualizarImpuestos(this.UUIDTF, i10isr.toString(), i04.toString(), i06.toString());
+        //GASTOS
+        dao.actualizarImpuestos(this.UUIDTF, i10isr.toString(), i04.toString(), i06.toString(), t0.toString());
+        imp = "";
+        i04 = null;
+        i06 = null;
+        imp04.clear();
+        imp06.clear();
+        imp10isr.clear();
         //Limpiamos las variables
-        //limpiarVariables();
-    }
+        limpiarVariables();
 
-    public void actualizarEstadoComplemento(String estado, String idDoc) throws SQLException {
-        this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS_COM='" + estado + "', UUIDREL='" + UUIDTF + "' WHERE UUID='" + idDoc + "'");
-        ps.executeUpdate();
-        //this.Cerrarprov();
-    }
-
-    public void actualizarFolio() throws SQLException {
-        this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA_COMPLEMENTO SET FACTURA_COMPLEMENTO. FOLIOWCXP=(SELECT MAX(FACTURA_COMPLEMENTO.FOLIOWCXP)+1 FROM FACTURA_COMPLEMENTO), FECHA_RECEPCION=(SELECT CONVERT(VARCHAR(19), GETDATE(), 126)) FROM FACTURA_COMPLEMENTO WHERE FACTURA_COMPLEMENTO.FOLIOWCXP=0");
-        ps.executeUpdate();
-    }
-
-    public void insertarConcepto() {
-        ConceptoCompDao cDao = new ConceptoCompDaoImpl();
-        int a = 0;//cantidad
-        int b = 1;//unidad
-        int c = 2;//ClaveUnidad
-        int d = 3;//descripcion
-        int e = 4;//valorUnitario
-        int g = 5;//importe
-        int f = 6;//clave prod
-
-        int tamaño = lista.size() / 7;
-        for (String ap : lista) {
-            while (tamaño > 0) {
-                part.setCantidad(lista.get(a));
-                part.setUnidad(lista.get(b));
-                part.setClaveUnidad(lista.get(c));
-                part.setDescripcion(lista.get(d));
-                part.setPrecioUnitario(new BigDecimal(lista.get(e)));
-                part.setUuid(UUIDTF);
-                part.setImporte(new BigDecimal(lista.get(g)));
-                part.setClaveProd(lista.get(f));
-                cDao.InsertConcepto(part);
-                part = new ConceptoComplemento();
-                a = a + 7;
-                b = b + 7;
-                c = c + 7;
-                d = d + 7;
-                e = e + 7;
-                g = g + 7;
-                f = f + 7;
-                tamaño = tamaño - 1;
-            }
-        }
-        lista.clear();
-    }
-
-    public void insertarCamposPago() throws SQLException {
-        PagoComDao pDao = new PagoComDaoImpl();
-        int a = 0;//FechaPago
-        int b = 1;//FormaDePagoP
-        int c = 2;//MonedaP
-        int d = 3;//Monto
-        int e = 4;//NumOperacion
-        int f = 5;//RfcEmisorCtaBen
-        int g = 6;//CtaBeneficiario
-
-        int tamaño = listaPagoComp.size() / 7;
-        for (String ap : listaPagoComp) {
-            while (tamaño > 0) {
-                pagoComp.setFechapago(listaPagoComp.get(a));
-                pagoComp.setFormadepago(listaPagoComp.get(b));
-                pagoComp.setMonedapago(listaPagoComp.get(c));
-                pagoComp.setMonto(new BigDecimal(listaPagoComp.get(d)));
-                pagoComp.setNumoperacion(listaPagoComp.get(e));
-                pagoComp.setRfcemisorctaben(listaPagoComp.get(f));
-                pagoComp.setCtabeneficiario(listaPagoComp.get(g));
-                pagoComp.setUuid(UUIDTF);
-                pDao.InsertPago(pagoComp);
-                pagoComp = new Pago();
-                a = a + 7;
-                b = b + 7;
-                c = c + 7;
-                d = d + 7;
-                e = e + 7;
-                g = g + 7;
-                f = f + 7;
-                tamaño = tamaño - 1;
-            }
-        }
-        listaPagoComp.clear();
-
-    }
-
-    public void insertarConceptoPago() throws SQLException {
-        ConceptoCompPagoDao cDao = new ConceptoCompPagoDaoImpl();
-        int a = 0;//idDocumento
-        int b = 1;//Serie
-        int c = 2;//Folio
-        int d = 3;//Monedadr
-        int e = 4;//Metododepagodr
-        int g = 5;//NumParcialidad
-        int f = 6;//ImpSaldoAnt
-        int h = 7;//ImpPagado
-        int i = 8;//ImpSaldoInsoluto
-
-        int tamaño = listaDoctoRel.size() / 9;
-        for (String ap : listaDoctoRel) {
-            while (tamaño > 0) {
-                pag.setIddocumento(listaDoctoRel.get(a));
-                pag.setSerie(listaDoctoRel.get(b));
-                pag.setFolio(listaDoctoRel.get(c));
-                pag.setMonedadr(listaDoctoRel.get(d));
-                pag.setMetododepagodr(listaDoctoRel.get(e));
-                pag.setNumparcialidad(listaDoctoRel.get(g));
-                pag.setImpsaldoant(listaDoctoRel.get(f));
-                pag.setImppagado(listaDoctoRel.get(h));
-                pag.setImpsaldoinsoluto(listaDoctoRel.get(i));
-                pag.setFactura(UUIDTF);
-                cDao.InsertConcepto(pag);
-                actualizarEstadoComplemento("RECIBIDO", pag.getIddocumento());
-                pag = new ConceptoPagosComp();
-
-                a = a + 9;
-                b = b + 9;
-                c = c + 9;
-                d = d + 9;
-                e = e + 9;
-                g = g + 9;
-                f = f + 9;
-                h = h + 9;
-                i = i + 9;
-                tamaño = tamaño - 1;
-            }
-        }
-        listaDoctoRel.clear();
     }
 
     public void limpiarVariables() throws SQLException {
@@ -2018,6 +1434,7 @@ public class FilterByBean extends DAO implements Serializable {
         this.IMPORTE = 0;
         this.validarFactura = null;
         this.validarUUID = null;
+        this.DOC_ANT = "";
 
 //variables para el CFDI
         this.serie = null;
@@ -2093,8 +1510,14 @@ public class FilterByBean extends DAO implements Serializable {
         this.ClaveProdServ = null;
         this.ClaveUnidad = null;
         this.facturaSAE = null;
-        this.condPago = null;
+        this.pagoDuche = null;
         this.ClaveProdServ = null;
+        this.condPago = null;
+        this.impuestoIsr = null;
+        this.tipoFactorIsr = null;
+        this.tasaCoutaIsr = null;
+        this.importeCuotaIsr = null;
+        this.importeRet = null;
         this.Cerrar();
         this.Cerrarprov();
         //variables para el CFDI

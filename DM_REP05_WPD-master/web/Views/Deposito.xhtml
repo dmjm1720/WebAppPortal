@@ -11,6 +11,12 @@
         <ui:composition template="./../Template/Template.xhtml">
 
             <ui:define name="content">
+                <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="900000" />
+                <p:dialog style="font-size: 15px;" header="COLOIDALES DUCHÉ" widgetVar="sessionTimeOutDialog" 
+                          modal="true" closable="false" width="1280" height="500" resizable="false" visible="false">                    
+                    <img src="../Images/expired.png"  alt=""/><br></br><br></br><br></br>
+                    <h:outputText style="color: #CC0505; font-size: 20px; font-weight: bold " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
+                </p:dialog>
                 <!--Formulario para buscar número de referencia-->
                 <h:form>
                     <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value="Sesión iniciada: #{loginBean.usuario.correo}"/><br></br> 
@@ -32,7 +38,7 @@
                     <p:panel id="pnlBuscar">
                         <p:toolbar>
                             <f:facet name="left">
-                                 <label>ENVIAR ACTUALIZACIÓN DE DEPÓSITO </label>&nbsp;
+                                <label>ENVIAR ACTUALIZACIÓN DE DEPÓSITO </label>&nbsp;
                                 <p:commandButton style="font-size: 13px; height: 50px; width: 50px; background-image: url('../Images/actualizacion.png') !important;background-size: 50px; background-repeat: no-repeat" 
                                                  id="buscar" oncomplete="PF('dlgPDF').show()" 
                                                  update="frmBuscar"  value="">

@@ -222,4 +222,73 @@ public class FacturaGastosDaoImpl implements FacturaGastosDao {
         return lista;
     }
 
+    @Override
+    public void actualizarFacturaConcepto(String concepto, String uuid) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            String hql = "UPDATE FACTURA_GASTOS SET conceptos='" + concepto + "' WHERE uuid='" + uuid + "'";
+            session.createSQLQuery(hql).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+
+        }
+    }
+
+    @Override
+    public List<FacturaGastos> listaFaturaActualizarConcepto() {
+        List<FacturaGastos> lista = null;
+        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM FacturaGastos WHERE conceptos IS NULL AND uuid <>''";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
+    @Override
+    public List<FacturaGastos> listarFechaPago(String f3, String f4) {
+        List<FacturaGastos> lista = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM FacturaGastos where fechaPago >= '" + f3 + "' AND fechaPago <= '" + f4 + "' AND estatus='PAGADA' order by id desc";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
+    @Override
+    public void actualizarImpuestos(String uuid, String isr, String ret4, String ret6, String t0) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            String hql = "UPDATE FACTURA_GASTOS SET IMPORTE_CUOTA_ISR='" + isr + "', IVA_RET_04 = '" + ret4 + "', IVA_RET_06 = '" + ret6 + "', IVA_TASA_0 = '" + t0 + "' WHERE UUID='" + uuid + "'";
+            session.createSQLQuery(hql).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+
+        }
+    }
+
 }

@@ -18,6 +18,12 @@
             </ui:define>
 
             <ui:define name="content">
+                <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="900000" />
+                <p:dialog style="font-size: 15px;" header="COLOIDALES DUCHÉ" widgetVar="sessionTimeOutDialog" 
+                          modal="true" closable="false" width="1280" height="500" resizable="false" visible="false">                    
+                    <img src="../Images/expired.png"  alt=""/><br></br><br></br><br></br>
+                    <h:outputText style="color: #CC0505; font-size: 20px; font-weight: bold " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
+                </p:dialog>
                 <!--Formulario para buscar número de referencia-->
                 <h:form>
                     <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value="Sesión iniciada: #{loginBean.usuario.correo}"/><br></br> 
@@ -37,18 +43,9 @@
                         <p:toolbar>
                             <f:facet name="left">                               
                                 <p:spacer width="35%" height="1"></p:spacer>
-                                <p:outputLabel value="BUSCAR FACTURA POR:"></p:outputLabel><br></br>
-                                <!--                                <p:commandButton id="rfc" oncomplete="PF('dlgFilterByRFC').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="RFC"/>-->
-                                <!--                                <p:commandButton id="nfactura" oncomplete="PF('dlgFilterByFactura').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="No Factura"/>-->
-                                <p:commandButton id="frecepcion" oncomplete="PF('dlgFilterByFechas').show();" style="height: 35px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Fechas de recepción"/>
+                                <p:outputLabel value="REPORTE PROVEEDORES:"></p:outputLabel><br></br>
+                                <p:commandButton id="frecepcion" oncomplete="PF('dlgFilterByFechas').show();" style="height: 35px; color: #FFFFFF; background-color: #1D60A4 !important;" value="FECHAS DE PAGO"/>
 
-                                <!--                                <p:commandButton id="nrecepcion" oncomplete="PF('dlgFilterByRecepcion').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="No de recepción"/>
-                                                                <p:commandButton id="fwcxp" oncomplete="PF('dlgFilterByWCXP').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Folio WCXP"/>
-                                                                <p:commandButton id="estatus" oncomplete="PF('dlgFilterByEstatus').show();" style="height: 30px; color: #FFFFFF; background-color: #1D60A4 !important;" value="Estatus"/>
-                                                                <p:commandButton id="pdfP" disabled="{loginBean.usuario.rfc!='developer'}" actionListener="{generarPDFBean.pdfProveedores()}" style="height: 25px;" value="Generar PDF Prov"/>
-                                                                <p:commandButton id="pdfG" disabled="{loginBean.usuario.rfc!='developer'}" actionListener="{generarPDFBean.pdfGastos()}" style="height: 25px;"  value="Generar PDF Gastos"/>-->
-<!--                                <p:commandButton value="Actualizar" actionListener="{filterByBean.actualizarDatos()}"/>
-                                <p:commandButton value="Revisar comprobantes" actionListener="{filterByBean.revisarComprobantes()}"/>-->
                             </f:facet>
                         </p:toolbar>                          
                     </p:panel>
@@ -59,30 +56,37 @@
                 <h:form id="frmPrincipal">
                     <p:tooltip id="toolExcel" for="xls" value="Exportar a Excel" trackMouse="true"></p:tooltip>
                     <p:growl id="mensaje" showSummary="true" showDetail="true"></p:growl>
-                    <p:panel id="pnlPrincipal" header="REPORTE" style="margin: 0 auto; text-align: center; font-size: 13px">
+                    <p:panel id="pnlPrincipal" header="REPORTE PROVEEDORES" style="margin: 0 auto; text-align: center; font-size: 13px">
                         <label>EXPORTAR INFORMACIÓN A EXCEL </label>&nbsp;
                         <h:commandLink id="xls">
                             <p:graphicImage url="../Images/excel.png" width="50"/>
                             <p:dataExporter type="xls" target="tblPrincipal" fileName="Proveedores"></p:dataExporter>
                         </h:commandLink>
                         <p:layoutUnit id="tablaPrincipal" position="center" style="padding: 5px; text-align: center;">
-                            <p:dataTable style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple"
-                                         paginatorPosition="top" var="tbl" value="#{filterByBean.listaCompleta}">                           
+                            <p:dataTable style="font-size: 9px" 
+                                         id="tblPrincipal" 
+                                         paginator="true" 
+                                         rows="20" 
+                                         sortMode="multiple"
+                                         paginatorPosition="top" 
+                                         var="tbl" 
+                                         scrollable="true"
+                                         value="#{filterByBean.listaCompleta}">                           
                                 <p:ajax event="sort" skipChildren="false" />
                                 <p:column  headerText="TIPO POLIZA">
                                     <h:outputText value="#{tbl.oc.contains('T') ? 'ET' : 'EB'}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column filterBy="#{tbl.cheque}" sortBy="#{tbl.cheque}" headerText="NO">
-                                    <h:outputText value="#{tbl.cheque}" style="color: #0078A7; font-weight: bold"/>
+                                    <h:outputText value="#{tbl.cheque.trim()}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Fecha">
-                                    <h:outputText value="#{tbl.fechaPago}" style="color: #E60013; font-weight: bold"/>
+                                    <h:outputText value="#{tbl.fechaPago.substring(0,10)}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Folio">
-                                    <h:outputText value="#{tbl.folio}" style="color: #021f3c; font-weight: bold"/>
+                                    <h:outputText value="#{tbl.folio} " style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Fecha">
-                                    <h:outputText value="#{tbl.fecha}" style="color: #0078A7; font-weight: bold"/>
+                                    <h:outputText value="#{tbl.fecha.substring(0,10)}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="Folio">
                                     <h:outputText value="#{tbl.fcomp}" style="color: #E60013; font-weight: bold"/>
@@ -90,14 +94,14 @@
                                 <p:column filterBy="#{tbl.uuidrel}" sortBy="#{tbl.uuidrel}"  headerText="UUID Comprobante">
                                     <h:outputText value="#{tbl.uuidrel}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
+                                <p:column  headerText="Proveedor, Servicios, Arrendador">
+                                    <h:outputText value="Proveedor" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
                                 <p:column  headerText="Nombre">
                                     <h:outputText value="#{tbl.nombreE}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column filterBy="#{tbl.rfcE}" sortBy="#{tbl.rfcE}"  headerText="RFC">
                                     <h:outputText value="#{tbl.rfcE}" style="color: #E60013; font-weight: bold"/>
-                                </p:column>
-                                <p:column  headerText="Proveedor, Servicios, Arrendador">
-                                    <h:outputText value="Proveedor" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column  headerText="UUID Factura">
                                     <h:outputText value="#{tbl.uuid}" style="color: #0078A7; font-weight: bold"/>
@@ -105,35 +109,96 @@
                                 <p:column  headerText="Concepto">
                                     <h:outputText value="#{tbl.conceptos}" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
+                                <p:column headerText="Importe USD">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
                                 <p:column headerText="Tipo cambio">
                                     <h:outputText value="#{tbl.tipoCambio}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
-                                <p:column headerText="Base">
-                                    <h:outputText value="#{tbl.importe}" style="color: #0078A7; font-weight: bold"/>
+                                <p:column headerText="Fecha TC">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
-                                <p:column headerText="IVA">
-                                    <h:outputText value="#{tbl.importeCouta}" style="color: #E60013; font-weight: bold"/>
+                                <p:column headerText="Base 0%">
+                                    <h:outputText value="#{tbl.base0}"  />
                                 </p:column>
-                                <p:column headerText="IVA RETENIDO">
-                                    <h:outputText value="#{tbl.ivaRet}" style="color: #021f3c; font-weight: bold"/>
+                                <p:column headerText="Base 16%">
+                                    <h:outputText value="#{tbl.base16}" />
                                 </p:column>
-                                <p:column headerText="ISR">
+                                <p:column headerText="8%">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="0%">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="IVA 16%">
+                                    <h:outputText value="#{tbl.importeCouta}" style="color: #E60013; font-weight: bold">
+                                        <f:convertNumber locale="MX" pattern="#0.000" type="currency"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="8%">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="EXENTOS">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="10.6666%">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="4.0000%">
+                                    <h:outputText value="#{tbl.ivaRet04}" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="IVA RETENIDO 6.0000%">
+                                    <h:outputText value="#{tbl.ivaRet06}" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="ISR 10%">
                                     <h:outputText value="#{tbl.importeCuotaIsr}" style="color: #0078A7; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText=" IMPUESTOS LOCALES 3%">
+                                    <h:outputText value="" style="color: #E60013; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText=" OTROS IMPUESTOS">
+                                    <h:outputText value="" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="IEPS">
                                     <h:outputText value="" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
-                                <p:column headerText="CHEQUE, TRANSFERENCIA">
-                                    <h:outputText value="CHEQUE NOMINATIVO" style="color: #021f3c; font-weight: bold"/>
+                                <p:column headerText="OTROS DESCUENTOS">
+                                    <h:outputText value="" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
-                                <p:column headerText="BANCO">
-                                    <h:outputText value="HSBC" style="color: #0078A7; font-weight: bold"/>
+                                <p:column headerText="NO DEDUCIBLES">
+                                    <h:outputText value="" style="color: #E60013; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText=" SALDOS A FAVOR O A CARGO DE  ANTICIPOS A  PROVEEDORES">
+                                    <h:outputText value="" style="color: #E60013; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="$ TOTAL">
                                     <h:outputText value="#{tbl.total}" style="color: #E60013; font-weight: bold">
                                         <f:convertNumber currencySymbol="$" type="currency" />
                                     </h:outputText>
                                 </p:column>
+                                <p:column headerText="CHEQUE, TRANSFERENCIA">
+                                    <h:outputText value="CHEQUE NOMINATIVO" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="FECHA">
+                                    <h:outputText value="" style="color: #021f3c; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="$ IMPORTE">
+                                    <h:outputText value="#{tbl.total}" style="color: #E60013; font-weight: bold">
+                                        <f:convertNumber currencySymbol="$" type="currency" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="$ IMPORTE">
+                                    <h:outputText value="#{tbl.total}" style="color: #E60013; font-weight: bold">
+                                        <f:convertNumber currencySymbol="$" type="currency" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="BANCO">
+                                    <h:outputText value="HSBC" style="color: #0078A7; font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="">
+                                    <h:outputText value="-" style="color: #0078A7; font-weight: bold"/>
+                                </p:column>
+
                                 <p:column headerText="Factura" exportable="false">
                                     <p:commandButton value="" disabled="#{tbl.wcxp!=NULL}"
                                                      oncomplete="PF('dialogVerXML').show();" update="frmVerXML"
@@ -205,80 +270,29 @@
 
 
 
-
-                <!--FORMULARIO PARA BUSCAR POR RFC-->
-                <h:form id="frmRFC">
-                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgRFC" header="Buscar facfura por RFC" 
-                              widgetVar="dlgFilterByRFC" resizable="false" 
-                              showEffect="puff" hideEffect="clip" modal="true">
-                        <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Seleccionar RFC" for="byRFC" />
-                            <p:autoComplete id="byRFC" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterByBean.filterRFC}" 
-                                            completeMethod="#{filterByBean.completeRFC}"/>                    
-                        </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"></p:spacer>
-                        <p:commandButton id="buscarRFC" 
-                                         value="" 
-                                         style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png') !important; background-size: 40px; background-repeat: no-repeat" 
-                                         actionListener="#{filterByBean.listarAll()}" 
-                                         update="frmPrincipal" 
-                                         oncomplete="PF('dlgFilterByRFC').hide()">
-                            <p:tooltip for="buscarRFC" value="Clic para buscar factura por RFC" trackMouse="true"/>
-                        </p:commandButton>                       
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA BUSCAR POR RFC-->
-
-                <!--FORMULARIO PARA BUSCAR POR FACTURA-->
-                <h:form id="frmFactura">
-                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgFactura" header="Buscar facfura por Factura" 
-                              widgetVar="dlgFilterByFactura" resizable="false" 
-                              showEffect="puff" hideEffect="clip" modal="true">
-                        <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Seleccionar Factura" for="byFactura" />
-                            <p:autoComplete id="byFactura" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterByBean.filterFactura}" 
-                                            completeMethod="#{filterByBean.completeFactura}"/>                    
-                        </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"></p:spacer>
-                        <p:commandButton id="buscarFac" 
-                                         value="" 
-                                         style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png') !important; background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterByBean.listarAll()}" 
-                                         update="frmPrincipal" 
-                                         oncomplete="PF('dlgFilterByFactura').hide()">
-                            <p:tooltip for="buscarFac" value="Clic para buscar factura" trackMouse="true"/>
-                        </p:commandButton>                       
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA BUSCAR POR FACTURA-->
-
                 <!--FORMULARIO PARA BUSCAR POR FECHAS-->
                 <h:form id="frmFechas">
                     <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgFechas" header="Fechas de recepción" 
+                    <p:dialog style="font-size: 12px;" id="dlgFechas" header="FECHAS DE PAGO" 
                               widgetVar="dlgFilterByFechas" resizable="false" 
                               showEffect="puff" hideEffect="clip" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Fecha inicial" />
+                            <p:outputLabel value="FECHA INICIAL" />
                             <p:calendar  id="fecha_inicio" yearRange="2014:2030"  
                                          effect="blind" effectDuration="13000" pages="2" showOn="button" 
-                                         style="width: 150px;" value="#{filterByBean.filterFec1}" 
+                                         style="width: 150px;" value="#{filterByBean.filterFec3}" 
                                          required="true" placeholder="Ingrese fecha inicial"
                                          pattern="yyyy-MM-dd" mask="true">
                             </p:calendar>   
-                            <p:outputLabel value="Fecha final" />
+                            <p:outputLabel value="FECHA FINAL" />
                             <p:calendar  id="fecha_final" yearRange="2014:2025"  
                                          effect="blind" effectDuration="13000" pages="2" showOn="button" 
-                                         style="width: 150px;" value="#{filterByBean.filterFec2}" 
+                                         style="width: 150px;" value="#{filterByBean.filterFec4}" 
                                          required="true" placeholder="Ingrese fecha final"
                                          pattern="yyyy-MM-dd" mask="true">
                             </p:calendar>                   
                         </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"/>
+                        <p:spacer width="160px" height="5px"/>
                         <p:commandButton id="buscarFec" 
                                          value="" 
                                          style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../img/pagoRep.png') !important; background-size: 40px; background-repeat: no-repeat"  
@@ -290,143 +304,6 @@
                     </p:dialog>
                 </h:form>
                 <!--FORMULARIO PARA BUSCAR POR FECHAS-->
-
-                <!--FORMULARIO PARA BUSCAR POR FECHAS DE PAGO-->
-                <h:form id="frmPago">
-                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgFechas" header="Buscar facfura por Fecha de pago" 
-                              widgetVar="dlgFilterByPago" resizable="false" 
-                              showEffect="puff" hideEffect="clip" modal="true">
-                        <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Fecha inicial" />
-                            <p:calendar  id="fecha_ini" yearRange="2014:2030"  
-                                         effect="blind" effectDuration="13000" pages="2" showOn="button" 
-                                         style="width: 150px;" value="#{filterByBean.filterFec3}" 
-                                         required="true" placeholder="Ingrese fecha inicial"
-                                         pattern="yyyy-MM-dd" mask="true">
-                            </p:calendar> 
-                            <p:outputLabel value="Fecha final" />
-                            <p:calendar  id="fecha_fin" yearRange="2014:2025"  
-                                         effect="blind" effectDuration="13000" pages="2" showOn="button" 
-                                         style="width: 150px;" value="#{filterByBean.filterFec4}" 
-                                         required="true" placeholder="Ingrese fecha final"
-                                         pattern="yyyy-MM-dd" mask="true">
-                            </p:calendar>                   
-                        </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"/>
-                        <p:commandButton id="buscarFecPago" 
-                                         value="" 
-                                         style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png') !important; background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterByBean.listarAll()}" 
-                                         update="frmPrincipal" 
-                                         oncomplete="PF('dlgFilterByPago').hide()">
-                            <p:tooltip for="buscarFecPago" value="Clic para buscar factura" trackMouse="true"/>
-                        </p:commandButton>                       
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA BUSCAR POR FECHAS DE PAGO-->
-
-                <!--FORMULARIO PARA BUSCAR POR RECEPCION-->
-                <h:form id="frmRecepcion">
-                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgRecepcion" header="Buscar facfura por Recepción" 
-                              widgetVar="dlgFilterByRecepcion" resizable="false" 
-                              showEffect="puff" hideEffect="clip" modal="true">
-                        <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Seleccionar Recepción" for="byRecepcion" />
-                            <p:autoComplete id="byRecepcion" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterByBean.filterNoRec}" 
-                                            completeMethod="#{filterByBean.completeRecepcion}"/>                    
-                        </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"/>
-                        <p:commandButton id="buscarRec" 
-                                         value="" 
-                                         style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png') !important; background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterByBean.listarAll()}" 
-                                         update="frmPrincipal" 
-                                         oncomplete="PF('dlgFilterByRecepcion').hide()">
-                            <p:tooltip for="buscarRec" value="Clic para buscar Recepción" trackMouse="true"/>
-                        </p:commandButton>                       
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA BUSCAR POR RECEPCION-->
-
-
-                <!--FORMULARIO PARA BUSCAR POR WCXP-->
-                <h:form id="frmWCXP">
-                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgWCXP" header="Buscar facfura por folio" 
-                              widgetVar="dlgFilterByWCXP" resizable="false" 
-                              showEffect="puff" hideEffect="clip" modal="true">
-                        <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Seleccionar WCXP" for="byWCXP" />
-                            <p:autoComplete id="byWCXP" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterByBean.filterFolio}" 
-                                            completeMethod="#{filterByBean.completeFolio}"/>                    
-                        </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"></p:spacer>
-                        <p:commandButton id="buscarWCXP" 
-                                         value="" 
-                                         style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png') !important; background-size: 40px; background-repeat: no-repeat"  
-                                         actionListener="#{filterByBean.listarAll()}" 
-                                         update="frmPrincipal" 
-                                         oncomplete="PF('dlgFilterByWCXP').hide()">
-                            <p:tooltip for="buscarWCXP" value="Clic para buscar WCXP" trackMouse="true"/>
-                        </p:commandButton>                       
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA BUSCAR POR WCXP-->
-
-                <!--FORMULARIO PARA BUSCAR POR ESTATUS-->
-                <h:form id="frmEstatus">
-                    <p:growl id="mensaje" showSummary="true" showDetail="true"/>
-                    <p:dialog style="font-size: 12px;" id="dlgEstatus" header="Buscar facfura por estatus" 
-                              widgetVar="dlgFilterByEstatus" resizable="false" 
-                              showEffect="puff" hideEffect="clip" modal="true">
-                        <p:panelGrid columns="1" style="margin: 0 auto">
-                            <p:outputLabel value="Seleccionar Estatus" for="byEstatus" />
-                            <p:autoComplete id="byEstatus" size="40" placeholder="Ingresa p. ej AA o ZZ" 
-                                            dropdown="true" value="#{filterByBean.filterEstatus}" 
-                                            completeMethod="#{filterByBean.completeEstatus}"/>                    
-                        </p:panelGrid><br></br>
-                        <p:spacer width="140px" height="5px"></p:spacer>
-                        <p:commandButton id="buscarEstatus" 
-                                         value="" 
-                                         style="height: 40px; width: 40px;  font-size: 16px; background-image: url('../Images/buscar.png') !important; background-size: 40px; background-repeat: no-repeat" 
-                                         actionListener="#{filterByBean.listarAll()}" 
-                                         update="frmPrincipal" 
-                                         oncomplete="PF('dlgFilterByEstatus').hide()">
-                            <p:tooltip for="buscarEstatus" value="Clic para buscar por Estatus" trackMouse="true"/>
-                        </p:commandButton>                       
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA BUSCAR POR ESTATUS-->
-
-                <!--FORMULARIO PARA ACTUALIZAR LA FECHA  DE PAGO-->
-                <h:form id="fmrFecPago" style="font-size: 12px">
-                    <p:dialog id="dialogoFecPago" header="Actualizar fecha de pago" resizable="false"
-                              widgetVar="dlgUpdatePayment" modal="true" showEffect="clip" hideEffect="clip"
-                              width="450" height="150">
-                        <p:panelGrid columns="2" style="margin: 0 auto">
-                            <p:outputLabel value="Actualizar fecha de pago"/>
-                            <h:inputText value="#{filterByBean.factura.fechaPago}"/>
-                            <p:outputLabel value="Cambiar Estatus" ></p:outputLabel>
-                            <p:selectOneMenu required="true" value="#{filterByBean.factura.estatus}">
-                                <f:selectItem itemLabel="PAGADA" itemValue="PAGADA"/>
-                            </p:selectOneMenu>
-                        </p:panelGrid>
-                        <p:spacer height="30px" width="200px"></p:spacer>
-                        <p:commandButton id="btnCancelar" value="Cancelar" oncomplete="PF('dlgUpdatePayment').hide()"/>
-                        <p:commandButton id="btnActualizar" value="Actualizar" oncomplete="PF('dlgUpdatePayment').hide()" 
-                                         actionListener="#{filterByBean.actualizarFechaPago()}"
-                                         update="frmPrincipal,frmPrincipal:mensaje">
-                        </p:commandButton> 
-                        <p:tooltip id="toolBtn" for="btnActualizar" value="Actualizar nueva fecha de pago" trackMouse="true"/>
-                        <p:tooltip id="toolBtnCan" for="btnCancelar" value="Cancelar" trackMouse="true"/>
-                    </p:dialog>
-                </h:form>
-                <!--FORMULARIO PARA ACTUALIZAR LA FECHA  DE PAGO-->
-
 
 
             </ui:define>

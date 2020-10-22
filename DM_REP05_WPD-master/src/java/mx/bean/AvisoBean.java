@@ -121,7 +121,7 @@ public class AvisoBean implements Serializable {
     }
 
     public void copyFile(String fileName, InputStream in) throws MessagingException {
-        String path = getPath() + "/Avisos/Proveedores/";
+        String path = getPath() + "/Avisos/";
         try {
             File ruta = new File(path);
             if (!ruta.exists()) {
@@ -139,7 +139,8 @@ public class AvisoBean implements Serializable {
                     dir.write(bytes, 0, read);
                 }
                 ComunicadoDao cDao = new ComunicadoDaoImpl();
-                comunicado.setRuta("http://duchetoluca.dyndns.info:9088/proveedores/Avisos/Proveedores/" + fileName);
+               // comunicado.setRuta("http://localhost:8080/proveedores/Avisos/" + fileName);
+                comunicado.setRuta("http://duchetoluca.dyndns.info:9088/proveedores/Avisos/" + fileName);
                 comunicado.setFecha(hoy);
                 cDao.InsertComunicado(comunicado);
                 comunicado = new Comunicado();

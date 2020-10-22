@@ -13,4 +13,6 @@ public interface ConceptoGastosDao {
 
     public void DeleteConcepto(ConceptoGastos concepto);
 
+    public List<String> listaConceptoUUID(String uuid);
+
 }

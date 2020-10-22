@@ -210,7 +210,7 @@ public class FacturaDaoImpl implements FacturaDao {
         List<Factura> lista = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "FROM Factura where fechaPago >= '" + f3 + "' AND fechaPago <= '" + f4 + "' order by id desc";
+        String hql = "FROM Factura where fechaPago >= '" + f3 + "' AND fechaPago <= '" + f4 + "' AND estatus='PAGADA' order by id desc";
         try {
             lista = session.createQuery(hql).list();
             t.commit();
@@ -321,6 +321,24 @@ public class FacturaDaoImpl implements FacturaDao {
             t.rollback();
         }
         return lista;
+    }
+
+    @Override
+    public void actualizarImpuestos(String uuid, String isr, String ret4, String ret6) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            String hql = "UPDATE factura SET IMPORTE_CUOTA_ISR='" + isr + "', IVA_RET_04 = '" + ret4 + "', IVA_RET_06 = '" + ret6 + "' WHERE uuid='" + uuid + "'";
+            session.createSQLQuery(hql).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+
+        }
     }
 
 }

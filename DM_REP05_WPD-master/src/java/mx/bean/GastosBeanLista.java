@@ -19,9 +19,9 @@ import mx.dao.FacturaGastosDaoImpl;
 import mx.facturaJasper.reporteCFDI;
 import mx.model.FacturaGastos;
 
-@Named(value = "filterGastosByBean")
+@Named(value = "gastos")
 @ViewScoped
-public class FilterGastosByBean extends DAO implements Serializable {
+public class GastosBeanLista extends DAO implements Serializable {
 
     List<String> listarTodo = new ArrayList();
     private List<FacturaGastos> listaCompleta;
@@ -30,8 +30,6 @@ public class FilterGastosByBean extends DAO implements Serializable {
     private String filterFactura;
     private Date filterFec1;
     private Date filterFec2;
-    private Date filterFec3;
-    private Date filterFec4;
     private String filterNoRec;
     private String filterFolio;
     private String filterEstatus;
@@ -42,15 +40,12 @@ public class FilterGastosByBean extends DAO implements Serializable {
     private String resultadoEstatus;
     private String f1;
     private String f2;
-    private String f3;
-    private String f4;
     private String uuid;
 
     private FacturaGastos factura;
 
-    public FilterGastosByBean() {
+    public GastosBeanLista() {
         factura = new FacturaGastos();
-
     }
 
     public String getFilterRFC() {
@@ -189,38 +184,6 @@ public class FilterGastosByBean extends DAO implements Serializable {
         this.uuid = uuid;
     }
 
-    public Date getFilterFec3() {
-        return filterFec3;
-    }
-
-    public void setFilterFec3(Date filterFec3) {
-        this.filterFec3 = filterFec3;
-    }
-
-    public Date getFilterFec4() {
-        return filterFec4;
-    }
-
-    public void setFilterFec4(Date filterFec4) {
-        this.filterFec4 = filterFec4;
-    }
-
-    public String getF3() {
-        return f3;
-    }
-
-    public void setF3(String f3) {
-        this.f3 = f3;
-    }
-
-    public String getF4() {
-        return f4;
-    }
-
-    public void setF4(String f4) {
-        this.f4 = f4;
-    }
-
 //**LISTAS POR RFC **//
     public List<String> completeRFC(String rfc) throws SQLException {
         List<String> resultRFC = new ArrayList<>();
@@ -336,11 +299,6 @@ public class FilterGastosByBean extends DAO implements Serializable {
             f1 = formato.format(filterFec1);
             f2 = formato.format(filterFec2);
             listaCompleta = fDao.listarFechaRecep(f1, f2);
-        } else if (filterFec3 != null && filterFec4 != null) {
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            f3 = formato.format(filterFec3);
-            f4 = formato.format(filterFec4);
-            listaCompleta = fDao.listarFechaPago(f3, f4);
         } else if (filterNoRec != null) {
             listaCompleta = fDao.listarNoRecep(filterNoRec);
         } else if (filterFolio != null) {
@@ -352,20 +310,16 @@ public class FilterGastosByBean extends DAO implements Serializable {
         filterFactura = null;
         filterFec1 = null;
         filterFec2 = null;
-        filterFec3 = null;
-        filterFec4 = null;
         filterNoRec = null;
         filterFolio = null;
         filterEstatus = null;
         f1 = null;
         f2 = null;
-        f3 = null;
-        f4 = null;
         return listaCompleta;
 
     }
 
-    public List<FacturaGastos> listarUltRecep() {
+    public List<FacturaGastos> listarUltimasRecep() {
         FacturaGastosDao fDao = new FacturaGastosDaoImpl();
         listaCompleta = fDao.listarAdministrador();
         return listaCompleta;
@@ -400,4 +354,5 @@ public class FilterGastosByBean extends DAO implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
 
     }
+
 }

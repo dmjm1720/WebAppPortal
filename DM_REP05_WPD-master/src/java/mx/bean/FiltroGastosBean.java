@@ -19,9 +19,9 @@ import mx.dao.FacturaGastosDaoImpl;
 import mx.facturaJasper.reporteCFDI;
 import mx.model.FacturaGastos;
 
-@Named(value = "filterGastosByBean")
+@Named(value = "filtro")
 @ViewScoped
-public class FilterGastosByBean extends DAO implements Serializable {
+public class FiltroGastosBean extends DAO implements Serializable {
 
     List<String> listarTodo = new ArrayList();
     private List<FacturaGastos> listaCompleta;
@@ -48,7 +48,7 @@ public class FilterGastosByBean extends DAO implements Serializable {
 
     private FacturaGastos factura;
 
-    public FilterGastosByBean() {
+    public FiltroGastosBean() {
         factura = new FacturaGastos();
 
     }

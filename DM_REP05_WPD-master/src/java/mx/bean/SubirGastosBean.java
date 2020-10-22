@@ -89,6 +89,9 @@ public class SubirGastosBean extends DAO implements Serializable {
     private String mes;
     private String año;
     private String miFecha;
+    private List<Double> imp04 = new ArrayList<>();
+    private List<Double> imp06 = new ArrayList<>();
+    private List<Double> imp10isr = new ArrayList<>();
 
     //variables para el CFDI
     public String getUuid() {
@@ -1009,6 +1012,30 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.importeCuotaIsr = importeCuotaIsr;
     }
 
+    public List<Double> getImp04() {
+        return imp04;
+    }
+
+    public void setImp04(List<Double> imp04) {
+        this.imp04 = imp04;
+    }
+
+    public List<Double> getImp06() {
+        return imp06;
+    }
+
+    public void setImp06(List<Double> imp06) {
+        this.imp06 = imp06;
+    }
+
+    public List<Double> getImp10isr() {
+        return imp10isr;
+    }
+
+    public void setImp10isr(List<Double> imp10isr) {
+        this.imp10isr = imp10isr;
+    }
+
     public void buscarRecepcion() throws SQLException {
         this.Conectar();
         this.Conectarprov();
@@ -1306,6 +1333,34 @@ public class SubirGastosBean extends DAO implements Serializable {
 
                 }
 
+                List impuestoRet1 = campo.getChildren();
+
+                for (int r = 0; r < impuestoRet1.size(); r++) {
+
+                    Element campoRet = (Element) impuestoRet1.get(r);
+                    List impRet = campoRet.getChildren();
+                    for (int p = 0; p < impRet.size(); p++) {
+                        Element campoImpRet = (Element) impRet.get(p);
+                        String valorRet = campoImpRet.getName();
+                        if (valorRet.equals("Retenciones")) {
+                            List valorRe = campoImpRet.getChildren();
+                            for (int d = 0; d < valorRe.size(); d++) {
+                                Element v = (Element) valorRe.get(d);
+                                String TasaOCuota1 = v.getAttributeValue("TasaOCuota");
+                                String Impuest = v.getAttributeValue("Impuesto");
+                                if (TasaOCuota1.contains("0.04") && Impuest.equals("002")) {
+                                    this.imp04.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                } else if (TasaOCuota1.contains("0.06") && Impuest.equals("002")) {
+                                    this.imp06.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                } else if (TasaOCuota1.contains("0.10") && Impuest.equals("001")) {
+                                    this.imp10isr.add(Double.valueOf(v.getAttributeValue("Importe")));
+                                }
+                            }
+                        }
+
+                    }
+                }
+
                 List otros = campo.getChildren();
                 for (int k = 0; k < otros.size(); k++) {
                     Element campo2 = (Element) otros.get(k);
@@ -1368,19 +1423,24 @@ public class SubirGastosBean extends DAO implements Serializable {
         }
 
         buscarFolioFactura();
-        if (this.serie == null) {
+        if (this.serie
+                == null) {
             this.serie = "0";
         }
-        if (this.folio == null) {
+        if (this.folio
+                == null) {
             this.folio = "0";
         }
-        if (this.validarUUID == null) {
+        if (this.validarUUID
+                == null) {
             this.validarUUID = "0";
         }
-        if (this.validarFactura == null) {
+        if (this.validarFactura
+                == null) {
             this.validarFactura = "1";
         }
-        if (this.moneda == null) {
+        if (this.moneda
+                == null) {
             this.moneda = "MXN";
         }
 
@@ -1388,20 +1448,23 @@ public class SubirGastosBean extends DAO implements Serializable {
         respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
         acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
 
-        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente")) {
+        if (this.validarFactura.equals(
+                this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Factura ingresada anteriormente"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             lista.clear();
-        } else if (this.rfcR.equals("CDU590909BQ3")) {
+        } else if (this.rfcR.equals(
+                "CDU590909BQ3")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ S.A. DE C.V.", "Se ha procesado su factura para pago"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             insertarFactura();
+            insertarConcepto();
             actualizarFolio();
             buscarWCXP();
-            insertarConcepto();
             generarPDF();
             // enviarAviso();
-        } else if (!acuse.getEstado().getValue().equals("Vigente")) {
+        } else if (!acuse.getEstado()
+                .getValue().equals("Vigente")) {
             lista.clear();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
             //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estatus XML: " + acuse.getEstado().getValue()));
@@ -1493,6 +1556,12 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setImpuesto(Impuesto);
         f.setTipoFactor(TipoFactor);
         f.setTasaCouta(TasaOCuota);
+        if (this.TasaOCuota.contains("0.00")) {
+            f.setBase0(this.importe);
+        }
+        if (this.TasaOCuota.contains("0.16")) {
+            f.setBase16(this.importe);
+        }
         if (this.ImporteTraslado == null) {
             this.ImporteTraslado = "0";
         }
@@ -1517,18 +1586,57 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setNoCertificadoSat(NoCertificadoSAT);
         f.setImpuestoIsr(impuestoIsr);
         f.setTasaCuotaIsr(tasaCoutaIsr);
-        if (importeCuotaIsr != null) {
-            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
-            this.importeRet = null;
-        }
-        if (impuestoIsr != "001") {
-            if (importeRet != null) {
-                f.setIvaRet(new BigDecimal(importeRet));
+        f.setConceptos(lista.toString());
+//        if (importeCuotaIsr != null) {
+//            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
+//            this.importeRet = null;
+//        }
+
+        Double i04 = 0.0;
+        Double i06 = 0.0;
+        Double i10isr = 0.0;
+        //System.out.println("Importe04: " + imp04.size());
+        if (imp04.size() > 0) {
+            for (int q = 0; q < imp04.size(); q++) {
+                i04 += imp04.get(q);
             }
         }
+        //System.out.println("Importe06: " + imp06.size());
+        if (imp06.size() > 0) {
+            for (int w = 0; w < imp06.size(); w++) {
+                i06 += imp06.get(w);
+            }
+        }
+
+        if (imp10isr.size() > 0) {
+            for (int w = 0; w < imp10isr.size(); w++) {
+                i10isr += imp10isr.get(w);
+            }
+        }
+
+        // f.setIvaRet0(new BigDecimal("0"));
+        if (!i04.toString().equals("null")) {
+            f.setIvaRet04(i04.toString());
+        }
+
+        if (!i04.toString().equals("null")) {
+            f.setIvaRet06(i06.toString());
+        }
+        if (!i10isr.toString().equals("null")) {
+            f.setImporteCuotaIsr(new BigDecimal(i10isr));
+        }
+
+//        if (impuestoIsr != "001") {
+//            if (importeRet != null) {
+//                f.setIvaRet16(new BigDecimal(importeRet));
+//            }
+//        }
         fDao.InsertFactura(f);
         //Limpiamos las variables
         //limpiarVariables();
+        imp04.clear();
+        imp06.clear();
+        imp10isr.clear();
     }
 
     public void insertaPAGA_M01() throws SQLException {
@@ -1577,7 +1685,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         int d = 3;//descripcion
         int e = 4;//valorUnitario
         int g = 5;//importe
-        int f = 6;//clave prod
+        int ff = 6;//clave prod
 
         int tamaño = lista.size() / 7;
         for (String ap : lista) {
@@ -1589,7 +1697,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                 part.setPrecioUnitario(new BigDecimal(lista.get(e)));
                 part.setUuid(UUIDTF);
                 part.setImporte(new BigDecimal(lista.get(g)));
-                part.setClaveProd(lista.get(f));
+                part.setClaveProd(lista.get(ff));
                 cDao.InsertConcepto(part);
                 part = new ConceptoGastos();
                 a = a + 7;
@@ -1598,7 +1706,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                 d = d + 7;
                 e = e + 7;
                 g = g + 7;
-                f = f + 7;
+                ff = ff + 7;
                 tamaño = tamaño - 1;
             }
         }
@@ -1715,6 +1823,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             System.err.println("Error iReport: " + ex.getMessage());
         }
 
+        //RequestContext.getCurrentInstance().update("@all");
     }
 
     public void limpiarVariables() throws SQLException {

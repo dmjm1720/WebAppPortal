@@ -12,6 +12,12 @@
         <ui:composition template="./../Template/Template.xhtml">
 
             <ui:define name="content">
+                <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="900000" />
+                <p:dialog style="font-size: 15px;" header="COLOIDALES DUCHÉ" widgetVar="sessionTimeOutDialog" 
+                          modal="true" closable="false" width="1280" height="500" resizable="false" visible="false">                    
+                    <img src="../Images/expired.png"  alt=""/><br></br><br></br><br></br>
+                    <h:outputText style="color: #CC0505; font-size: 20px; font-weight: bold " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
+                </p:dialog>
 
                 <!--Formulario para buscar número de referencia-->
                 <h:form>
@@ -82,7 +88,7 @@
                                                     <h:form id="frmEstatus">
                                                         <p:selectOneRadio id="console" value="#{pagoBean.estatus}">
                                                             <f:selectItem itemValue="RECIBIDA"   itemLabel="Recibida" />
-<!--                                                            <f:selectItem itemValue="PAGADA" itemLabel="Pagada" />-->
+                                                            <!--                                                            <f:selectItem itemValue="PAGADA" itemLabel="Pagada" />-->
                                                             <p:ajax listener="#{pagoBean.estatus}" />
                                                         </p:selectOneRadio>
                                                     </h:form>
@@ -334,13 +340,13 @@
                                             <p:commandButton
                                                 value=""
                                                 style="height: 40px; width: 40px;  font-size: 16px; 
-                                                 background-image: url('../img/pagoRep.png') !important; 
-                                                 background-size: 40px; background-repeat: no-repeat"
+                                                background-image: url('../img/pagoRep.png') !important; 
+                                                background-size: 40px; background-repeat: no-repeat"
                                                 update="men, tblPagosRep"
                                                 actionListener="#{pagoBean.listarAll()}"
                                                 />
                                         </td>
-                                         <td style="width: 200px">
+                                        <td style="width: 200px">
                                             <h:commandLink id="xls">
                                                 <p:graphicImage url="../Images/excel.png" width="50"/>
                                                 <p:dataExporter type="xls" target="tblPagosRep" fileName="Reporte_pagos"/>

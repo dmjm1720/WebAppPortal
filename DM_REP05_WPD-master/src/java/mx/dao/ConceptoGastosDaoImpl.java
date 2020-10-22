@@ -1,4 +1,3 @@
-
 package mx.dao;
 
 import java.util.List;
@@ -10,7 +9,6 @@ import mx.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 
 public class ConceptoGastosDaoImpl implements ConceptoGastosDao {
 
@@ -40,7 +38,6 @@ public class ConceptoGastosDaoImpl implements ConceptoGastosDao {
             session.beginTransaction();
             session.save(concepto);
             session.getTransaction().commit();
-            
 
         } catch (HibernateException e) {
             System.out.println(e.getMessage());
@@ -55,7 +52,7 @@ public class ConceptoGastosDaoImpl implements ConceptoGastosDao {
     @Override
     @SuppressWarnings("null")
     public void UpdateConcepto(ConceptoGastos concepto) {
-       Session session = null;
+        Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
@@ -91,5 +88,21 @@ public class ConceptoGastosDaoImpl implements ConceptoGastosDao {
             }
         }
     }
-    
+
+    @Override
+    public List<String> listaConceptoUUID(String uuid) {
+        List<String> lista = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "SELECT descripcion FROM ConceptoGastos WHERE uuid='" + uuid + "'";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+            session.close();
+        } catch (HibernateException e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
 }

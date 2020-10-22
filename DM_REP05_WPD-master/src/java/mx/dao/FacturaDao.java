@@ -41,4 +41,6 @@ public interface FacturaDao {
 
     public List<Factura> listaFaturaFolioComprobante();
 
+    public void actualizarImpuestos(String uuid, String isr, String ret4, String ret6);
+
 }

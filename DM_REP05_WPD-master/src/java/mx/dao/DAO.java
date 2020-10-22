@@ -25,25 +25,12 @@ public class DAO {
         this.cnprov = cnprov;
     }
 
-    private final String URL = "jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE70Empre01";
-    private final String URL2 = "jdbc:sqlserver://WIN-2M3H0PDH8W8;databaseName=PortalProvNac";
-    private final String PASS = "Aspel**2013";
-    private final String PASS2 = "duch3!\"#2020";
-//    private final String URL = "jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=SAE70Empre01";
-//    private final String URL2 = "jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=PortalProvNac";
-//    private final String PASS = "dmsistemas";
-//    private final String PASS2 = "dmsistemas";
-//    private final String USERNAME = "sa";
-//    private final String URL = "jdbc:sqlserver://localhost;databaseName=SAE70Empre01";
-//    private final String URL2 = "jdbc:sqlserver://localhost;databaseName=PortalProvNac";
-//    private final String PASS = "dmsys20*#";
-//    private final String PASS2 = "dmsys20*#";
-    private final String USERNAME = "sa";
-
+    //SAE
     public void Conectar() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            cn = DriverManager.getConnection(URL, USERNAME, PASS);
+            //cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=SAE70Empre01", "sa", "dmsistemas");
+            cn = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE70Empre01", "sa", "Aspel**2013");
         } catch (ClassNotFoundException | SQLException e) {
         }
 
@@ -61,10 +48,12 @@ public class DAO {
         }
     }
 
+    //PORTAL
     public void Conectarprov() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            cnprov = DriverManager.getConnection(URL2, USERNAME, PASS2);
+            //cnprov = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=PortalProvNac", "sa", "dmsistemas");
+            cnprov = DriverManager.getConnection("jdbc:sqlserver://WIN-2M3H0PDH8W8;databaseName=PortalProvNac", "sa", "duch3!\"#2020");
         } catch (ClassNotFoundException | SQLException e) {
         }
 

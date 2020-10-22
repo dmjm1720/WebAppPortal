@@ -1,5 +1,5 @@
 package mx.model;
-// Generated 28/09/2020 09:59:44 AM by Hibernate Tools 4.3.1
+// Generated 16/10/2020 01:37:09 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;

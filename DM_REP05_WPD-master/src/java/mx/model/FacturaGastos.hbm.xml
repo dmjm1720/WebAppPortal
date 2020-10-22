@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 28/09/2020 09:59:46 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 16/10/2020 01:37:11 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="mx.model.FacturaGastos" table="FACTURA_GASTOS" schema="dbo" catalog="PortalProvNac" optimistic-lock="version">
         <id name="id" type="int">
@@ -182,8 +182,38 @@
         <property name="importeCuotaIsr" type="big_decimal">
             <column name="IMPORTE_CUOTA_ISR" scale="4" />
         </property>
-        <property name="ivaRet" type="big_decimal">
-            <column name="IVA_RET" scale="4" />
+        <property name="ivaRet16" type="big_decimal">
+            <column name="IVA_RET_16" scale="4" />
+        </property>
+        <property name="conceptos" type="string">
+            <column name="CONCEPTOS" />
+        </property>
+        <property name="fcomp" type="string">
+            <column name="FCOMP" length="50" />
+        </property>
+        <property name="cheque" type="string">
+            <column name="CHEQUE" length="50" />
+        </property>
+        <property name="procesado" type="java.lang.Integer">
+            <column name="PROCESADO" />
+        </property>
+        <property name="ivaRet04" type="string">
+            <column name="IVA_RET_04" length="20" />
+        </property>
+        <property name="ivaRet0" type="string">
+            <column name="IVA_RET_0" length="20" />
+        </property>
+        <property name="ivaRet06" type="string">
+            <column name="IVA_RET_06" length="20" />
+        </property>
+        <property name="ivaTasa0" type="string">
+            <column name="IVA_TASA_0" length="20" />
+        </property>
+        <property name="base0" type="string">
+            <column name="BASE_0" length="20" />
+        </property>
+        <property name="base16" type="string">
+            <column name="BASE_16" length="20" />
         </property>
     </class>
 </hibernate-mapping>

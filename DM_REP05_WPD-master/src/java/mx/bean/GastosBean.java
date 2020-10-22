@@ -319,7 +319,7 @@ public class GastosBean extends DAO implements Serializable {
 
     }
 
-    public List<FacturaGastos> listarUltRecep() {
+    public List<FacturaGastos> listarUltimasRecep() {
         FacturaGastosDao fDao = new FacturaGastosDaoImpl();
         listaCompleta = fDao.listarAdministrador();
         return listaCompleta;

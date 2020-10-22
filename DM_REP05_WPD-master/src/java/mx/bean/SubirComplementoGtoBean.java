@@ -201,6 +201,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
     private String validadUUID;
     private String validadUUIDVacio = "SI";
     private String idDocUUID;
+    private String IdDocumentoFactura;
 
     public SubirComplementoGtoBean() {
         this.lista = new ArrayList<>();
@@ -1032,6 +1033,14 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         this.acuse = acuse;
     }
 
+    public String getIdDocumentoFactura() {
+        return IdDocumentoFactura;
+    }
+
+    public void setIdDocumentoFactura(String IdDocumentoFactura) {
+        this.IdDocumentoFactura = IdDocumentoFactura;
+    }
+
 //    public void buscarRecepcion() throws SQLException {
 //        this.Conectar();
 //        this.Conectarprov();
@@ -1370,6 +1379,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
                             String valorComple = camPa.getName();
                             if (valorComple.equals("DoctoRelacionado")) {
 
+                               // this.IdDocumentoFactura = camPa.getAttributeValue("IdDocumento");
                                 listaDoctoRel.add(camPa.getAttributeValue("IdDocumento"));
                                 listaDoctoRel.add(camPa.getAttributeValue("Serie"));
                                 listaDoctoRel.add(camPa.getAttributeValue("Folio"));
@@ -1427,7 +1437,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
 
         validarXML();///VALIDAMOS QUE EXISTA EL DOCUMENTO RELACIONADO CON LA FACTURA
 
-        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente")) {
+        if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente") && !listaDoctoRel.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Comprobante de pago ingresado anteriormente"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
             lista.clear();
@@ -1448,11 +1458,10 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         } else {
             if (!this.rfcR.equals("CDU590909BQ3")) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en el XML no corresponde a Coloidales Duché"));
-            } //            else if (!this.rfcE.equals(us.getRfc().replace(" ", ""))) {
-            //                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en tu XML es diferente al dado de alta en nuestro sistema, favor de verificar."));
-            //    }                    
-            else if (this.validadUUIDVacio.equals("NO EXISTE")) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "No existe UUID en nuestro sistema que relacione al UUID del comprobante que intentas subir."));
+            } else if (!this.rfcE.equals(us.getRfc().replace(" ", ""))) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "El RFC en tu XML es diferente al dado de alta en nuestro sistema, favor de verificar."));
+            } else if (listaDoctoRel.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "COLOIDALES DUCHÉ S.A. DE C.V.", "Falta nodo de Pago para relecionar el comprobante con la factura."));
             } else if (!acuse.getEstado().getValue().equals("Vigente")) {
                 lista.clear();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "ESTATUS VALIDACIÓN CFDI SAT", "Estimado proveedor, tu XML no superó las validaciones del SAT: " + acuse.getEstado().getValue()));
@@ -1621,7 +1630,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
 
     public void actualizarEstadoComplemento(String estado, String idDoc) throws SQLException {
         this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA_GASTOS SET ESTATUS_COM='" + estado + "', UUIDREL='" + UUIDTF + "' WHERE UUID='" + idDoc + "'");
+        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA_GASTOS SET ESTATUS_COM='" + estado + "', UUIDREL='" + UUIDTF + "', FCOMP='" + folio + "' WHERE UUID='" + idDoc + "'");
         ps.executeUpdate();
         //this.Cerrarprov();
     }
@@ -1632,6 +1641,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         ps.executeUpdate();
     }
 
+    //FACTURA_COMPLEMENTO_GTO
     public void insertarConcepto() {
         ConceptoCompGtoDao cDao = new ConceptoCompGtoDaoImpl();
         int a = 0;//cantidad
@@ -1668,6 +1678,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         lista.clear();
     }
 
+    //CONCEPTO_PAGOS_COMP_GTO
     public void insertarCamposPago() throws SQLException {
         PagoComGtoDao pDao = new PagoComGtoDaoImpl();
         int a = 0;//FechaPago
@@ -1704,6 +1715,7 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
         listaPagoComp.clear();
 
     }
+    //CONCEPTO_COMPLEMENTO_GTO
 
     public void insertarConceptoPago() throws SQLException {
         ConceptoCompPagoGtoDao cDao = new ConceptoCompPagoGtoDaoImpl();

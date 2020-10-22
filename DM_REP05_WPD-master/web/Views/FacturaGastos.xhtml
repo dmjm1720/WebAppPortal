@@ -15,6 +15,12 @@
             </ui:define>
 
             <ui:define name="content">
+                <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="900000" />
+                <p:dialog style="font-size: 15px;" header="COLOIDALES DUCHÉ" widgetVar="sessionTimeOutDialog" 
+                          modal="true" closable="false" width="1280" height="500" resizable="false" visible="false">                    
+                    <img src="../Images/expired.png"  alt=""/><br></br><br></br><br></br>
+                    <h:outputText style="color: #CC0505; font-size: 20px; font-weight: bold " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
+                </p:dialog>
                 <!--Formulario para buscar número de referencia-->
                 <h:form>
                     <p:outputLabel style="color: #FFFFFF !important; font-weight: bold; font-size: 15px" value="Sesión iniciada: #{loginBean.usuario.correo}"/><br></br> 
@@ -89,18 +95,18 @@
                                 <p:column filterBy="#{tbl.estatus}" sortBy="#{tbl.estatus}" headerText="Estatus">
                                     <h:outputText value="#{tbl.estatus}"></h:outputText>
                                 </p:column>
-                                <p:column headerText="Comentario proveedor">
-                                    <h:outputText value="#{tbl.comentarioProveedor}"></h:outputText>
+<!--                                <p:column headerText="Comentario proveedor">
+                                    <h:outputText value="{tbl.comentarioProveedor}"></h:outputText>
                                 </p:column>
                                 <p:column headerText="Comentario Duché">
-                                    <h:outputText value="#{tbl.comentario}"></h:outputText>
-                                </p:column>
-                                <p:column headerText="Cancelar factura">
-                                    <p:commandButton disabled="#{tbl.estatus=='PAGADA' || tbl.estatus=='CANCELADA'}"  style="height: 20px; width: 20px; background-image: url('../Images/cancel.png');background-size: 17px; background-repeat: no-repeat" 
+                                    <h:outputText value="{tbl.comentario}"></h:outputText>
+                                </p:column>-->
+<!--                                <p:column headerText="Cancelar factura">
+                                    <p:commandButton disabled="{tbl.estatus=='PAGADA' || tbl.estatus=='CANCELADA'}"  style="height: 20px; width: 20px; background-image: url('../Images/cancel.png');background-size: 17px; background-repeat: no-repeat" 
                                                      value="" oncomplete="PF('dlgEdit').show();" update="frmEdit">
-                                        <f:setPropertyActionListener target="#{facturaBean.factura}" value="#{tbl}"/>
+                                        <f:setPropertyActionListener target="{facturaBean.factura}" value="{tbl}"/>
                                     </p:commandButton>
-                                </p:column>
+                                </p:column>-->
                             </p:dataTable>                      
                         </p:layoutUnit>                    
                     </p:panel>                
@@ -121,7 +127,7 @@
                                               uploadLabel="Subir archivo" 
                                               fileUploadListener="#{subirGastosBean.upload}" 
                                               allowTypes="/(\.|\/)(xml)$/" 
-                                              multiple="false" 
+                                              multiple="false"
                                               mode="advanced" 
                                               update="mensajes, frmBuscar, frmPrincipal" 
                                               sizeLimit="9000000">
