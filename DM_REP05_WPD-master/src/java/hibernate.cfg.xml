@@ -3,12 +3,12 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-        <property name="hibernate.connection.url">jdbc:sqlserver://WIN-2M3H0PDH8W8;databaseName=PortalProvNac</property>
+<!--        <property name="hibernate.connection.url">jdbc:sqlserver://WIN-2M3H0PDH8W8;databaseName=PortalProvNac</property>
         <property name="hibernate.connection.username">sa</property>
-        <property name="hibernate.connection.password">duch3!"#2020</property>
-        <!--        <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-557O6CE\SQLEXPRESS;databaseName=PortalProvNac</property>
+        <property name="hibernate.connection.password">duch3!"#2020</property>-->
+                <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-557O6CE\SQLEXPRESS;databaseName=PortalProvNac</property>
         <property name="hibernate.connection.username">sa</property>
-        <property name="hibernate.connection.password">dmsistemas</property>-->
+        <property name="hibernate.connection.password">dmsistemas</property>
         <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.current_session_context_class">thread</property>
