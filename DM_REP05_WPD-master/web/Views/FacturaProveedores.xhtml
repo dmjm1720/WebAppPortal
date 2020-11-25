@@ -156,6 +156,9 @@
                                 <p:column filterBy="#{tbl.cheque}" sortBy="#{tbl.cheque}" headerText="Cheque #">
                                     <h:outputText value="#{tbl.cheque}"/>
                                 </p:column>
+                                <p:column headerText="# Transferencia">
+                                    <h:outputText value="#{tbl.noTransferencia}"/>
+                                </p:column>
                                 <p:column filterBy="#{tbl.estatusCom}" sortBy="#{tbl.estatusCom}" headerText="Complemento">
                                     <h:outputText value="#{tbl.estatusCom}" style="#{tbl.estatusCom eq 'NO EMITIDO' ? 'color: black; background-color: #FF5733;font-weight: bold; font-size: 13px;'
                                                            :(tbl.estatusCom eq 'PENDIENTE' ? 'color: black; background-color: #F9FF33;font-weight: bold; font-size: 13px;' : 'color: black; background-color: #37F728;font-weight: bold; font-size: 13px;')}"/>
@@ -164,9 +167,7 @@
                                 <p:column headerText="Comentario Prov.">
                                     <h:outputText value="#{tbl.comentarioProveedor}"/>
                                 </p:column>
-                                <p:column headerText="Comentario Duché">
-                                    <h:outputText value="#{tbl.comentario}"/>
-                                </p:column>
+
                                 <p:column filterBy="#{tbl.estatus}" sortBy="#{tbl.estatus}" headerText="CANCELAR MI FACTURA">
                                     <p:commandButton disabled="#{tbl.estatus=='PAGADA' || tbl.estatus=='CANCELADA'}"  
                                                      style="height: 35px; width: 35px; background-image: url('../Images/cancel.png') !important;background-size: 33px; background-repeat: no-repeat" 

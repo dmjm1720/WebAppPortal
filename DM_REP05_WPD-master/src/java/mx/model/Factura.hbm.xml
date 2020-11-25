@@ -209,5 +209,11 @@
         <property name="base16" type="string">
             <column name="BASE_16" length="20" />
         </property>
+        <property name="noTransferencia" type="string">
+            <column name="NO_TRANSFERENCIA" length="50" />
+        </property>
+        <property name="descuento" type="string">
+            <column name="DESCUENTO" length="50" />
+        </property>
     </class>
 </hibernate-mapping>
