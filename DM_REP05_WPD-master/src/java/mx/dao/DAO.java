@@ -8,6 +8,7 @@ public class DAO {
 
     private Connection cn;
     private Connection cnprov;
+    private Connection cnban;
 
     public Connection getCn() {
         return cn;
@@ -25,12 +26,20 @@ public class DAO {
         this.cnprov = cnprov;
     }
 
+    public Connection getCnban() {
+        return cnban;
+    }
+
+    public void setCnban(Connection cnban) {
+        this.cnban = cnban;
+    }
+
     //SAE
     public void Conectar() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=SAE70Empre01", "sa", "dmsistemas");
-            cn = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE70Empre01", "sa", "Aspel**2013");
+            cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=SAE70Empre01", "sa", "dmsistemas");
+            //cn = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE70Empre01", "sa", "Aspel**2013");
         } catch (ClassNotFoundException | SQLException e) {
         }
 
@@ -52,8 +61,8 @@ public class DAO {
     public void Conectarprov() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //cnprov = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=PortalProvNac", "sa", "dmsistemas");
-            cnprov = DriverManager.getConnection("jdbc:sqlserver://WIN-2M3H0PDH8W8;databaseName=PortalProvNac", "sa", "duch3!\"#2020");
+            cnprov = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=PortalProvNac", "sa", "dmsistemas");
+            //cnprov = DriverManager.getConnection("jdbc:sqlserver://WIN-2M3H0PDH8W8;databaseName=PortalProvNac", "sa", "duch3!\"#2020");
         } catch (ClassNotFoundException | SQLException e) {
         }
 
@@ -64,6 +73,29 @@ public class DAO {
             if (cnprov != null) {
                 if (cnprov.isClosed() == false) {
                     cnprov.close();
+                }
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    //BANCOS
+    public void ConectarBan() {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            cnban = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=BAN50EMPRE01", "sa", "dmsistemas");
+            //cnban = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=BAN50EMPRE01", "sa", "Aspel**2013");
+        } catch (ClassNotFoundException | SQLException e) {
+        }
+
+    }
+
+    public void CerrarBan() throws SQLException {
+        try {
+            if (cnban != null) {
+                if (cnban.isClosed() == false) {
+                    cnban.close();
                 }
             }
         } catch (SQLException e) {

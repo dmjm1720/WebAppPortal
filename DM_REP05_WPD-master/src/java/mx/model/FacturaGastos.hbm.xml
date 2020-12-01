@@ -179,11 +179,11 @@
         <property name="tasaCuotaIsr" type="string">
             <column name="TASA_CUOTA_ISR" length="20" />
         </property>
-        <property name="importeCuotaIsr" type="big_decimal">
-            <column name="IMPORTE_CUOTA_ISR" scale="4" />
+        <property name="importeCuotaIsr" type="string">
+            <column name="IMPORTE_CUOTA_ISR" length="20" />
         </property>
-        <property name="ivaRet16" type="big_decimal">
-            <column name="IVA_RET_16" scale="4" />
+        <property name="ivaRet16" type="string">
+            <column name="IVA_RET_16" length="20" />
         </property>
         <property name="conceptos" type="string">
             <column name="CONCEPTOS" />
@@ -220,6 +220,9 @@
         </property>
         <property name="descuento" type="string">
             <column name="DESCUENTO" length="50" />
+        </property>
+        <property name="tipoPago" type="string">
+            <column name="TIPO_PAGO" length="50" />
         </property>
     </class>
 </hibernate-mapping>

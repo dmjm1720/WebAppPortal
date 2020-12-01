@@ -242,7 +242,7 @@
                                         <h:outputText value="#{tbl.factura}"/>
                                     </p:column>
                                     <p:column  headerText="Fecha factura">
-                                        <h:outputText value="#{tbl.fecha}"/>
+                                        <h:outputText value="#{tbl.fecha.substring(0,10)}"/>
                                     </p:column>
                                     <p:column  headerText="UUID Factura">
                                         <h:outputText value="#{tbl.uuid}"/>
@@ -271,10 +271,10 @@
                                         <h:outputText value="WCXP#{tbl.foliowcxp}"/>
                                     </p:column>
                                     <p:column  headerText="Fecha de recepción">
-                                        <h:outputText value="#{tbl.fechaRecepcion.substring(0,19)}"/>
+                                        <h:outputText value="#{tbl.fechaRecepcion.substring(0,10)}"/>
                                     </p:column>
                                     <p:column  headerText="Fecha probable de pago">
-                                        <h:outputText value="#{tbl.fechaPago}"/>
+                                        <h:outputText value="#{tbl.fechaPago.substring(0,10)}"/>
                                     </p:column>
                                     <p:column headerText="Estatus">
                                         <h:outputText value="#{tbl.estatus}"/>
@@ -381,7 +381,7 @@
                                         <h:outputText value="#{tbl.factura}"/>
                                     </p:column>
                                     <p:column  headerText="Fecha factura">
-                                        <h:outputText value="#{tbl.fecha}"/>
+                                        <h:outputText value="#{tbl.fecha.substring(0,10)}"/>
                                     </p:column>
                                     <p:column  headerText="UUID Factura">
                                         <h:outputText value="#{tbl.uuid}"/>
@@ -410,10 +410,10 @@
                                         <h:outputText value="WCXP#{tbl.foliowcxp}"/>
                                     </p:column>
                                     <p:column  headerText="Fecha de recepción">
-                                        <h:outputText value="#{tbl.fechaRecepcion.substring(0,19)}"/>
+                                        <h:outputText value="#{tbl.fechaRecepcion.substring(0,10)}"/>
                                     </p:column>
                                     <p:column  headerText="Fecha probable de pago">
-                                        <h:outputText value="#{tbl.fechaPago}"/>
+                                        <h:outputText value="#{tbl.fechaPago.substring(0,10)}"/>
                                     </p:column>
                                     <p:column headerText="Estatus">
                                         <h:outputText value="#{tbl.estatus}"/>

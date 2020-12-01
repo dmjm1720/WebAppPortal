@@ -186,6 +186,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
     private String facturaSAE;
     private int tamcadena;
     private String condPago;
+    private String descuento;
 
     //variables para el CFDI
     private final String ruta = "C:\\public\\proveedores\\";
@@ -1050,50 +1051,62 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         this.imp10isr = imp10isr;
     }
 
-    public void buscarRecepcion() throws SQLException {
-        this.Conectar();
-        this.Conectarprov();
-        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
-        Statement st = this.getCn().createStatement();
-        ResultSet rs = st.executeQuery("SELECT CLAVE, DIASCRED FROM PROV01 WHERE RFC LIKE'%" + us.getRfc().replace(" ", "") + "%' AND STATUS='A'");
-        while (rs.next()) {
-            this.cveprov = rs.getString("CLAVE");
-            this.diasCredito = rs.getInt("DIASCRED");
-            Statement sta = this.getCnprov().createStatement();
-            ResultSet rsa = sta.executeQuery("SELECT REFERENCIA FROM FACTURA WHERE RFC_E='" + us.getRfc().replace(" ", "") + "' AND REFERENCIA='" + this.referencia + "'");
-            if (!rsa.isBeforeFirst()) {
-                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " no existe!"));
-            } else {
-                while (rsa.next()) {
-                    this.validarReferencia = rsa.getString("REFERENCIA");
-                }
-            }
-            if (this.referencia.equals(this.validarReferencia)) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " ya ha sido ingresado anteriormente!"));
+    public String getDescuento() {
+        return descuento;
+    }
 
-            } else {
-                Statement stb = this.getCn().createStatement();
-                ResultSet rsb = stb.executeQuery("SELECT CVE_DOC, SU_REFER, CAN_TOT, NUM_MONED, TIPCAMB, IMPORTE, DOC_ANT FROM COMPR01 WHERE CVE_DOC='" + this.referencia + "' AND CVE_CLPV='" + this.cveprov + "' AND STATUS<>'C'");
-                if (!rsb.isBeforeFirst()) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " no existe en el sistema, favor de verificarlo!"));
+    public void setDescuento(String descuento) {
+        this.descuento = descuento;
+    }
+
+    public void buscarRecepcion() {
+        try {
+            this.Conectar();
+            this.Conectarprov();
+            Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
+            Statement st = this.getCn().createStatement();
+            ResultSet rs = st.executeQuery("SELECT CLAVE, DIASCRED FROM PROV01 WHERE RFC LIKE'%" + us.getRfc().replace(" ", "") + "%' AND STATUS='A'");
+            while (rs.next()) {
+                this.cveprov = rs.getString("CLAVE");
+                this.diasCredito = rs.getInt("DIASCRED");
+                Statement sta = this.getCnprov().createStatement();
+                ResultSet rsa = sta.executeQuery("SELECT REFERENCIA FROM FACTURA WHERE RFC_E='" + us.getRfc().replace(" ", "") + "' AND REFERENCIA='" + this.referencia + "'");
+                if (!rsa.isBeforeFirst()) {
+                    //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " no existe!"));
                 } else {
-                    while (rsb.next()) {
-                        this.CVE_DOC = rsb.getString("CVE_DOC");
-                        this.SU_REFER = rsb.getString("SU_REFER");
-                        this.CAN_TOT = rsb.getFloat("CAN_TOT");
-                        this.NUM_MONED = rsb.getInt("NUM_MONED");
-                        this.TIPCAMB = rsb.getFloat("TIPCAMB");
-                        this.IMPORTE = rsb.getFloat("IMPORTE");
-                        this.DOC_ANT = rsb.getString("DOC_ANT");
-                        //subimos el xml
-                        RequestContext.getCurrentInstance().execute("PF('dlgXML').show()");
+                    while (rsa.next()) {
+                        this.validarReferencia = rsa.getString("REFERENCIA");
                     }
                 }
-            }
+                if (this.referencia.equals(this.validarReferencia)) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " ya ha sido ingresado anteriormente!"));
 
+                } else {
+                    Statement stb = this.getCn().createStatement();
+                    ResultSet rsb = stb.executeQuery("SELECT CVE_DOC, SU_REFER, CAN_TOT, NUM_MONED, TIPCAMB, IMPORTE, DOC_ANT FROM COMPR01 WHERE CVE_DOC='" + this.referencia + "' AND CVE_CLPV='" + this.cveprov + "' AND STATUS<>'C'");
+                    if (!rsb.isBeforeFirst()) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " no existe en el sistema, favor de verificarlo!"));
+                    } else {
+                        while (rsb.next()) {
+                            this.CVE_DOC = rsb.getString("CVE_DOC");
+                            this.SU_REFER = rsb.getString("SU_REFER");
+                            this.CAN_TOT = rsb.getFloat("CAN_TOT");
+                            this.NUM_MONED = rsb.getInt("NUM_MONED");
+                            this.TIPCAMB = rsb.getFloat("TIPCAMB");
+                            this.IMPORTE = rsb.getFloat("IMPORTE");
+                            this.DOC_ANT = rsb.getString("DOC_ANT");
+                            //subimos el xml
+                            RequestContext.getCurrentInstance().execute("PF('dlgXML').show()");
+                        }
+                    }
+                }
+
+            }
+            this.Cerrar();
+            this.Cerrarprov();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //this.Cerrar();
-        //this.Cerrarprov();
     }
 
     public void upload(FileUploadEvent event) throws SQLException, MessagingException, JDOMException, ParseException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -1197,6 +1210,8 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         condPago = rootNode.getAttributeValue("CondicionesDePago");
 
         subTotal = rootNode.getAttributeValue("subTotal");
+
+        descuento = rootNode.getAttributeValue("Descuento");
         if (this.subTotal == null) {
             subTotal = rootNode.getAttributeValue("SubTotal");
         }
@@ -1597,36 +1612,50 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         }
     }
 
-    public void buscarFolioFactura() throws SQLException {
-        Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
-        Statement st = this.getCnprov().createStatement();
-        ResultSet rs = st.executeQuery("SELECT FACTURA, UUID FROM FACTURA WHERE RFC_E='" + us.getRfc().replace(" ", "") + "' AND UUID='" + this.UUIDTF + "'");
-        if (!rs.isBeforeFirst()) {
-        } else {
-            while (rs.next()) {
-                this.validarFactura = rs.getString("FACTURA");
-                this.validarUUID = rs.getString("UUID");
+    public void buscarFolioFactura() {
+        try {
+            this.Conectarprov();
+            Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
+            Statement st = this.getCnprov().createStatement();
+            ResultSet rs = st.executeQuery("SELECT FACTURA, UUID FROM FACTURA WHERE RFC_E='" + us.getRfc().replace(" ", "") + "' AND UUID='" + this.UUIDTF + "'");
+            if (!rs.isBeforeFirst()) {
+            } else {
+                while (rs.next()) {
+                    this.validarFactura = rs.getString("FACTURA");
+                    this.validarUUID = rs.getString("UUID");
+                }
             }
+            this.Cerrarprov();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void buscarWCXP() throws SQLException {
-        this.Conectarprov();
-        Statement st = this.getCnprov().createStatement();
-        ResultSet rs = st.executeQuery("SELECT FOLIOWCXP, FECHA_PAGO, REFERENCIA FROM FACTURA WHERE UUID='" + this.UUIDTF + "'");
-        while (rs.next()) {
-            this.folioWcxp = rs.getInt("FOLIOWCXP");
-            this.miPago = rs.getString("FECHA_PAGO");
-            this.miReferencia = rs.getString("REFERENCIA");
+    public void buscarWCXP() {
+        try {
+            this.Conectarprov();
+            Statement st = this.getCnprov().createStatement();
+            ResultSet rs = st.executeQuery("SELECT FOLIOWCXP, FECHA_PAGO, REFERENCIA FROM FACTURA WHERE UUID='" + this.UUIDTF + "'");
+            while (rs.next()) {
+                this.folioWcxp = rs.getInt("FOLIOWCXP");
+                this.miPago = rs.getString("FECHA_PAGO");
+                this.miReferencia = rs.getString("REFERENCIA");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void buscarDiaPago() throws SQLException {
-        this.Conectarprov();
-        Statement st = this.getCnprov().createStatement();
-        ResultSet rs = st.executeQuery("SELECT TOP(1) FECHA_PAGO FROM DIAS_PAGO WHERE FECHA_PAGO >= '" + this.pago + "'");
-        while (rs.next()) {
-            this.pagoDuche = rs.getString("FECHA_PAGO");
+    public void buscarDiaPago() {
+        try {
+            this.Conectarprov();
+            Statement st = this.getCnprov().createStatement();
+            ResultSet rs = st.executeQuery("SELECT TOP(1) FECHA_PAGO FROM DIAS_PAGO WHERE FECHA_PAGO >= '" + this.pago + "'");
+            while (rs.next()) {
+                this.pagoDuche = rs.getString("FECHA_PAGO");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1649,17 +1678,28 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setFolio(folio);
         f.setSerie(serie);
         f.setVersioncfdi(VersionSAT);
+        
         BigDecimal bdImporte = new BigDecimal(this.subTotal);
         f.setImporte(bdImporte);
+        
         BigDecimal bdTotal = new BigDecimal(this.total);
         f.setTotal(bdTotal);
+        
         if (this.TipoCambio == null) {
             this.TipoCambio = "0";
         }
+        
         BigDecimal bdTC = new BigDecimal(this.TipoCambio);
         f.setTipoCambio(bdTC);
+        
         f.setMoneda(moneda);
         f.setMetodoPago(metodoDePago);
+//        if (descuento != null) {
+//            f.setDescuento("0.0");
+//        } else {
+//            f.setDescuento(descuento);
+//        }
+
         f.setTipoComprobante(tipoDeComprobante);
         f.setLugarExpedicion(LugarExpedicion);
         f.setCondicionesPago(condPago);
@@ -1687,6 +1727,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         }
         BigDecimal bdIC = new BigDecimal(this.ImporteTraslado);
         f.setImporteCouta(bdIC);
+        
         f.setReferencia(referencia);
         //FechaRecepción
         //Aplicar fecha de pago
@@ -1743,8 +1784,8 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         }
 
         if (imp10isr.size() > 0) {
-            for (int w = 0; w < imp10isr.size(); w++) {
-                i10isr += imp10isr.get(w);
+            for (int b = 0; b < imp10isr.size(); b++) {
+                i10isr += imp10isr.get(b);
             }
         }
 
@@ -1756,14 +1797,12 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         if (!i04.toString().equals("null")) {
             f.setIvaRet06(i06.toString());
         }
+        
         if (!i10isr.toString().equals("null")) {
-            f.setImporteCuotaIsr(new BigDecimal(i10isr));
+            f.setImporteCuotaIsr(i10isr.toString());
         }
 
-//        String imp = importeCuotaIsr;
-//        if (imp == null) {
-//            imp = "0.0";
-//        }
+
         fDao.InsertFactura(f);
         //Limpiamos las variables
         // limpiarVariables();
@@ -1772,17 +1811,22 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         imp10isr.clear();
     }
 
-    public void insertaPAGA_M01() throws SQLException {
-        this.miTotal = Float.parseFloat(this.total) * this.TIPCAMB;
-        this.Conectar();
-        this.facturaSAE = this.serie + this.folio;
-        if (this.facturaSAE.length() > 20) {
-            this.tamcadena = this.facturaSAE.length();
-            this.tamcadena = this.tamcadena - 20;
-            this.facturaSAE = this.facturaSAE.substring(this.tamcadena, this.facturaSAE.length());
+    public void insertaPAGA_M01() {
+        try {
+            this.miTotal = Float.parseFloat(this.total) * this.TIPCAMB;
+            this.Conectar();
+            this.facturaSAE = this.serie + this.folio;
+            if (this.facturaSAE.length() > 20) {
+                this.tamcadena = this.facturaSAE.length();
+                this.tamcadena = this.tamcadena - 20;
+                this.facturaSAE = this.facturaSAE.substring(this.tamcadena, this.facturaSAE.length());
+            }
+            PreparedStatement ps = this.getCn().prepareStatement("INSERT INTO PAGA_M01 VALUES ('" + this.cveprov + "', '" + "WCXP" + this.folioWcxp + "', 1, 1, NULL,0, '" + this.facturaSAE + "', 'WCXP" + this.folioWcxp + "', '" + this.miTotal + "', GETDATE(), '" + this.miPago + "', 'A', '" + this.NUM_MONED + "', '" + this.TIPCAMB + "','" + this.total + "', GETDATE(), NULL, 'C', NULL, 1, NULL, 0, NULL, NULL, NULL, 'A')");
+            ps.executeUpdate();
+            this.Cerrar();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        PreparedStatement ps = this.getCn().prepareStatement("INSERT INTO PAGA_M01 VALUES ('" + this.cveprov + "', '" + "WCXP" + this.folioWcxp + "', 1, 1, NULL,0, '" + this.facturaSAE + "', 'WCXP" + this.folioWcxp + "', '" + this.miTotal + "', GETDATE(), '" + this.miPago + "', 'A', '" + this.NUM_MONED + "', '" + this.TIPCAMB + "','" + this.total + "', GETDATE(), NULL, 'C', NULL, 1, NULL, 0, NULL, NULL, NULL, 'A')");
-        ps.executeUpdate();
     }
 
     public void buscarMensaje() throws SQLException {
@@ -1798,16 +1842,24 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         }
     }
 
-    public void insertarCOMPR01() throws SQLException {
-        this.Conectar();
-        PreparedStatement ps = this.getCn().prepareStatement("UPDATE COMPR01 SET ENLAZADO='T', TIP_DOC_E='c',TIP_DOC_SIG='c', DOC_SIG='WCXP" + this.folioWcxp + "' WHERE CVE_CLPV='" + this.cveprov + "' AND CVE_DOC='" + this.referencia + "'");
-        ps.executeUpdate();
+    public void insertarCOMPR01() {
+        try {
+            this.Conectar();
+            PreparedStatement ps = this.getCn().prepareStatement("UPDATE COMPR01 SET ENLAZADO='T', TIP_DOC_E='c',TIP_DOC_SIG='c', DOC_SIG='WCXP" + this.folioWcxp + "' WHERE CVE_CLPV='" + this.cveprov + "' AND CVE_DOC='" + this.referencia + "'");
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public void actualizarFolio() throws SQLException {
-        this.Conectarprov();
-        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET FACTURA.FOLIOWCXP=(SELECT MAX(FACTURA.FOLIOWCXP)+1 FROM FACTURA),FECHA_RECEPCION=(SELECT CONVERT(VARCHAR(19), GETDATE(), 126)) FROM FACTURA WHERE FACTURA.FOLIOWCXP=0");
-        ps.executeUpdate();
+    public void actualizarFolio() {
+        try {
+            this.Conectarprov();
+            PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET FACTURA.FOLIOWCXP=(SELECT MAX(FACTURA.FOLIOWCXP)+1 FROM FACTURA),FECHA_RECEPCION=(SELECT CONVERT(VARCHAR(19), GETDATE(), 126)) FROM FACTURA WHERE FACTURA.FOLIOWCXP=0");
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void insertarConcepto() {
@@ -1979,6 +2031,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         this.DOC_ANT = "";
 
 //variables para el CFDI
+        this.descuento = null;
         this.serie = null;
         this.folio = null;
         this.fecha = null;

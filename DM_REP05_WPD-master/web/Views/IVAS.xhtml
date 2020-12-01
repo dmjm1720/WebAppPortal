@@ -58,9 +58,9 @@
                     <p:growl id="mensaje" showSummary="true" showDetail="true"></p:growl>
                     <p:panel id="pnlPrincipal" header="REPORTE PROVEEDORES" style="margin: 0 auto; text-align: center; font-size: 13px">
                         <label>EXPORTAR INFORMACIÓN A EXCEL </label>&nbsp;
-                        <h:commandLink id="xls">
+                        <h:commandLink id="xls" immediate="true">
                             <p:graphicImage url="../Images/excel.png" width="50"/>
-                            <p:dataExporter type="xls" target="tblPrincipal" fileName="Proveedores"></p:dataExporter>
+                            <p:dataExporter type="csv" target="tblPrincipal"  fileName="Proveedores"/>
                         </h:commandLink>
                         <p:layoutUnit id="tablaPrincipal" position="center" style="padding: 5px; text-align: center;">
                             <p:dataTable style="font-size: 9px" 
@@ -80,7 +80,9 @@
                                     <h:outputText value="#{tbl.cheque.trim()}" style="color: #0078A7; font-weight: bold"/>
                                 </p:column>
                                 <p:column filterBy="#{tbl.noTransferencia}" sortBy="#{tbl.noTransferencia}" headerText="NO">
-                                    <h:outputText value="#{tbl.noTransferencia}" style="color: #0078A7; font-weight: bold"/>
+                                    <h:outputText value="#{tbl.noTransferencia.trim()}" style="color: #0078A7; font-weight: bold">
+                                        <f:convertNumber groupingUsed="false"/>
+                                    </h:outputText>
                                 </p:column>
                                 <p:column  headerText="Fecha">
                                     <h:outputText value="#{tbl.fechaPago.substring(0,10)}" style="color: #E60013; font-weight: bold"/>
@@ -180,7 +182,7 @@
                                     </h:outputText>
                                 </p:column>
                                 <p:column headerText="CHEQUE, TRANSFERENCIA">
-                                    <h:outputText value="CHEQUE NOMINATIVO" style="color: #021f3c; font-weight: bold"/>
+                                    <h:outputText value="#{tbl.tipoPago}" style="color: #021f3c; font-weight: bold"/>
                                 </p:column>
                                 <p:column headerText="FECHA">
                                     <h:outputText value="" style="color: #021f3c; font-weight: bold"/>

@@ -33,7 +33,7 @@ public class FacturaDaoImpl implements FacturaDao {
     }
 
     @Override
-    @SuppressWarnings("null")
+    @SuppressWarnings({"null", "ImplicitArrayToString"})
     public void InsertFactura(Factura factura) {
         Session session = null;
         try {
@@ -44,7 +44,8 @@ public class FacturaDaoImpl implements FacturaDao {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Factura agregada correctamente"));
             facesContext.execute("Swal.fire({position: 'top-center', icon: 'success', showConfirmButton: false, timer: 4000, title: 'Validación XML con estatus Vigente', showClass: {popup: 'animate__animated animate__fadeInDown'},hideClass: {popup: 'animate__animated animate__fadeOutUp'}})");
         } catch (HibernateException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
+            System.err.println(e.getStackTrace());
             session.getTransaction().rollback();
         } finally {
             if (session != null) {

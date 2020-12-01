@@ -59,7 +59,6 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import java.net.URL;
 import java.util.Date;
-import mx.sat.ConsultaCFDIService;
 
 //Web Service SAT 
 import mx.sat.Acuse;
@@ -193,6 +192,7 @@ public class SubirGastosBean extends DAO implements Serializable {
     private String tipoFactorIsr;
     private String tasaCoutaIsr;
     private String importeCuotaIsr;
+    private String descuento;
 
     public SubirGastosBean() {
         this.lista = new ArrayList<>();
@@ -1036,6 +1036,14 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.imp10isr = imp10isr;
     }
 
+    public String getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(String descuento) {
+        this.descuento = descuento;
+    }
+
     public void buscarRecepcion() throws SQLException {
         this.Conectar();
         this.Conectarprov();
@@ -1182,6 +1190,7 @@ public class SubirGastosBean extends DAO implements Serializable {
 
         condPago = rootNode.getAttributeValue("CondicionesDePago");
         subTotal = rootNode.getAttributeValue("subTotal");
+        descuento = rootNode.getAttributeValue("Descuento");
         if (this.subTotal == null) {
             subTotal = rootNode.getAttributeValue("SubTotal");
         }
@@ -1540,6 +1549,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setTipoCambio(bdTC);
         f.setMoneda(moneda);
         f.setMetodoPago(metodoDePago);
+        f.setDescuento(descuento);
         f.setTipoComprobante(tipoDeComprobante);
         f.setLugarExpedicion(LugarExpedicion);
         f.setCertificado(certificado);
@@ -1623,7 +1633,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             f.setIvaRet06(i06.toString());
         }
         if (!i10isr.toString().equals("null")) {
-            f.setImporteCuotaIsr(new BigDecimal(i10isr));
+            f.setImporteCuotaIsr(i10isr.toString());
         }
 
 //        if (impuestoIsr != "001") {
@@ -1837,6 +1847,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.IMPORTE = 0;
         this.validarFactura = null;
         this.validarUUID = null;
+        this.descuento = null;
 
 //variables para el CFDI
         this.serie = null;
