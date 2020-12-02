@@ -1678,27 +1678,28 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setFolio(folio);
         f.setSerie(serie);
         f.setVersioncfdi(VersionSAT);
-        
+
         BigDecimal bdImporte = new BigDecimal(this.subTotal);
         f.setImporte(bdImporte);
-        
+
         BigDecimal bdTotal = new BigDecimal(this.total);
         f.setTotal(bdTotal);
-        
+
         if (this.TipoCambio == null) {
             this.TipoCambio = "0";
         }
-        
+
         BigDecimal bdTC = new BigDecimal(this.TipoCambio);
         f.setTipoCambio(bdTC);
-        
+
         f.setMoneda(moneda);
         f.setMetodoPago(metodoDePago);
-//        if (descuento != null) {
-//            f.setDescuento("0.0");
-//        } else {
-//            f.setDescuento(descuento);
-//        }
+
+        if (descuento != null) {
+            f.setDescuento("0.0");
+        } else {
+            f.setDescuento(descuento);
+        }
 
         f.setTipoComprobante(tipoDeComprobante);
         f.setLugarExpedicion(LugarExpedicion);
@@ -1716,18 +1717,35 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setImpuesto(Impuesto);
         f.setTipoFactor(TipoFactor);
         f.setTasaCouta(TasaOCuota);
-        if (this.TasaOCuota.contains("0.00")) {
-            f.setBase0(this.importe);
+
+        try {
+            if (this.TasaOCuota.contains("0.00")) {
+                f.setBase0(this.importe);
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-        if (this.TasaOCuota.contains("0.16")) {
-            f.setBase16(this.importe);
+        try {
+            if (this.TasaOCuota.contains("0.16")) {
+                f.setBase16(this.importe);
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-        if (this.ImporteTraslado == null) {
-            this.ImporteTraslado = "0";
+        try {
+
+            if (this.ImporteTraslado == null) {
+                this.ImporteTraslado = "0";
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
+
         BigDecimal bdIC = new BigDecimal(this.ImporteTraslado);
         f.setImporteCouta(bdIC);
-        
+
         f.setReferencia(referencia);
         //FechaRecepción
         //Aplicar fecha de pago
@@ -1797,11 +1815,10 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         if (!i04.toString().equals("null")) {
             f.setIvaRet06(i06.toString());
         }
-        
+
         if (!i10isr.toString().equals("null")) {
             f.setImporteCuotaIsr(i10isr.toString());
         }
-
 
         fDao.InsertFactura(f);
         //Limpiamos las variables

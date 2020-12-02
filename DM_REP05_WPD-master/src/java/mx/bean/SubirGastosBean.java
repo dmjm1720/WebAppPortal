@@ -1549,7 +1549,13 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setTipoCambio(bdTC);
         f.setMoneda(moneda);
         f.setMetodoPago(metodoDePago);
-        f.setDescuento(descuento);
+
+        if (descuento != null) {
+            f.setDescuento("0.0");
+        } else {
+            f.setDescuento(descuento);
+        }
+
         f.setTipoComprobante(tipoDeComprobante);
         f.setLugarExpedicion(LugarExpedicion);
         f.setCertificado(certificado);
@@ -1566,15 +1572,31 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setImpuesto(Impuesto);
         f.setTipoFactor(TipoFactor);
         f.setTasaCouta(TasaOCuota);
-        if (this.TasaOCuota.contains("0.00")) {
-            f.setBase0(this.importe);
+        try {
+            if (this.TasaOCuota.contains("0.00")) {
+                f.setBase0(this.importe);
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-        if (this.TasaOCuota.contains("0.16")) {
-            f.setBase16(this.importe);
+
+        try {
+            if (this.TasaOCuota.contains("0.16")) {
+                f.setBase16(this.importe);
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-        if (this.ImporteTraslado == null) {
-            this.ImporteTraslado = "0";
+
+        try {
+            if (this.ImporteTraslado == null) {
+                this.ImporteTraslado = "0";
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
+
         BigDecimal bdIC = new BigDecimal(this.ImporteTraslado);
         f.setImporteCouta(bdIC);
         f.setReferencia(referencia);
