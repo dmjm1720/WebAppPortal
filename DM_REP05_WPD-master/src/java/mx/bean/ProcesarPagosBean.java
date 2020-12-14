@@ -45,6 +45,7 @@ public class ProcesarPagosBean extends DAO implements Serializable {
     private int NUM_CPTO;
     private int CONC_SAE;
     private String REF1;
+    private String fecPag;
 
     public String getCVE_PROV() {
         return CVE_PROV;
@@ -198,12 +199,20 @@ public class ProcesarPagosBean extends DAO implements Serializable {
         this.REF1 = REF1;
     }
 
+    public String getFecPag() {
+        return fecPag;
+    }
+
+    public void setFecPag(String fecPag) {
+        this.fecPag = fecPag;
+    }
+
     public ProcesarPagosBean() {
 
     }
 
     public void procesarPagos() throws MessagingException {
-        pagoProveedores();
+        //pagoProveedores();
         pagoGastos();
     }
 
@@ -211,8 +220,9 @@ public class ProcesarPagosBean extends DAO implements Serializable {
         try {
             this.Conectar();//Conexión SAE
             this.Conectarprov();//Conexión Portal
+            this.ConectarBan();//Conexión Bancos
             Statement st = this.getCn().createStatement();
-            ResultSet rs = st.executeQuery("SELECT CVE_PROV, REFER, FECHA_APLI, DOCTO, NUM_CPTO FROM INSOFTEC_AVISOS_PAGO WHERE PROCESADO=0 AND REFER LIKE '%WCXP%'");
+            ResultSet rs = st.executeQuery("SELECT CVE_PROV, REFER, FECHA_APLI, DOCTO, NUM_CPTO, NO_FACTURA FROM INSOFTEC_AVISOS_PAGO WHERE PROCESADO=0 AND REFER LIKE '%WCXP%' AND NUM_CPTO=27 OR NUM_CPTO=11");
             if (!rs.isBeforeFirst()) {
                 System.out.println("Ningún pago detectado en sistema...");
             } else {
@@ -223,6 +233,7 @@ public class ProcesarPagosBean extends DAO implements Serializable {
                     this.FECHA_APLI = rs.getString("FECHA_APLI");
                     this.DOCTO = rs.getString("DOCTO");
                     this.NUM_CPTO = rs.getInt("NUM_CPTO");
+                    this.NO_FACTURA = rs.getString("NO_FACTURA");
                     System.out.println(this.CVE_PROV + "| " + this.REFER + "| " + this.FECHA_APLI);
 
                     System.out.println("Buscando información del importe pagado...");
@@ -265,15 +276,28 @@ public class ProcesarPagosBean extends DAO implements Serializable {
                         }
                     }
                     System.out.println("Enviando aviso de pago a proveedor...");
-                    EnviarCorreo();
+                    //EnviarCorreo();
+
+                    //BUSCAR FECHA DE PAGO EN BANCOS
+                    Statement stfecban = this.getCnban().createStatement();
+                    ResultSet rsfecban = stfecban.executeQuery("SELECT TOP(1) FECHA FROM MOVS04 WHERE RFC='" + this.RFC_E + "' AND REF1 LIKE '%" + this.DOCTO.trim() + "%' ORDER BY NUM_REG DESC");
+                    if (!rsfecban.isBeforeFirst()) {
+                        System.out.println("Dato no encontrado");
+                    } else {
+                        while (rsfecban.next()) {
+                            this.fecPag = rsfecban.getString("FECHA");
+                        }
+                    }
 
                     //VALIDAMOS SI ES TRANSFERENCIA (27) O CHEQUE(11)
                     if (NUM_CPTO == 11) {
-                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.fecPag + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        // PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
                         ps.executeUpdate();
 
                     } else {
-                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        //PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.fecPag + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
                         ps.executeUpdate();
                     }
 
@@ -283,11 +307,11 @@ public class ProcesarPagosBean extends DAO implements Serializable {
                     Limpiar();
                 }
             }
-
+            this.CerrarBan();
             this.Cerrar();
             this.Cerrarprov();
         } catch (SQLException ex) {
-
+            System.err.println(ex.getMessage());
         }
     }
 
@@ -323,7 +347,7 @@ public class ProcesarPagosBean extends DAO implements Serializable {
                             ACTUALIZAMOS EL ESTADO 1 EN EL CAMPO PROCESADO
                              */
                             //VALIDAMOS SI ES TRANSFERENCIA (27) O CHEQUE(11)
-                            if (NUM_CPTO == 11) {
+                            if (CONC_SAE == 0) {
                                 PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA_GASTOS SET FECHA_PAGO='" + FECHA + "', CHEQUE='" + NUM_CHEQUE + "', PROCESADO=1, ESTATUS='PAGADA' WHERE ID=" + ID + "");
                                 ps.executeUpdate();
                             } else {
@@ -368,6 +392,7 @@ public class ProcesarPagosBean extends DAO implements Serializable {
                 + "<font color='#17202a'></font> <font color='#086A87'><i></i></font><br>"
                 + "<font color='#17202a'>Factura/Folio fiscal:</font> <font color='#004177'><i> " + this.FACTURA + " | " + this.UUID + " </i></font><br>"
                 + "<font color='#17202a'>Recepci&oacute;n:</font> <font color='#004177'><i> " + this.REFERENCIA + " </i></font><br>"
+                + "<font color='#641e16'><b>NO TRANSFERENCIA/CHEQUE:</font></b> <b><font color='#641e16'><i> " + this.DOCTO + " </i></b></font><br>"
                 + "<font color='#17202a'>Cuenta por pagar no:</font> <font color='#004177'><i> " + this.REFER + " </i></font><br>"
                 + "<font color='#17202a'>Monto pagado:</font> <font color='#004177'><i> $" + this.IMPORTE + " </i></font><br>"
                 + "<font color='#17202a'></font> <font color='#004177'><i> </i></font><br>"
@@ -441,6 +466,7 @@ public class ProcesarPagosBean extends DAO implements Serializable {
         RFC_E = "";
         CORREO = "";
         FOLIO = "";
+        fecPag = "";
     }
 
 }

@@ -11,5 +11,8 @@
         <property name="fechaPago" type="string">
             <column name="FECHA_PAGO" length="50" />
         </property>
+        <property name="localidad" type="string">
+            <column name="LOCALIDAD" length="50" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -8,15 +8,18 @@ import mx.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.primefaces.context.RequestContext;
 
 public class PagoDaoImpl implements PagoDao {
+
+    RequestContext facesContext = RequestContext.getCurrentInstance();
 
     @Override
     public List<DiasPago> lista() {
         List<DiasPago> lista = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "FROM DiasPago order by id desc";
+        String hql = "FROM DiasPago ORDER BY fechaPago DESC";
         try {
             lista = session.createQuery(hql).list();
             t.commit();
@@ -35,9 +38,8 @@ public class PagoDaoImpl implements PagoDao {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.save(pago);
-            session.getTransaction().commit();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Día de pago agregado correctamente"));
-
+            session.getTransaction().commit();   
+            facesContext.execute("Swal.fire({position: 'top-center', icon: 'success', showConfirmButton: false, timer: 4000, title: 'Fecha de pago agregada correctamente', showClass: {popup: 'animate__animated animate__fadeInDown'},hideClass: {popup: 'animate__animated animate__fadeOutUp'}})");
         } catch (HibernateException e) {
             System.out.println(e.getMessage());
             session.getTransaction().rollback();

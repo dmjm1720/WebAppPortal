@@ -37,7 +37,7 @@
                     <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>
                     <p:blockUI block="pnlBuscar" trigger="buscar">   
                         <h3 style="font-size: 15px; color: black">Por favor espere...</h3>
-                        <p:graphicImage value="../../Images/loader.gif" style="height: 150px; width: 200px"/>
+                        <p:graphicImage value="../Images/loader.gif" style="height: 200px; width: 200px"/>
                     </p:blockUI>
                     <p:panel id="pnlBuscar" style="margin: 0 auto; text-align: center; font-size: 13px; width: 40%">
                         <p:toolbar>
@@ -123,10 +123,13 @@
                     <p:panel id="pnlPrincipal" header="DÍAS DE PAGO A PROVEEDORES"  
                              style="margin: 0 auto; text-align: center; font-size: 13px; width: 40%">
                         <p:layoutUnit id="tablaPrincipal" position="center" style="padding: 5px; text-align: center;">
-                            <p:dataTable id="tblPrincipal" paginator="true" rows="5" sortMode="multiple" paginatorPosition="top" 
+                            <p:dataTable id="tblPrincipal" paginator="true" rows="50" sortMode="multiple" paginatorPosition="top" 
                                          var="tbl" value="#{pagoBean.listaPago}">                           
                                 <p:column headerText="Fecha de pago" filterBy="#{tbl.fechaPago}" sortBy="#{tbl.fechaPago}">
                                     <h:outputText value="#{tbl.fechaPago}"/>
+                                </p:column> 
+                                <p:column headerText="LOCALIDAD" filterBy="#{tbl.localidad}" sortBy="#{tbl.localidad}">
+                                    <h:outputText value="#{tbl.localidad}"/>
                                 </p:column> 
                                 <p:column headerText="Reporte de pagos">                                 
                                     <p:commandButton id="btnPagos" value=""  style="height: 35px; width: 35px;
@@ -158,25 +161,35 @@
 
                 <!--Formulario para agregar día de pago-->
                 <h:form id="frmPago" style="font-size: 12px">
-                    <p:dialog id="dlgPago" widgetVar="dlgPago" header="Agregar fechas de pago"
+                    <p:messages id="mensajeForm" showSummary="true" showDetail="true" autoUpdate="true"/>
+                    <p:dialog id="dlgPago" widgetVar="dlgPago" header="AGREGAR FECHAS DE PAGO"
                               showEffect="clip" hideEffect="explode"  resizable="false" responsive="true">                       
                         <p:panel id="pnlFact">
-                            <p:panelGrid id="pnlFactura" columns="2" style="margin: 0 auto">
-                                <p:outputLabel value="Fecha de pago"/>
+                            <p:panelGrid id="pnlFactura" columns="1" style="margin: 0 auto">
+                                <p:outputLabel for="fecha_final" value="FECHA DE PAGO"/>
                                 <p:calendar  id="fecha_final" yearRange="2014:2025"  
                                              effect="blind" effectDuration="13000" pages="2" showOn="button" 
                                              style="width: 150px;" value="#{pagoBean.fecPago}" 
-                                             required="true" placeholder="Ingrese fecha de pago"
+                                             required="true" requiredMessage="SELECCIONA FECHA Y LOCALIDAD" placeholder="INGRESE FECHA DE PAGO"
                                              pattern="yyyy-MM-dd" mask="true">
-                                </p:calendar>               
+                                    <p:message for="fecha_final"/>
+                                </p:calendar>
+
+                                <h:form id="frmSelect">
+                                    <p:outputLabel for="loc" value="LOCALIDAD"/>
+                                    <p:selectOneRadio id="loc" value="#{pagoBean.localidad}" required="true" requiredMessage="SELECCIONA LOCALIDAD">
+                                        <f:selectItem itemValue="CDMX"   itemLabel="CDMX" />
+                                        <f:selectItem itemValue="TOLUCA" itemLabel="TOLUCA" />
+                                        <p:ajax listener="#{pagoBean.localidad}" />
+                                    </p:selectOneRadio>
+                                </h:form>
                             </p:panelGrid>
                         </p:panel>
                         <p:spacer width="400" height="5"/>
                         <p:commandButton id="track" 
                                          style="height: 35px; width: 35px; background-image: url('../Images/save.png') !important;background-size: 35px; background-repeat: no-repeat"  
-                                         value="" onclick="PF('dlgInfo').show()" 
-                                         update="frmBuscar:mensaje,frmPrincipal,frmPago" 
-                                         oncomplete="PF('dlgPago').hide()"  
+                                         value="" 
+                                         update="frmPago:pnlFact, frmPago:mensajeForm" 
                                          actionListener="#{pagoBean.insertarPago()}" 
                                          >
                         </p:commandButton>
@@ -218,7 +231,7 @@
                             <label>EXPORTAR REPORTE A EXCEL </label>&nbsp;
                             <h:commandLink id="xls">
                                 <p:graphicImage url="../Images/excel.png" width="50"/>
-                                <p:dataExporter type="xls" target="tblPagos" fileName="Reporte_pagos"/>
+                                <p:dataExporter type="csv" target="tblPagos" fileName="Reporte_pagos"/>
                             </h:commandLink>
                             <p:layoutUnit id="tablaPagos" position="center" style="padding: 5px; text-align: center;">
                                 <p:dataTable id="tblPagos" 
@@ -262,10 +275,10 @@
                                         <h:outputText value="#{tbl.oc}"/>
                                     </p:column>
                                     <p:column headerText="Cheque">
-                                        <h:outputText value="#{tbl.cheque}"/>
+                                        <h:outputText value="#{tbl.cheque.trim().replaceFirst('0', '\'0')}"/>
                                     </p:column>
                                     <p:column headerText="Transferencia">
-                                        <h:outputText value="#{tbl.noTransferencia}"/>
+                                        <h:outputText value="'#{tbl.noTransferencia}"/>
                                     </p:column>
                                     <p:column headerText="WCXP">
                                         <h:outputText value="WCXP#{tbl.foliowcxp}"/>
@@ -352,7 +365,7 @@
                                         <td style="width: 200px">
                                             <h:commandLink id="xls">
                                                 <p:graphicImage url="../Images/excel.png" width="50"/>
-                                                <p:dataExporter type="xls" target="tblPagosRep" fileName="Reporte_pagos"/>
+                                                <p:dataExporter type="csv" target="tblPagosRep" fileName="Reporte_pagos"/>
                                             </h:commandLink>
                                         </td>
                                     </tr>
@@ -401,7 +414,7 @@
                                         <h:outputText value="#{tbl.oc}"/>
                                     </p:column>
                                     <p:column headerText="Cheque">
-                                        <h:outputText value="#{tbl.cheque}"/>
+                                        <h:outputText value="#{tbl.cheque.trim().replaceFirst('0', '\'0')}"/>
                                     </p:column>
                                     <p:column headerText="Transferencia">
                                         <h:outputText value="#{tbl.noTransferencia}"/>

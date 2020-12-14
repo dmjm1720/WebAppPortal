@@ -34,6 +34,7 @@ public class PagoBean implements Serializable {
     private String f2;
     private Date fecha1;
     private Date fecha2;
+    private String localidad;
 
     RequestContext facesContext = RequestContext.getCurrentInstance();
 
@@ -134,16 +135,27 @@ public class PagoBean implements Serializable {
         this.fecha2 = fecha2;
     }
 
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
     public void insertarPago() {
+
         PagoDao pDao = new PagoDaoImpl();
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         this.fecha = formato.format(this.fecPago);
-        System.out.println(fecha);
         this.pago.setFechaPago(fecha);
+        this.pago.setLocalidad(localidad);
         pDao.InsertPago(pago);
         pago = new DiasPago();
         this.fecPago = null;
         this.fecha = null;
+        RequestContext.getCurrentInstance().update("frmPrincipal:tablaPrincipal");
+        RequestContext.getCurrentInstance().update("frmReporte:mensaje");
     }
 
     public void updatePago() {
@@ -162,7 +174,7 @@ public class PagoBean implements Serializable {
         if (tipoOC != null && estatus != null) {
             RequestContext.getCurrentInstance().execute("PF('dlgRepPago').show()");
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "Selecciona OC México o Toluca"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡AVISO!", "Selecciona OC México o Toluca"));
         }
     }
 
@@ -177,7 +189,7 @@ public class PagoBean implements Serializable {
         if (listaCompleta.size() > 0) {
             listaCompleta.clear();
             RequestContext.getCurrentInstance().update("fmrFecRep:tablaPagos");
-           // RequestContext.getCurrentInstance().execute("PF('tblPagosRep').clearFilters()");
+            // RequestContext.getCurrentInstance().execute("PF('tblPagosRep').clearFilters()");
         }
         if (fecha1 != null && fecha2 != null) {
             SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");

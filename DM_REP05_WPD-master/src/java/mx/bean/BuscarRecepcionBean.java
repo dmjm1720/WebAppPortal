@@ -1649,8 +1649,16 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
     public void buscarDiaPago() {
         try {
             this.Conectarprov();
+            
+            String tipoOC = "";
+            if (DOC_ANT.contains("T")) {
+                tipoOC = "TOLUCA";
+            } else {
+                tipoOC = "CDMX";
+            }
+
             Statement st = this.getCnprov().createStatement();
-            ResultSet rs = st.executeQuery("SELECT TOP(1) FECHA_PAGO FROM DIAS_PAGO WHERE FECHA_PAGO >= '" + this.pago + "'");
+            ResultSet rs = st.executeQuery("SELECT TOP(1) FECHA_PAGO FROM DIAS_PAGO WHERE FECHA_PAGO >= '" + this.pago + "' AND LOCALIDAD='" + tipoOC + "' ORDER BY FECHA_PAGO ASC");
             while (rs.next()) {
                 this.pagoDuche = rs.getString("FECHA_PAGO");
             }
