@@ -212,7 +212,7 @@ public class ProcesarPagosBean extends DAO implements Serializable {
     }
 
     public void procesarPagos() throws MessagingException {
-        //pagoProveedores();
+        pagoProveedores();
         pagoGastos();
     }
 
@@ -278,26 +278,26 @@ public class ProcesarPagosBean extends DAO implements Serializable {
                     System.out.println("Enviando aviso de pago a proveedor...");
                     //EnviarCorreo();
 
-                    //BUSCAR FECHA DE PAGO EN BANCOS
-                    Statement stfecban = this.getCnban().createStatement();
-                    ResultSet rsfecban = stfecban.executeQuery("SELECT TOP(1) FECHA FROM MOVS04 WHERE RFC='" + this.RFC_E + "' AND REF1 LIKE '%" + this.DOCTO.trim() + "%' ORDER BY NUM_REG DESC");
-                    if (!rsfecban.isBeforeFirst()) {
-                        System.out.println("Dato no encontrado");
-                    } else {
-                        while (rsfecban.next()) {
-                            this.fecPag = rsfecban.getString("FECHA");
-                        }
-                    }
+//                    //BUSCAR FECHA DE PAGO EN BANCOS
+//                    Statement stfecban = this.getCnban().createStatement();
+//                    ResultSet rsfecban = stfecban.executeQuery("SELECT TOP(1) FECHA FROM MOVS04 WHERE RFC='" + this.RFC_E + "' AND REF1 LIKE '%" + this.DOCTO.trim() + "%' ORDER BY NUM_REG DESC");
+//                    if (!rsfecban.isBeforeFirst()) {
+//                        System.out.println("Dato no encontrado");
+//                    } else {
+//                        while (rsfecban.next()) {
+//                            this.fecPag = rsfecban.getString("FECHA");
+//                        }
+//                    }
 
                     //VALIDAMOS SI ES TRANSFERENCIA (27) O CHEQUE(11)
                     if (NUM_CPTO == 11) {
-                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.fecPag + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
-                        // PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        //PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.fecPag + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', CHEQUE='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='CHEQUE' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
                         ps.executeUpdate();
 
                     } else {
-                        //PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
-                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.fecPag + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.FECHA_APLI + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
+                        //PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA SET ESTATUS='PAGADA', NO_TRANSFERENCIA='" + DOCTO + "', FECHA_PAGO='" + this.fecPag + "', TIPO_PAGO='TRANSFERENCIA' WHERE FOLIOWCXP='" + this.REFER.replace("WCXP", "") + "'");
                         ps.executeUpdate();
                     }
 

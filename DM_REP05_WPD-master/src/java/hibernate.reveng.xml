@@ -24,4 +24,5 @@
     <table-filter match-name="DEPOSITO"/>
     <table-filter match-name="DIAS_PAGO"/>
     <table-filter match-name="CONCEPTO_COMPLEMENTO"/>
+    <table-filter match-name="PAGA_M01"/>
 </hibernate-reverse-engineering>

@@ -3,7 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:b="http://bootsfaces.net/ui">
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,112 +25,150 @@
             </h1>
             <div id="menuPrincipal">
                 <h:form>
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:menubar>
+                                <p:submenu label="MENÚ PROVEEDORES" icon="ui-icon-home">                             
+                                    <p:menuitem value="INICIO" outcome="/Views/UploadInvoice" icon="ui-icon-home"/>
+                                    <p:menuitem value="SUBIR COMPLEMENTO" outcome="/Views/FacturaProveedores.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem value="SUGERENCIAS" outcome="/Views/ComprobantePago.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem value="FICHA DE DEPÓSITO" outcome="/Views/UploadInvoice" icon="ui-icon-wrench"/>
+                                    <p:menuitem value="CERRAR SESIÓN" icon="ui-icon-circle-close" action="/index?faces-redirect=true" 
+                                                actionListener="{loginBean.cerrarSesion()}" />
+                                </p:submenu>  
 
-                    <!--                   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                                            <a class="navbar-brand" href="#">
-                                                <img src="../img/nuevo.png" alt="" style="width: 10%; height: 100%"></img>
-                                            </a>
-                                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                                                <span class="navbar-toggler-icon"></span>
-                                            </button>-->
+                            </p:menubar>
+                        </f:facet>
+                        <f:facet name="right">
 
-                    <b:navBar>
-                        <b:navbarLinks>
-                            <b:dropMenu value="MENU PROVEEDORES" icon-awesome="fa-home">
-                                <b:navLink value="SUBIR FACTURA" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
-                                           href="FacturaProveedores.duche"></b:navLink>
-                                <b:navLink value="SUBIR COMPROBANTE DE PAGO" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
-                                           href="ComprobantePago.duche"></b:navLink>
-                                <b:navLink value="ENVIAR SUGERENCIAS" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
-                                           href="Sugerencias.duche"></b:navLink>
-                                <b:navLink value="ACTUALIZAR FICHA DE DEPÓSITO" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
-                                           href="Deposito.duche"></b:navLink>
-                            </b:dropMenu>
-                        </b:navbarLinks>
+                            <p:menubar>
+                                <p:submenu  label="ADMINISTRACIÓN DUCHÉ" icon="ui-icon-home">
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="FACTURAS GASTOS" outcome="/Views/FacturaGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="COMPLEMENTOS GASTOS" outcome="/Views/ComprobanteGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="BUSCAR FACT. PROV" outcome="/Views/BuscarFacturas.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="BUSCAR FACT. GASTOS" outcome="/Views/BuscarFacturasGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="LISTA FACT. PROV" outcome="/Views/ListaFacturasProveedores.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="LISTA FACT. GASTOS" outcome="/Views/ListaFacturasGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="PROCESAR PAGOS" outcome="/Views/ProcesarPagos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="DÍAS DE PAGO" outcome="/Views/DiasPago.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="IVAS PROVEEDORES" outcome="/Views/IVAS.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="IVAS GASTOS" outcome="/Views/IVASGASTOS.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="USUARIOS" outcome="/Views/Usuarios" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="RFC" outcome="/Views/RFC.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="MENSAJE" outcome="/Views/Comment.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="SUBIR AVISO" outcome="/Views/Info.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem value="CERRAR SESIÓN" icon="ui-icon-circle-close" action="/index?faces-redirect=true" 
+                                                actionListener="{loginBean.cerrarSesion()}" />
+                                </p:submenu>
+                            </p:menubar>
+                        </f:facet>
 
-                        <!--                        <b:navbarLinks>
-                                                    <b:dropMenu value="MENU PROVEEDORES GASTOS" icon-awesome="fa-home">
-                                                        <b:navLink value="SUBIR FACTURA" icon="plus-sign"
-                                                                   disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
-                                                                   href="UploadGastosProv.duche"></b:navLink>
-                                                        <b:navLink value="SUBIR COMPROBANTE DE PAGO" icon="plus-sign"
-                                                                   disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
-                                                                   href="UploadComInvoice.duche"></b:navLink>
-                                                        <b:navLink value="ENVIAR SUGERENCIAS" icon="plus-sign"
-                                                                   disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
-                                                                   href="Suggestion.duche"></b:navLink>
-                                                        <b:navLink value="ACTUALIZAR FICHA DE DEPÓSITO" icon="plus-sign"
-                                                                   disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
-                                                                   href="UpdateDepositInformation.duche"></b:navLink>
-                                                    </b:dropMenu>
-                                                </b:navbarLinks>-->
-
-                        <b:navbarLinks pull="right"><b:navLink value="    " href="#"></b:navLink></b:navbarLinks>
-                        <b:navbarLinks pull="right" styleClass="hidden-xs">
-
-                            <b:dropMenu  value="ADMINISTRACIÓN DUCHE" icon-awesome="cogs">
-                                <b:navLink value="Facturas gastos" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="FacturaGastos.duche">
-                                </b:navLink>
-                                <b:navLink value="Comprobantes gastos" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}"
-                                           href="ComprobanteGastos.duche"/>
-
-                                <b:navLink></b:navLink>
-
-                                <b:navLink value="Buscar facturas de proveedores" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="BuscarFacturas.duche"/>
-                                <b:navLink value="Buscar facturas de gastos" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="BuscarFacturasGastos.duche"/>
-
-                                <b:navLink></b:navLink>
-
-                                <b:navLink value="Lista de facturas proveedores " icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="ListaFacturasProveedores.duche"/>
-                                <b:navLink value="Lista de facturas gastos" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="ListaFacturasGastos.duche"/>
-
-                                <b:navLink></b:navLink>
-
-                                <b:navLink value="Procesar pagos" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="ProcesarPagos.duche"/>
-                                <b:navLink value="Días de pago" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="DiasPago.duche"/>
-                                <b:navLink value="Reporte de IVAS" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="IVAS.duche"/>
-                                <b:navLink value="Reporte de IVAS gastos" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="IVASGASTOS.duche"/>
-                                <b:navLink></b:navLink>
-                                <b:navLink value="Ver usuarios" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="Usuarios.duche"/>
-                                <b:navLink value="Responsable RFC" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="RFC.duche"/>
-                                <b:navLink value="Mensaje" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="Comment.duche"/>
-                                <b:navLink value="Susbir Aviso" icon="plus-sign"
-                                           disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
-                                           href="Info.duche"/>
+                    </p:toolbar>
 
 
-                            </b:dropMenu>
-                        </b:navbarLinks>
-                    </b:navBar>
+
+
+
+
+
+                    <!--
+                                        <b:navBar>
+                                            <b:navbarLinks>
+                                                <b:dropMenu value="MENU PROVEEDORES" icon-awesome="fa-home">
+                                                    <b:navLink value="SUBIR FACTURA" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
+                                                               href="FacturaProveedores.duche"></b:navLink>
+                                                    <b:navLink value="SUBIR COMPROBANTE DE PAGO" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
+                                                               href="ComprobantePago.duche"></b:navLink>
+                                                    <b:navLink value="ENVIAR SUGERENCIAS" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
+                                                               href="Sugerencias.duche"></b:navLink>
+                                                    <b:navLink value="ACTUALIZAR FICHA DE DEPÓSITO" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'UsuarioProv'}"
+                                                               href="Deposito.duche"></b:navLink>
+                                                </b:dropMenu>
+                                            </b:navbarLinks>
+                    
+                                                                    <b:navbarLinks>
+                                                                        <b:dropMenu value="MENU PROVEEDORES GASTOS" icon-awesome="fa-home">
+                                                                            <b:navLink value="SUBIR FACTURA" icon="plus-sign"
+                                                                                       disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
+                                                                                       href="UploadGastosProv.duche"></b:navLink>
+                                                                            <b:navLink value="SUBIR COMPROBANTE DE PAGO" icon="plus-sign"
+                                                                                       disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
+                                                                                       href="UploadComInvoice.duche"></b:navLink>
+                                                                            <b:navLink value="ENVIAR SUGERENCIAS" icon="plus-sign"
+                                                                                       disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
+                                                                                       href="Suggestion.duche"></b:navLink>
+                                                                            <b:navLink value="ACTUALIZAR FICHA DE DEPÓSITO" icon="plus-sign"
+                                                                                       disabled="{loginBean.usuario.codperfil eq 'Usuario'}"
+                                                                                       href="UpdateDepositInformation.duche"></b:navLink>
+                                                                        </b:dropMenu>
+                                                                    </b:navbarLinks>
+                    
+                                            <b:navbarLinks pull="right"><b:navLink value="    " href="#"></b:navLink></b:navbarLinks>
+                                            <b:navbarLinks pull="right" styleClass="hidden-xs">
+                    
+                                                <b:dropMenu  value="ADMINISTRACIÓN DUCHE" icon-awesome="cogs">
+                                                    <b:navLink value="Facturas gastos" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="FacturaGastos.duche">
+                                                    </b:navLink>
+                                                    <b:navLink value="Comprobantes gastos" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}"
+                                                               href="ComprobanteGastos.duche"/>
+                    
+                                                    <b:navLink></b:navLink>
+                    
+                                                    <b:navLink value="Buscar facturas de proveedores" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="BuscarFacturas.duche"/>
+                                                    <b:navLink value="Buscar facturas de gastos" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="BuscarFacturasGastos.duche"/>
+                    
+                                                    <b:navLink></b:navLink>
+                    
+                                                    <b:navLink value="Lista de facturas proveedores " icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="ListaFacturasProveedores.duche"/>
+                                                    <b:navLink value="Lista de facturas gastos" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="ListaFacturasGastos.duche"/>
+                    
+                                                    <b:navLink></b:navLink>
+                    
+                                                    <b:navLink value="Procesar pagos" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="ProcesarPagos.duche"/>
+                                                    <b:navLink value="Días de pago" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="DiasPago.duche"/>
+                                                    <b:navLink value="Reporte de IVAS" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="IVAS.duche"/>
+                                                    <b:navLink value="Reporte de IVAS gastos" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="IVASGASTOS.duche"/>
+                                                    <b:navLink></b:navLink>
+                                                    <b:navLink value="Ver usuarios" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="Usuarios.duche"/>
+                                                    <b:navLink value="Responsable RFC" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="RFC.duche"/>
+                                                    <b:navLink value="Mensaje" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="Comment.duche"/>
+                                                    <b:navLink value="Susbir Aviso" icon="plus-sign"
+                                                               disabled="#{loginBean.usuario.codperfil eq 'Usuario' || loginBean.usuario.codperfil eq 'UsuarioProv'}" 
+                                                               href="Info.duche"/>
+                    
+                    
+                                                </b:dropMenu>
+                                            </b:navbarLinks>
+                                        </b:navBar>-->
 
                 </h:form>
             </div>

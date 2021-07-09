@@ -1572,6 +1572,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
             buscarWCXP();
             insertaPAGA_M01();
             insertarCOMPR01();
+            insertaPagaM01Portal();
             generarPDF();
             enviarAviso();
         } else {
@@ -1849,6 +1850,23 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
             PreparedStatement ps = this.getCn().prepareStatement("INSERT INTO PAGA_M01 VALUES ('" + this.cveprov + "', '" + "WCXP" + this.folioWcxp + "', 1, 1, NULL,0, '" + this.facturaSAE + "', 'WCXP" + this.folioWcxp + "', '" + this.miTotal + "', GETDATE(), '" + this.miPago + "', 'A', '" + this.NUM_MONED + "', '" + this.TIPCAMB + "','" + this.total + "', GETDATE(), NULL, 'C', NULL, 1, NULL, 0, NULL, NULL, NULL, 'A')");
             ps.executeUpdate();
             this.Cerrar();
+        } catch (SQLException ex) {
+            Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void insertaPagaM01Portal() {
+        try {
+            this.miTotal = Float.parseFloat(this.total) * this.TIPCAMB;
+            this.Conectarprov();
+            this.facturaSAE = this.serie + this.folio;
+            if (this.facturaSAE.length() > 20) {
+                this.tamcadena = this.facturaSAE.length();
+                this.tamcadena = this.tamcadena - 20;
+                this.facturaSAE = this.facturaSAE.substring(this.tamcadena, this.facturaSAE.length());
+            }
+            PreparedStatement ps = this.getCnprov().prepareStatement("INSERT INTO PAGA_M01 VALUES ('" + this.cveprov + "', '" + "WCXP" + this.folioWcxp + "', 1, 1, NULL,0, '" + this.facturaSAE + "', 'WCXP" + this.folioWcxp + "', '" + this.miTotal + "', GETDATE(), '" + this.miPago + "', 'A', '" + this.NUM_MONED + "', '" + this.TIPCAMB + "','" + this.total + "', GETDATE(), NULL, 'C', NULL, 1, NULL, 0, NULL, NULL, NULL, 'A', 0)");
+            ps.executeUpdate();
+            this.Cerrarprov();
         } catch (SQLException ex) {
             Logger.getLogger(BuscarRecepcionBean.class.getName()).log(Level.SEVERE, null, ex);
         }

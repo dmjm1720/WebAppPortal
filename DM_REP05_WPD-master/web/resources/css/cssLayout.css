@@ -4,7 +4,7 @@
     margin-top: 50px;
     position: relative;
     top: 15px;
-    font-size: 13px;
+    font-size: 10px !important;
 }
 
 #top {
@@ -17,7 +17,7 @@
 /*    color: #DBDBDB !important;*/
     padding: 10px;
     margin: 20px 0px 70px 0px;
-
+    font-size: 10px !important;
 }
 
 #bottom {
@@ -73,6 +73,7 @@
     color: black;
     font-weight : bold;
     text-decoration: none;
+    font-size: 10px;
 }
 
 #top a:link:hover, #top a:visited:hover  {

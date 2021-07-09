@@ -1,0 +1,16 @@
+Password SQL Server Versión 2019:
+S1st3m4S*Duch3
+
+Instancia:
+WIN-2ICQ9GC967F\SQLEXPRESS
+
+
+Password Payara
+P0rT41Pr0v33d0r35
+
+Nombre del servicio en Windwos
+Portal_Proveedores
+
+Nombre mostrado en el servivio de Windows
+domain1 Payara Server
+
