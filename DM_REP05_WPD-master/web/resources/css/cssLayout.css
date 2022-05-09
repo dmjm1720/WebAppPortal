@@ -1,24 +1,24 @@
 #menuPrincipal{
     /*    background-image: url('../..//img/blue.jpg');*/
     height: 1px;
-    margin-top: 50px;
+   margin: 20px 0px 70px 0px;
     position: relative;
     top: 15px;
     font-size: 10px !important;
 }
 
-#top {
+/*#top {
     position: relative;
-/*    background-image: url('../..//img/nuevo.png');
+    background-image: url('../..//img/nuevo.png');
     background-repeat: no-repeat;
-    background-size: 5%;*/
+    background-size: 5%;
     background-color:#233460;
     border-radius: 8px;
-/*    color: #DBDBDB !important;*/
+    color: #DBDBDB !important;
     padding: 10px;
     margin: 20px 0px 70px 0px;
     font-size: 10px !important;
-}
+}*/
 
 #bottom {
     position: relative;

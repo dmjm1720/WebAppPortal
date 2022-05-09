@@ -20,9 +20,7 @@
     <h:body>
 
         <div id="top">
-            <h1 style="font-family: 'Kufam', cursive;">
-                PORTAL PROVEEDORES
-            </h1>
+    
             <div id="menuPrincipal">
                 <h:form>
                     <p:toolbar>
@@ -34,7 +32,7 @@
                                     <p:menuitem value="SUGERENCIAS" outcome="/Views/ComprobantePago.duche" icon="ui-icon-wrench"/>
                                     <p:menuitem value="FICHA DE DEPÓSITO" outcome="/Views/UploadInvoice" icon="ui-icon-wrench"/>
                                     <p:menuitem value="CERRAR SESIÓN" icon="ui-icon-circle-close" action="/index?faces-redirect=true" 
-                                                actionListener="{loginBean.cerrarSesion()}" />
+                                                actionListener="#{loginBean.cerrarSesion()}" />
                                 </p:submenu>  
 
                             </p:menubar>
@@ -43,22 +41,22 @@
 
                             <p:menubar>
                                 <p:submenu  label="ADMINISTRACIÓN DUCHÉ" icon="ui-icon-home">
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="FACTURAS GASTOS" outcome="/Views/FacturaGastos.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="COMPLEMENTOS GASTOS" outcome="/Views/ComprobanteGastos.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="BUSCAR FACT. PROV" outcome="/Views/BuscarFacturas.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="BUSCAR FACT. GASTOS" outcome="/Views/BuscarFacturasGastos.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="LISTA FACT. PROV" outcome="/Views/ListaFacturasProveedores.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="LISTA FACT. GASTOS" outcome="/Views/ListaFacturasGastos.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="PROCESAR PAGOS" outcome="/Views/ProcesarPagos.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="DÍAS DE PAGO" outcome="/Views/DiasPago.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="IVAS PROVEEDORES" outcome="/Views/IVAS.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="IVAS GASTOS" outcome="/Views/IVASGASTOS.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="USUARIOS" outcome="/Views/Usuarios" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="RFC" outcome="/Views/RFC.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="MENSAJE" outcome="/Views/Comment.duche" icon="ui-icon-wrench"/>
-                                    <p:menuitem disabled="{loginBean.usuario.codperfil eq 'Usuario'}" value="SUBIR AVISO" outcome="/Views/Info.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="FACTURAS GASTOS" outcome="/Views/FacturaGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="COMPLEMENTOS GASTOS" outcome="/Views/ComprobanteGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="BUSCAR FACT. PROV" outcome="/Views/BuscarFacturas.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="BUSCAR FACT. GASTOS" outcome="/Views/BuscarFacturasGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="LISTA FACT. PROV" outcome="/Views/ListaFacturasProveedores.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="LISTA FACT. GASTOS" outcome="/Views/ListaFacturasGastos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="PROCESAR PAGOS" outcome="/Views/ProcesarPagos.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="DÍAS DE PAGO" outcome="/Views/DiasPago.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="IVAS PROVEEDORES" outcome="/Views/IVAS.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="IVAS GASTOS" outcome="/Views/IVASGASTOS.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="USUARIOS" outcome="/Views/Usuarios" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="RFC" outcome="/Views/RFC.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="MENSAJE" outcome="/Views/Comment.duche" icon="ui-icon-wrench"/>
+                                    <p:menuitem disabled="#{loginBean.usuario.codperfil eq 'Usuario'}" value="SUBIR AVISO" outcome="/Views/Info.duche" icon="ui-icon-wrench"/>
                                     <p:menuitem value="CERRAR SESIÓN" icon="ui-icon-circle-close" action="/index?faces-redirect=true" 
-                                                actionListener="{loginBean.cerrarSesion()}" />
+                                                actionListener="#{loginBean.cerrarSesion()}" />
                                 </p:submenu>
                             </p:menubar>
                         </f:facet>

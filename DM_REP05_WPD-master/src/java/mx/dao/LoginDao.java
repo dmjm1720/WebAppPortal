@@ -1,5 +1,6 @@
 package mx.dao;
 
+import java.util.List;
 import mx.model.Usuario;
 
 public interface LoginDao {
@@ -8,4 +9,9 @@ public interface LoginDao {
 
     public Usuario login(Usuario usuario);
 
+    public List<Usuario> lista();
+    
+    public void actualizaClave(Usuario usuario);
+    
+    
 }

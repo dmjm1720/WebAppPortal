@@ -37,6 +37,7 @@
                 <h:form id="frmPrincipal">
                     <p:panel id="pnlPrincipal" header="LISTA DE USUARIOS" style="margin: 0 auto; text-align: center; font-size: 13px">
                         <p:layoutUnit id="tablaPrincipal" position="center" style="padding: 5px; text-align: center;">
+                            <p:commandButton value="Cifrar" actionListener="#{cifrar.cifrar()}"/>
                             <p:dataTable  style="font-size: 11px" id="tblPrincipal" paginator="true" rows="13" sortMode="multiple" paginatorPosition="top" var="tbl" value="#{usuarioBean.listaUsuario}">                           
                                 <p:ajax event="sort" skipChildren="false" />
                                 <p:column headerText="Correo">
