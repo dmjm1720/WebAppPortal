@@ -11,9 +11,8 @@
     <body>
 <!--        <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"></p:growl>-->
 
-        <p:spacer width="120" height="500"></p:spacer>
-        <button class="hover" onclick="document.getElementById('id01').style.display = 'block'" style="width:auto;">INICIAR SESIÓN</button>
-        <div id="id01" class="modal">
+
+
             <h:form id="formLogin" class="modal-content animate" style="text-align: center">
                 <p:growl id="mensaje" showSummary="true" life="50000" showDetail="true"/>
                 <p:blockUI block="formLogin" trigger="inicio">   
@@ -48,7 +47,7 @@
                     <h:outputLink value="javascript:void(0)" onclick="PF('dlgPass').show();" style="color: #1D60A4; font-size: 15px">RECUPERAR MI CONTRASEÑA</h:outputLink>
                 </div>
             </h:form>
-        </div>
+    
         <h:form id="frmRegistro">
             <p:growl id="mensaj" showSummary="true" showDetail="true"></p:growl>
             <p:dialog style="font-size: 12px;" showEffect="scale" hideEffect="clip" id="dlgReg" 
@@ -64,27 +63,27 @@
                     <p:panelGrid id="pnlGrid" columns="2" style="margin: 0 auto; width: 400px; text-align: right">
 
                         <p:outputLabel for="correo" value="CORREO"></p:outputLabel>
-                        <p:inputText id="correo" style="width: 220px; height: 30px; color: #FFFFFF; background-color: #C6FA04" validatorMessage="Correo inválido" value="#{registroBean.correo}"
+                        <p:inputText id="correo" style="width: 220px; height: 30px;" validatorMessage="Correo inválido" value="#{registroBean.correo}"
                                      required="true" requiredMessage="Correo requerido para registro" label="Correo requerido para registro" placeholder="Ingrese su e-mail">
                             <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" ></f:validateRegex>
                             <p:message for="correo"></p:message>
                         </p:inputText>
 
                         <p:outputLabel for="rfc" value="RFC"></p:outputLabel>
-                        <p:inputText id="rfc" style="width: 220px; height: 30px; color: #FFFFFF; background-color: #C6FA04" value="#{registroBean.rfc}"
+                        <p:inputText id="rfc" style="width: 220px; height: 30px;" value="#{registroBean.rfc}"
                                      required="true" requiredMessage="RFC requerido para registro" label="RFC requerido para registro" placeholder="Ingrese su RFC" onkeyup="javascript:this.value = this.value.toUpperCase();">
                             <p:message for="rfc"></p:message>
                         </p:inputText>
 
                         <p:outputLabel for="tel" value="TELÉFONO"></p:outputLabel>
-                        <p:inputMask id="tel" style="width: 220px; height: 30px; color: #FFFFFF; background-color: #C6FA04" value="#{registroBean.telefono}" mask="(999) 999-9999"
+                        <p:inputMask id="tel" style="width: 220px; height: 30px;" value="#{registroBean.telefono}" mask="(999) 999-9999"
                                      required="true" requiredMessage="Teléfono requerido para registro" label="Teléfono requerido para registro" placeholder="Ingrese su Télefono" onkeyup="javascript:this.value = this.value.toUpperCase();">
                             <p:message for="tel"></p:message>
                         </p:inputMask>
 
 
                         <p:outputLabel for="contraseña" value="CONTRASEÑA"></p:outputLabel>
-                        <p:password id="contraseña" match="contraseña1" style="width: 220px; height: 30px; color: #FFFFFF; background-color: #C6FA04" value="#{registroBean.clave}" required="true" weakLabel="Contraseña débil" 
+                        <p:password id="contraseña" match="contraseña1" style="width: 220px; height: 30px;" value="#{registroBean.clave}" required="true" weakLabel="Contraseña débil" 
                                     strongLabel="Contraseña fuerte" label="Contraseña requerida para registro" requiredMessage="Contraseña requerida para registro"
                                     feedback="true" promptLabel="Contraseña" placeholder="Ingrese contraseña">
                             <p:message for="contraseña"></p:message>
@@ -92,7 +91,7 @@
 
 
                         <p:outputLabel for="contraseña1" value="REPITA CONTRASEÑA"></p:outputLabel>
-                        <p:password id="contraseña1" style="width: 220px; height: 30px; color: #FFFFFF; background-color: #C6FA04" value="#{registroBean.clave2}" required="true" weakLabel="Contraseña débil" 
+                        <p:password id="contraseña1" style="width: 220px; height: 30px;" value="#{registroBean.clave2}" required="true" weakLabel="Contraseña débil" 
                                     strongLabel="Contraseña fuerte" label="Contraseña requerida para registro" requiredMessage="Contraseña requerida para registro"
                                     feedback="true" promptLabel="Repita contrseña" placeholder="Repetir contraseña">
                             <p:message for="contraseña1"></p:message>

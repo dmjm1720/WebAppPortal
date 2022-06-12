@@ -1948,12 +1948,14 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         }
         buscarMensaje();
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.alestraune.net.mx");
+        props.put("mail.smtp.host", "securemail25.carrierzone.com");
         props.setProperty("mail.smtp.starttls.enable", "true");
+        
         props.setProperty("mail.smtp.port", "587");
         props.setProperty("mail.smtp.user", "portalproveedores@duche.com");
         props.setProperty("mail.smtp.auth", "true");
         Session session = Session.getDefaultInstance(props, null);
+        session.getProperties().put("mail.smtp.ssl.trust", "securemail25.carrierzone.com");
         session.setDebug(true);
         if (this.folio.equals("0")) {
             this.folio = "";
@@ -2028,8 +2030,8 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
 // Se mete el texto y la foto adjunta.
         message.setContent(multiParte);
 
-        Transport t = session.getTransport("smtp");
-        t.connect("portalproveedores@duche.com", "ML310gen11");
+       Transport t = session.getTransport("smtp");
+        t.connect("portalproveedores@duche.com", "07vB*E4l");
         t.sendMessage(message, message.getAllRecipients());
         t.close();
         limpiarVariables();

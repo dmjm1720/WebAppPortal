@@ -17,7 +17,7 @@ public class LoginDaoImpl implements LoginDao {
         String hql = "FROM Usuario WHERE RFC=:RFC and CLAVE=:CLAVE";
         Query q = session.createQuery(hql).setMaxResults(1);
         q.setParameter("RFC", usuario.getRfc());
-        q.setParameter("CLAVE",Cifrado.sha512(usuario.getClave()));
+        q.setParameter("CLAVE",usuario.getClave());
         return (Usuario) q.uniqueResult();
     }
 
@@ -55,7 +55,7 @@ public class LoginDaoImpl implements LoginDao {
         String hql = "UPDATE Usuario SET clave=:clave WHERE id=:id";
         Query q = session.createQuery(hql);
         q.setParameter("id", usuario.getId());
-        q.setParameter("clave", Cifrado.sha512(usuario.getClave()));
+        q.setParameter("clave", usuario.getClave());
         try {
             q.executeUpdate();
             t.commit();

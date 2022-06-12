@@ -1,31 +1,22 @@
 package mx.bean;
 
-import mx.dao.*;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
-import java.util.Random;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+
 import mx.dao.DAO;
-import mx.dao.DAO;
+import mx.util.Cifrado;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "registroBean")
@@ -171,7 +162,7 @@ public class registroBean extends DAO implements Serializable {
                                 i++;
                             }
                         }
-                        PreparedStatement ps = this.getCnprov().prepareStatement("INSERT INTO USUARIO VALUES('" + this.correo + "','Usuario','" + this.rfc + "','" + this.clave + "','" + this.telefono + "',0,GETDATE(),'','','" + this.cadena + "','')");
+                        PreparedStatement ps = this.getCnprov().prepareStatement("INSERT INTO USUARIO VALUES('" + this.correo + "','Usuario','" + this.rfc + "','" +this.clave + "','" + this.telefono + "',0,GETDATE(),'','','" + this.cadena + "','')");
                         ps.executeUpdate();
                         correo();
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡Te hemos enviado un código de activación al correo:  " + this.correo + " por favor revisa tu bandeja de entrada!"));
@@ -220,13 +211,15 @@ public class registroBean extends DAO implements Serializable {
 
     public void correo() throws MessagingException {
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.alestraune.net.mx");
+        props.put("mail.smtp.host", "securemail25.carrierzone.com");
         props.setProperty("mail.smtp.starttls.enable", "true");
+        
         props.setProperty("mail.smtp.port", "587");
         props.setProperty("mail.smtp.user", "portalproveedores@duche.com");
         props.setProperty("mail.smtp.auth", "true");
         Session session = Session.getDefaultInstance(props, null);
-        session.setDebug(false);
+        session.getProperties().put("mail.smtp.ssl.trust", "securemail25.carrierzone.com");
+        session.setDebug(true);
 
         BodyPart texto = new MimeBodyPart();
         texto.setContent("<html><head><title></title></head>"
@@ -256,8 +249,10 @@ public class registroBean extends DAO implements Serializable {
         MimeMultipart multiParte = new MimeMultipart();
         BodyPart imagen = new MimeBodyPart();
         BodyPart activacion = new MimeBodyPart();
-        DataSource fds = new FileDataSource("C:\\img\\duche.png");
-        DataSource act = new FileDataSource("C:\\img\\activacion.png");
+        //DataSource fds = new FileDataSource("C:\\img\\duche.png");
+        //DataSource act = new FileDataSource("C:\\img\\activacion.png");
+        DataSource fds = new FileDataSource("/home/DMJM/Imágenes/img/nuevo.png");
+        DataSource act = new FileDataSource("/home/DMJM/Imágenes/img/nuevo.png");
         imagen.setDataHandler(new DataHandler(fds));
         imagen.setHeader("Content-ID", "<image>");
         activacion.setDataHandler(new DataHandler(act));
@@ -283,7 +278,7 @@ public class registroBean extends DAO implements Serializable {
         message.setContent(multiParte);
 
         Transport t = session.getTransport("smtp");
-        t.connect("portalproveedores@duche.com", "ML310gen11");
+        t.connect("portalproveedores@duche.com", "07vB*E4l");
         t.sendMessage(message, message.getAllRecipients());
         t.close();
     }
