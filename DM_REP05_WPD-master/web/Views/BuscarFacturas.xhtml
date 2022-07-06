@@ -91,6 +91,9 @@
                                 <p:column  headerText="UUID Factura">
                                     <h:outputText value="#{tbl.uuid}"/>
                                 </p:column>
+                                <p:column  headerText="Versión">
+                                    <h:outputText value="#{tbl.versioncfdi}"/>
+                                </p:column>
                                 <p:column  headerText="UUID Comprobante">
                                     <h:outputText value="#{tbl.uuidrel}"/>
                                 </p:column>
@@ -169,6 +172,8 @@
                     <p:dialog style="font-size: 12px;" id="dlgVerXML" header="Visualizar factura del XML" widgetVar="dialogVerXML" resizable="false" 
                               showEffect="clip" hideEffect="size" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
+                            <p:outputLabel value="Versión"/>
+                            <p:inputText id="ver" value="#{filterByBean.factura.versioncfdi}" style="width: 250px" readonly="true"/>
                             <p:outputLabel value="UUID"/>
                             <p:inputText id="uuid" value="#{filterByBean.factura.uuid}" style="width: 250px" readonly="true"/>
                         </p:panelGrid><br></br>

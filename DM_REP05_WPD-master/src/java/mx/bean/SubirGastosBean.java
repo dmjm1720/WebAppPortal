@@ -125,6 +125,7 @@ public class SubirGastosBean extends DAO implements Serializable {
     private String valorUnitario;
     private String importe;
     private String RegimenFiscal;
+    private String exporta;
     private String Regimen;
     private String UsoCFDI;
     private String BaseTraslado;
@@ -537,6 +538,14 @@ public class SubirGastosBean extends DAO implements Serializable {
 
     public void setRegimenFiscal(String RegimenFiscal) {
         this.RegimenFiscal = RegimenFiscal;
+    }
+
+    public String getExporta() {
+        return exporta;
+    }
+
+    public void setExporta(String exporta) {
+        this.exporta = exporta;
     }
 
     public String getRegimen() {
@@ -1202,6 +1211,10 @@ public class SubirGastosBean extends DAO implements Serializable {
         if (this.moneda == null) {
             moneda = rootNode.getAttributeValue("Moneda");
         }
+        exporta = rootNode.getAttributeValue("exportacion");
+        if (this.exporta == null) {
+            exporta = rootNode.getAttributeValue("Exportacion");
+        }
         total = rootNode.getAttributeValue("total");
         if (total == null) {
             total = rootNode.getAttributeValue("Total");
@@ -1470,7 +1483,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             insertarConcepto();
             actualizarFolio();
             buscarWCXP();
-            generarPDF();
+            generarPDF(VersionSAT);
             // enviarAviso();
         } else if (!acuse.getEstado()
                 .getValue().equals("Vigente")) {
@@ -1572,6 +1585,68 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setImpuesto(Impuesto);
         f.setTipoFactor(TipoFactor);
         f.setTasaCouta(TasaOCuota);
+        //Validación Régimen fiscal
+        switch (RegimenFiscal) {
+            case "601":
+                f.setNombreRegimen("General de Ley Personas Morales");
+                break;
+            case "603":
+                f.setNombreRegimen("Personas Morales con Fines no Lucrativos");
+                break;
+            case "605":
+                f.setNombreRegimen("Sueldos y Salarios e Ingresos Asimilados a Salarios");
+                break;
+            case "606":
+                f.setNombreRegimen(" Arrendamiento");
+                break;
+            case "607":
+                f.setNombreRegimen("Régimen de Enajenación o Adquisición de Bienes");
+                break;
+            case "608":
+                f.setNombreRegimen("Demás ingresos");
+                break;
+            case "610":
+                f.setNombreRegimen("Residentes en el Extranjero sin Establecimiento Permanente en México");
+                break;
+            case "611":
+                f.setNombreRegimen("Ingresos por Dividendos(socios y accionistas)");
+                break;
+            case "612":
+                f.setNombreRegimen("Personas Físicas con Actividades Empresariales y Profesionales");
+                break;
+            case "614":
+                f.setNombreRegimen("Ingresos por intereses");
+                break;
+            case "615":
+                f.setNombreRegimen("Régimen de los ingresos por obtención de premios");
+                break;
+            case "616":
+                f.setNombreRegimen("Sin obligaciones fiscales");
+                break;
+            case "620":
+                f.setNombreRegimen("Sociedades Cooperativas de Producción que optan por diferir sus ingresos");
+                break;
+            case "621":
+                f.setNombreRegimen("Incorporación Fiscal");
+                break;
+            case "622":
+                f.setNombreRegimen("Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras");
+                break;
+            case "623":
+                f.setNombreRegimen("Opcional para Grupos de Sociedades");
+                break;
+            case "624":
+                f.setNombreRegimen("Coordinados");
+                break;
+            case "625":
+                f.setNombreRegimen("Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas");
+                break;
+            case "626":
+                f.setNombreRegimen("Régimen Simplificado de Confianza");
+                break;
+            default:
+                f.setNombreRegimen("Régimen no encontrado");
+        }
         try {
             if (this.TasaOCuota.contains("0.00")) {
                 f.setBase0(this.importe);
@@ -1833,7 +1908,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         limpiarVariables();
     }
 
-    public void generarPDF() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
+    public void generarPDF(String ver) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         this.Conectarprov();
         JasperReport jasperReport;
@@ -1843,7 +1918,12 @@ public class SubirGastosBean extends DAO implements Serializable {
             this.uuid = this.UUIDTF;
             Map parameter = new HashMap();
             parameter.put("uuid", uuid);
-            URL in = this.getClass().getResource("/mx/facturaJasper/facturaGastosPDF.jasper");
+             URL in = null;
+            if (ver.equals("3.3")) {
+                in = this.getClass().getResource("/mx/facturaJasper/facturaGastosPDF.jasper");
+            } else if (ver.equals("4.0")) {
+                in = this.getClass().getResource("/mx/facturaJasper/facturaGastosPDF_4.0.jasper");
+            }
             jasperReport = (JasperReport) JRLoader.loadObject(in);
             //se procesa el archivo jasper
             jasperPrint = JasperFillManager.fillReport(jasperReport, parameter, this.getCnprov());

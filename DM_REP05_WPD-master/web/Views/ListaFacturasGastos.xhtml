@@ -81,6 +81,12 @@
                                 <p:column  headerText="Fecha factura">
                                     <h:outputText value="#{tbl.fecha}"/>
                                 </p:column>
+                                <p:column  headerText="Versión">
+                                    <h:outputText value="#{tbl.versioncfdi}"></h:outputText>
+                                </p:column>
+                                <p:column  headerText="UUID Factura">
+                                    <h:outputText value="#{tbl.uuid}"></h:outputText>
+                                </p:column>
                                 <p:column headerText="$ Total a pagar">
                                     <h:outputText value="#{tbl.total}">
                                         <f:convertNumber currencySymbol="$" type="currency"/>
@@ -142,6 +148,8 @@
                     <p:dialog style="font-size: 12px;" id="dlgVerXML" header="Visualizar factura del XML" widgetVar="dialogVerXML" resizable="false" 
                               showEffect="clip" hideEffect="size" modal="true">
                         <p:panelGrid columns="1" style="margin: 0 auto">
+                            <p:outputLabel value="Versión"/>
+                            <p:inputText id="ver" value="#{gastos.factura.versioncfdi}" style="width: 250px" readonly="true"/>
                             <p:outputLabel value="UUID"/>
                             <p:inputText id="uuid" value="#{gastos.factura.uuid}" style="width: 250px" readonly="true"/>
                         </p:panelGrid><br></br>

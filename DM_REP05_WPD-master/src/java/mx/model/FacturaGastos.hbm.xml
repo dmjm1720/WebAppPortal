@@ -224,5 +224,11 @@
         <property name="tipoPago" type="string">
             <column name="TIPO_PAGO" length="50" />
         </property>
+        <property name="nombreRegimen" type="string">
+            <column name="NOMBRE_REGIMEN" length="250" />
+        </property>
+        <property name="exportacion" type="string">
+            <column name="EXPORTACION" length="25" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -75,6 +75,8 @@ public class Factura implements java.io.Serializable {
     private String noTransferencia;
     private String descuento;
     private String tipoPago;
+    private String nombreRegimen;
+    private String exportacion;
 
     public Factura() {
     }
@@ -83,7 +85,7 @@ public class Factura implements java.io.Serializable {
         this.id = id;
     }
 
-    public Factura(int id, String factura, String fecha, String folio, String serie, String versioncfdi, BigDecimal importe, BigDecimal total, BigDecimal tipoCambio, String moneda, String metodoPago, String tipoComprobante, String lugarExpedicion, String certificado, String noCertificado, String formaPago, String sello, String nombreE, String rfcE, String regimenFiscal, String nombreR, String rfcR, String usoCfdi, String impuesto, String tipoFactor, String tasaCouta, BigDecimal importeCouta, String referencia, String fechaRecepcion, String fechaPago, String estatus, String calle, String colonia, String estado, String municipio, String pais, String comentario, String comentarioProveedor, String estatusSat, String versioncfd, String uuid, String fechaTimbrado, String rfcProvCert, String selloCfd, String selloSat, String wcxp, String enviado, Integer foliowcxp, String claveProv, String nombreArchivo, String noCertificadoSat, String condicionesPago, String estatusCom, String uuidrel, String oc, String cheque, String conceptos, String fcomp, String impuestoIsr, String tipoFactorIsr, String tasaCuotaIsr, String importeCuotaIsr, String ivaRet0, String ivaRet04, String ivaRet06, String ivaTasa0, String base0, String base16, String noTransferencia, String descuento, String tipoPago) {
+    public Factura(int id, String factura, String fecha, String folio, String serie, String versioncfdi, BigDecimal importe, BigDecimal total, BigDecimal tipoCambio, String moneda, String metodoPago, String tipoComprobante, String lugarExpedicion, String certificado, String noCertificado, String formaPago, String sello, String nombreE, String rfcE, String regimenFiscal, String nombreR, String rfcR, String usoCfdi, String impuesto, String tipoFactor, String tasaCouta, BigDecimal importeCouta, String referencia, String fechaRecepcion, String fechaPago, String estatus, String calle, String colonia, String estado, String municipio, String pais, String comentario, String comentarioProveedor, String estatusSat, String versioncfd, String uuid, String fechaTimbrado, String rfcProvCert, String selloCfd, String selloSat, String wcxp, String enviado, Integer foliowcxp, String claveProv, String nombreArchivo, String noCertificadoSat, String condicionesPago, String estatusCom, String uuidrel, String oc, String cheque, String conceptos, String fcomp, String impuestoIsr, String tipoFactorIsr, String tasaCuotaIsr, String importeCuotaIsr, String ivaRet0, String ivaRet04, String ivaRet06, String ivaTasa0, String base0, String base16, String noTransferencia, String descuento, String tipoPago, String nombreRegimen, String exportacion) {
         this.id = id;
         this.factura = factura;
         this.fecha = fecha;
@@ -155,6 +157,8 @@ public class Factura implements java.io.Serializable {
         this.noTransferencia = noTransferencia;
         this.descuento = descuento;
         this.tipoPago = tipoPago;
+        this.nombreRegimen = nombreRegimen;
+        this.exportacion = exportacion;
     }
 
     public int getId() {
@@ -723,6 +727,22 @@ public class Factura implements java.io.Serializable {
 
     public void setTipoPago(String tipoPago) {
         this.tipoPago = tipoPago;
+    }
+
+    public String getNombreRegimen() {
+        return nombreRegimen;
+    }
+
+    public void setNombreRegimen(String nombreRegimen) {
+        this.nombreRegimen = nombreRegimen;
+    }
+
+    public String getExportacion() {
+        return exportacion;
+    }
+
+    public void setExportacion(String exportacion) {
+        this.exportacion = exportacion;
     }
 
 }

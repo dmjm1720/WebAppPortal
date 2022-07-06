@@ -375,10 +375,17 @@ public class FilterGastosByBean extends DAO implements Serializable {
     public void visualizarCFDI_PDF() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         uuid = request.getParameter("frmVerXML:uuid");
+        String ver = request.getParameter("frmVerXML:ver");
         reporteCFDI rCliente = new reporteCFDI();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-        String ruta = servletContext.getRealPath("/CFDI/facturaGastosPDF.jasper");
+        String ruta = null;
+        if (ver.equals("3.3")) {
+            ruta = servletContext.getRealPath("/CFDI/facturaGastosPDF.jasper");
+        } else if (ver.equals("4.0")) {
+            ruta = servletContext.getRealPath("/CFDI/facturaGastosPDF_4.0.jasper");
+        }
+
         //rCliente.getReporte(ruta, this.viaje.getNombreViajero(), this.viaje.getFolioUsuario());
         rCliente.getReporte(ruta, uuid);
         //rCliente.getReporte(ruta, this.codigo, this.folio);
