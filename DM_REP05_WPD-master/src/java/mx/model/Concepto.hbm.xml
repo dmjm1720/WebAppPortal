@@ -32,5 +32,8 @@
         <property name="claveProd" type="string">
             <column name="CLAVE_PROD" length="100" />
         </property>
+        <property name="impuestos" type="string">
+            <column name="IMPUESTOS" length="150" />
+        </property>
     </class>
 </hibernate-mapping>

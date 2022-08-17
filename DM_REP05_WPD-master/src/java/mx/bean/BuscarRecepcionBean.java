@@ -59,6 +59,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import java.net.URL;
 import java.util.Date;
+import mx.dao.ImpuestoRetenido;
 
 //Web Service SAT 
 import mx.sat.Acuse;
@@ -188,12 +189,15 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
     private int tamcadena;
     private String condPago;
     private String descuento;
+    private ImpuestoRetenido impuestoRetenido;
 
     //variables para el CFDI
     private final String ruta = "C:\\public\\proveedores\\";
     private final String rutaIp = "C:\\newPublic\\proveedores\\";
 
     private List<String> lista;
+    private List<String> listaImpuestos;
+    private List<String> listaImpuestosRetenidos;
 
     //Web Service SAT
     private ConsultaCFDIService consulta;
@@ -204,8 +208,19 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
 
     public BuscarRecepcionBean() {
         this.lista = new ArrayList<>();
+        this.listaImpuestos = new ArrayList<>();
+        this.listaImpuestosRetenidos = new ArrayList<>();
         f = new Factura();
         part = new Concepto();
+        impuestoRetenido = new ImpuestoRetenido();
+    }
+
+    public ImpuestoRetenido getImpuestoRetenido() {
+        return impuestoRetenido;
+    }
+
+    public void setImpuestoRetenido(ImpuestoRetenido impuestoRetenido) {
+        this.impuestoRetenido = impuestoRetenido;
     }
 
     public String getMiFecha() {
@@ -1068,6 +1083,30 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         this.descuento = descuento;
     }
 
+    public List<String> getLista() {
+        return lista;
+    }
+
+    public void setLista(List<String> lista) {
+        this.lista = lista;
+    }
+
+    public List<String> getListaImpuestos() {
+        return listaImpuestos;
+    }
+
+    public void setListaImpuestos(List<String> listaImpuestos) {
+        this.listaImpuestos = listaImpuestos;
+    }
+
+    public List<String> getListaImpuestosRetenidos() {
+        return listaImpuestosRetenidos;
+    }
+
+    public void setListaImpuestosRetenidos(List<String> listaImpuestosRetenidos) {
+        this.listaImpuestosRetenidos = listaImpuestosRetenidos;
+    }
+
     public void buscarRecepcion() {
         try {
             this.Conectar();
@@ -1288,6 +1327,24 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                 Element campo = (Element) listaCampos.get(j);
                 String valor2 = campo.getName();
 
+                List valorT = campo.getChildren();
+                for (int k = 0; k < valorT.size(); k++) {
+                    Element eT = (Element) valorT.get(k);
+                    List valorT2 = eT.getChildren();
+                    for (int l = 0; l < valorT2.size(); l++) {
+                        Element eT2 = (Element) valorT2.get(l);
+
+                        List valorT3 = eT2.getChildren();
+                        for (int m = 0; m < valorT3.size(); m++) {
+                            Element eT3 = (Element) valorT3.get(m);
+                            //System.out.println(eT3.getAttributeValue("Base"));
+                            String imp = eT3.getAttributeValue("Impuesto") + " " + eT3.getAttributeValue("TipoFactor") + " " + eT3.getAttributeValue("TasaOCuota") + " | ";
+                            listaImpuestos.add(imp);
+                        }
+
+                    }
+                }
+
                 if (valor2.equals("DomicilioFiscal")) {
                     this.calleDF = campo.getAttributeValue("calle");
                     this.noExteriorDF = campo.getAttributeValue("noExterior");
@@ -1372,6 +1429,8 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                     lista.add(valorUnitario);
                     lista.add(importe);
                     lista.add(ClaveProdServ);
+                    lista.add(listaImpuestos.toString());
+                    listaImpuestos.clear();
                     //Para almacenar los datos del concepto en una lista
 
                 }
@@ -1424,21 +1483,27 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
-                        if (campo2.getAttributeValue("Impuesto").equals("001")) {
-                            impuestoIsr = campo2.getAttributeValue("impuesto");
-                            if (impuestoIsr == null) {
-                                impuestoIsr = campo2.getAttributeValue("Impuesto");
-                            }
-                            tasaCoutaIsr = campo2.getAttributeValue("tasa");
-                            if (tasaCoutaIsr == null) {
-                                tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
-                            }
-                            importeCuotaIsr = campo2.getAttributeValue("importe");
-                            if (importeCuotaIsr == null) {
-                                importeCuotaIsr = campo2.getAttributeValue("Importe");
-                            }
-                            BaseTraslado = campo2.getAttributeValue("Base");
+
+                        impuestoIsr = campo2.getAttributeValue("impuesto");
+                        if (impuestoIsr == null) {
+                            impuestoIsr = campo2.getAttributeValue("Impuesto");
                         }
+                        tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                        if (tasaCoutaIsr == null) {
+                            tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                        }
+                        if (campo2.getAttributeValue("Impuesto").equals("001")) {
+                            impuestoRetenido.setRet012500(campo2.getAttributeValue("Importe"));
+                        }
+                        if (campo2.getAttributeValue("Impuesto").equals("002")) {
+                            impuestoRetenido.setRet106667(campo2.getAttributeValue("Importe"));
+                        }
+                        importeCuotaIsr = campo2.getAttributeValue("importe");
+                        if (importeCuotaIsr == null) {
+                            importeCuotaIsr = campo2.getAttributeValue("Importe");
+                        }
+                        BaseTraslado = campo2.getAttributeValue("Base");
+
                     }
                     if (valor3.equals("Retenciones")) {
                         this.impuestoRet = campo2.getAttributeValue("Impuesto");
@@ -1752,7 +1817,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                 f.setNombreRegimen("Sueldos y Salarios e Ingresos Asimilados a Salarios");
                 break;
             case "606":
-                f.setNombreRegimen(" Arrendamiento");
+                f.setNombreRegimen("Arrendamiento");
                 break;
             case "607":
                 f.setNombreRegimen("Régimen de Enajenación o Adquisición de Bienes");
@@ -1860,6 +1925,9 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setImpuestoIsr(impuestoIsr);
         f.setTasaCuotaIsr(tasaCoutaIsr);
         f.setConceptos(lista.toString());
+        f.setIsr012500(impuestoRetenido.getRet012500());
+        f.setIsr106667(impuestoRetenido.getRet106667());
+        
 //        if (importeCuotaIsr != null) {
 //            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
 //            this.importeRet = null;
@@ -1991,8 +2059,9 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         int e = 4;//valorUnitario
         int f = 5;//importe
         int g = 6; //Clave prod
+        int gg = 7; //impuestos
 
-        int tamaño = lista.size() / 7;
+        int tamaño = lista.size() / 8;
         for (String ap : lista) {
             while (tamaño > 0) {
                 part.setCantidad(lista.get(a));
@@ -2003,15 +2072,17 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                 part.setUuid(UUIDTF);
                 part.setImporte(new BigDecimal(lista.get(f)));
                 part.setClaveProd(lista.get(g));
+                part.setImpuestos(lista.get(gg));
                 cDao.InsertConcepto(part);
                 part = new Concepto();
-                a = a + 7;
-                b = b + 7;
-                c = c + 7;
-                d = d + 7;
-                e = e + 7;
-                f = f + 7;
-                g = g + 7;
+                a = a + 8;
+                b = b + 8;
+                c = c + 8;
+                d = d + 8;
+                e = e + 8;
+                f = f + 8;
+                g = g + 8;
+                gg = gg + 8;
                 tamaño = tamaño - 1;
             }
         }

@@ -59,6 +59,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import java.net.URL;
 import java.util.Date;
+import mx.dao.ImpuestoRetenido;
 
 //Web Service SAT 
 import mx.sat.Acuse;
@@ -68,7 +69,7 @@ import mx.sat.IConsultaCFDIService;
 @Named(value = "subirGastosBean")
 @ViewScoped
 public class SubirGastosBean extends DAO implements Serializable {
-
+    
     private FacturaGastos f;
     private ConceptoGastos part;
     private List<FacturaGastos> listaFactura;
@@ -96,11 +97,11 @@ public class SubirGastosBean extends DAO implements Serializable {
     public String getUuid() {
         return uuid;
     }
-
+    
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-
+    
     private String serie;
     private String folio;
     private String fecha;
@@ -182,6 +183,7 @@ public class SubirGastosBean extends DAO implements Serializable {
     private final String ruta = "C:\\public\\gastos\\";
     private final String rutaIp = "C:\\newPublic\\gastos\\";
     private List<String> lista;
+    private List<String> listaImpuestos;
 
     //Web Service SAT
     private ConsultaCFDIService consulta;
@@ -194,155 +196,166 @@ public class SubirGastosBean extends DAO implements Serializable {
     private String tasaCoutaIsr;
     private String importeCuotaIsr;
     private String descuento;
-
+    private ImpuestoRetenido impuestoRetenido;
+    
     public SubirGastosBean() {
         this.lista = new ArrayList<>();
+        this.listaImpuestos = new ArrayList<>();
         f = new FacturaGastos();
         part = new ConceptoGastos();
+        impuestoRetenido = new ImpuestoRetenido();
     }
-
+    
+    public ImpuestoRetenido getImpuestoRetenido() {
+        return impuestoRetenido;
+    }
+    
+    public void setImpuestoRetenido(ImpuestoRetenido impuestoRetenido) {
+        this.impuestoRetenido = impuestoRetenido;
+    }
+    
     public String getMiFecha() {
         return miFecha;
     }
-
+    
     public void setMiFecha(String miFecha) {
         this.miFecha = miFecha;
     }
-
+    
     public String getMes() {
         return mes;
     }
-
+    
     public void setMes(String mes) {
         this.mes = mes;
     }
-
+    
     public String getAño() {
         return año;
     }
-
+    
     public void setAño(String año) {
         this.año = año;
     }
-
+    
     public String getAvisoCorreo() {
         return avisoCorreo;
     }
-
+    
     public void setAvisoCorreo(String avisoCorreo) {
         this.avisoCorreo = avisoCorreo;
     }
-
+    
     public FacturaGastos getF() {
         return f;
     }
-
+    
     public void setF(FacturaGastos f) {
         this.f = f;
     }
-
+    
     public ConceptoGastos getPart() {
         return part;
     }
-
+    
     public void setPart(ConceptoGastos part) {
         this.part = part;
     }
-
+    
     public List<FacturaGastos> getListaFactura() {
         FacturaGastosDao fDao = new FacturaGastosDaoImpl();
         listaFactura = fDao.listaFactura();
         return listaFactura;
     }
-
+    
     public void setListaFactura(List<FacturaGastos> listaFactura) {
         this.listaFactura = listaFactura;
     }
-
+    
     public String getReferencia() {
         return referencia;
     }
-
+    
     public void setReferencia(String referencia) {
         this.referencia = referencia;
     }
-
+    
     public String getValidarReferencia() {
         return validarReferencia;
     }
-
+    
     public void setValidarReferencia(String validarReferencia) {
         this.validarReferencia = validarReferencia;
     }
-
+    
     public String getValidarFactura() {
         return validarFactura;
     }
-
+    
     public void setValidarFactura(String validarFactura) {
         this.validarFactura = validarFactura;
     }
-
+    
     public String getValidarUUID() {
         return validarUUID;
     }
-
+    
     public void setValidarUUID(String validarUUID) {
         this.validarUUID = validarUUID;
     }
-
+    
     public String getCveprov() {
         return cveprov;
     }
-
+    
     public void setCveprov(String cveprov) {
         this.cveprov = cveprov;
     }
-
+    
     public String getCVE_DOC() {
         return CVE_DOC;
     }
-
+    
     public void setCVE_DOC(String CVE_DOC) {
         this.CVE_DOC = CVE_DOC;
     }
-
+    
     public String getSU_REFER() {
         return SU_REFER;
     }
-
+    
     public void setSU_REFER(String SU_REFER) {
         this.SU_REFER = SU_REFER;
     }
-
+    
     public float getCAN_TOT() {
         return CAN_TOT;
     }
-
+    
     public void setCAN_TOT(float CAN_TOT) {
         this.CAN_TOT = CAN_TOT;
     }
-
+    
     public int getNUM_MONED() {
         return NUM_MONED;
     }
-
+    
     public void setNUM_MONED(int NUM_MONED) {
         this.NUM_MONED = NUM_MONED;
     }
-
+    
     public float getTIPCAMB() {
         return TIPCAMB;
     }
-
+    
     public void setTIPCAMB(float TIPCAMB) {
         this.TIPCAMB = TIPCAMB;
     }
-
+    
     public float getIMPORTE() {
         return IMPORTE;
     }
-
+    
     public void setIMPORTE(float IMPORTE) {
         this.IMPORTE = IMPORTE;
     }
@@ -351,487 +364,487 @@ public class SubirGastosBean extends DAO implements Serializable {
     public String getSerie() {
         return serie;
     }
-
+    
     public void setSerie(String serie) {
         this.serie = serie;
     }
-
+    
     public String getFolio() {
         return folio;
     }
-
+    
     public void setFolio(String folio) {
         this.folio = folio;
     }
-
+    
     public String getFecha() {
         return fecha;
     }
-
+    
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
-
+    
     public String getSello() {
         return sello;
     }
-
+    
     public void setSello(String sello) {
         this.sello = sello;
     }
-
+    
     public String getFormaDePago() {
         return formaDePago;
     }
-
+    
     public void setFormaDePago(String formaDePago) {
         this.formaDePago = formaDePago;
     }
-
+    
     public String getNoCertificado() {
         return noCertificado;
     }
-
+    
     public void setNoCertificado(String noCertificado) {
         this.noCertificado = noCertificado;
     }
-
+    
     public String getCertificado() {
         return certificado;
     }
-
+    
     public void setCertificado(String certificado) {
         this.certificado = certificado;
     }
-
+    
     public String getSubTotal() {
         return subTotal;
     }
-
+    
     public void setSubTotal(String subTotal) {
         this.subTotal = subTotal;
     }
-
+    
     public String getTipoCambio() {
         return TipoCambio;
     }
-
+    
     public void setTipoCambio(String TipoCambio) {
         this.TipoCambio = TipoCambio;
     }
-
+    
     public String getMoneda() {
         return moneda;
     }
-
+    
     public void setMoneda(String moneda) {
         this.moneda = moneda;
     }
-
+    
     public String getTotal() {
         return total;
     }
-
+    
     public void setTotal(String total) {
         this.total = total;
     }
-
+    
     public String getTipoDeComprobante() {
         return tipoDeComprobante;
     }
-
+    
     public void setTipoDeComprobante(String tipoDeComprobante) {
         this.tipoDeComprobante = tipoDeComprobante;
     }
-
+    
     public String getMetodoDePago() {
         return metodoDePago;
     }
-
+    
     public void setMetodoDePago(String metodoDePago) {
         this.metodoDePago = metodoDePago;
     }
-
+    
     public String getLugarExpedicion() {
         return LugarExpedicion;
     }
-
+    
     public void setLugarExpedicion(String LugarExpedicion) {
         this.LugarExpedicion = LugarExpedicion;
     }
-
+    
     public String getRfcE() {
         return rfcE;
     }
-
+    
     public void setRfcE(String rfcE) {
         this.rfcE = rfcE;
     }
-
+    
     public String getNombreE() {
         return nombreE;
     }
-
+    
     public void setNombreE(String nombreE) {
         this.nombreE = nombreE;
     }
-
+    
     public String getRfcR() {
         return rfcR;
     }
-
+    
     public void setRfcR(String rfcR) {
         this.rfcR = rfcR;
     }
-
+    
     public String getNombreR() {
         return nombreR;
     }
-
+    
     public void setNombreR(String nombreR) {
         this.nombreR = nombreR;
     }
-
+    
     public String getCantidad() {
         return cantidad;
     }
-
+    
     public void setCantidad(String cantidad) {
         this.cantidad = cantidad;
     }
-
+    
     public String getUnidad() {
         return unidad;
     }
-
+    
     public void setUnidad(String unidad) {
         this.unidad = unidad;
     }
-
+    
     public String getDescripcion() {
         return descripcion;
     }
-
+    
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
+    
     public String getValorUnitario() {
         return valorUnitario;
     }
-
+    
     public void setValorUnitario(String valorUnitario) {
         this.valorUnitario = valorUnitario;
     }
-
+    
     public String getImporte() {
         return importe;
     }
-
+    
     public void setImporte(String importe) {
         this.importe = importe;
     }
-
+    
     public String getRegimenFiscal() {
         return RegimenFiscal;
     }
-
+    
     public void setRegimenFiscal(String RegimenFiscal) {
         this.RegimenFiscal = RegimenFiscal;
     }
-
+    
     public String getExporta() {
         return exporta;
     }
-
+    
     public void setExporta(String exporta) {
         this.exporta = exporta;
     }
-
+    
     public String getRegimen() {
         return Regimen;
     }
-
+    
     public void setRegimen(String Regimen) {
         this.Regimen = Regimen;
     }
-
+    
     public String getUsoCFDI() {
         return UsoCFDI;
     }
-
+    
     public void setUsoCFDI(String UsoCFDI) {
         this.UsoCFDI = UsoCFDI;
     }
-
+    
     public String getBaseTraslado() {
         return BaseTraslado;
     }
-
+    
     public void setBaseTraslado(String BaseTraslado) {
         this.BaseTraslado = BaseTraslado;
     }
-
+    
     public String getImpuesto() {
         return Impuesto;
     }
-
+    
     public void setImpuesto(String Impuesto) {
         this.Impuesto = Impuesto;
     }
-
+    
     public String getTipoFactor() {
         return TipoFactor;
     }
-
+    
     public void setTipoFactor(String TipoFactor) {
         this.TipoFactor = TipoFactor;
     }
-
+    
     public String getTasaOCuota() {
         return TasaOCuota;
     }
-
+    
     public void setTasaOCuota(String TasaOCuota) {
         this.TasaOCuota = TasaOCuota;
     }
-
+    
     public String getImporteTraslado() {
         return ImporteTraslado;
     }
-
+    
     public void setImporteTraslado(String ImporteTraslado) {
         this.ImporteTraslado = ImporteTraslado;
     }
-
+    
     public String getVersion() {
         return Version;
     }
-
+    
     public void setVersion(String Version) {
         this.Version = Version;
     }
-
+    
     public String getFechaTimbrado() {
         return FechaTimbrado;
     }
-
+    
     public void setFechaTimbrado(String FechaTimbrado) {
         this.FechaTimbrado = FechaTimbrado;
     }
-
+    
     public String getRfcProvCertif() {
         return RfcProvCertif;
     }
-
+    
     public void setRfcProvCertif(String RfcProvCertif) {
         this.RfcProvCertif = RfcProvCertif;
     }
-
+    
     public String getSelloCFD() {
         return SelloCFD;
     }
-
+    
     public void setSelloCFD(String SelloCFD) {
         this.SelloCFD = SelloCFD;
     }
-
+    
     public String getNoCertificadoSAT() {
         return NoCertificadoSAT;
     }
-
+    
     public void setNoCertificadoSAT(String NoCertificadoSAT) {
         this.NoCertificadoSAT = NoCertificadoSAT;
     }
-
+    
     public String getSelloSAT() {
         return SelloSAT;
     }
-
+    
     public void setSelloSAT(String SelloSAT) {
         this.SelloSAT = SelloSAT;
     }
-
+    
     public String getUUIDTF() {
         return UUIDTF;
     }
-
+    
     public void setUUIDTF(String UUIDTF) {
         this.UUIDTF = UUIDTF;
     }
-
+    
     public String getVersionSAT() {
         return VersionSAT;
     }
-
+    
     public void setVersionSAT(String VersionSAT) {
         this.VersionSAT = VersionSAT;
     }
-
+    
     public String getCalleDF() {
         return calleDF;
     }
-
+    
     public void setCalleDF(String calleDF) {
         this.calleDF = calleDF;
     }
-
+    
     public String getNoExteriorDF() {
         return noExteriorDF;
     }
-
+    
     public void setNoExteriorDF(String noExteriorDF) {
         this.noExteriorDF = noExteriorDF;
     }
-
+    
     public String getNoInteriorDF() {
         return noInteriorDF;
     }
-
+    
     public void setNoInteriorDF(String noInteriorDF) {
         this.noInteriorDF = noInteriorDF;
     }
-
+    
     public String getColoniaDF() {
         return coloniaDF;
     }
-
+    
     public void setColoniaDF(String coloniaDF) {
         this.coloniaDF = coloniaDF;
     }
-
+    
     public String getMunicipioDF() {
         return municipioDF;
     }
-
+    
     public void setMunicipioDF(String municipioDF) {
         this.municipioDF = municipioDF;
     }
-
+    
     public String getEstadoDF() {
         return estadoDF;
     }
-
+    
     public void setEstadoDF(String estadoDF) {
         this.estadoDF = estadoDF;
     }
-
+    
     public String getPaisDF() {
         return paisDF;
     }
-
+    
     public void setPaisDF(String paisDF) {
         this.paisDF = paisDF;
     }
-
+    
     public String getCodigoPostalDF() {
         return codigoPostalDF;
     }
-
+    
     public void setCodigoPostalDF(String codigoPostalDF) {
         this.codigoPostalDF = codigoPostalDF;
     }
-
+    
     public String getCalle() {
         return calle;
     }
-
+    
     public void setCalle(String calle) {
         this.calle = calle;
     }
-
+    
     public String getNoExterior() {
         return noExterior;
     }
-
+    
     public void setNoExterior(String noExterior) {
         this.noExterior = noExterior;
     }
-
+    
     public String getNoInterior() {
         return noInterior;
     }
-
+    
     public void setNoInterior(String noInterior) {
         this.noInterior = noInterior;
     }
-
+    
     public String getColonia() {
         return colonia;
     }
-
+    
     public void setColonia(String colonia) {
         this.colonia = colonia;
     }
-
+    
     public String getMunicipio() {
         return municipio;
     }
-
+    
     public void setMunicipio(String municipio) {
         this.municipio = municipio;
     }
-
+    
     public String getEstado() {
         return estado;
     }
-
+    
     public void setEstado(String estado) {
         this.estado = estado;
     }
-
+    
     public String getPais() {
         return pais;
     }
-
+    
     public void setPais(String pais) {
         this.pais = pais;
     }
-
+    
     public String getCodigoPostal() {
         return codigoPostal;
     }
-
+    
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
-
+    
     public String getImpuestoRet() {
         return impuestoRet;
     }
-
+    
     public void setImpuestoRet(String impuestoRet) {
         this.impuestoRet = impuestoRet;
     }
-
+    
     public String getImporteRet() {
         return importeRet;
     }
-
+    
     public void setImporteRet(String importeRet) {
         this.importeRet = importeRet;
     }
-
+    
     public String getTotalCargos() {
         return TotalCargos;
     }
-
+    
     public void setTotalCargos(String TotalCargos) {
         this.TotalCargos = TotalCargos;
     }
-
+    
     public String getCodigoCargoOC() {
         return CodigoCargoOC;
     }
-
+    
     public void setCodigoCargoOC(String CodigoCargoOC) {
         this.CodigoCargoOC = CodigoCargoOC;
     }
-
+    
     public String getImporteOC() {
         return importeOC;
     }
-
+    
     public void setImporteOC(String importeOC) {
         this.importeOC = importeOC;
     }
@@ -840,219 +853,235 @@ public class SubirGastosBean extends DAO implements Serializable {
     public String getNombreCFDI() {
         return nombreCFDI;
     }
-
+    
     public void setNombreCFDI(String nombreCFDI) {
         this.nombreCFDI = nombreCFDI;
     }
-
+    
     public int getValidarMoneda() {
         return validarMoneda;
     }
-
+    
     public void setValidarMoneda(int validarMoneda) {
         this.validarMoneda = validarMoneda;
     }
-
+    
     public String getMostrarMoneda() {
         return mostrarMoneda;
     }
-
+    
     public void setMostrarMoneda(String mostrarMoneda) {
         this.mostrarMoneda = mostrarMoneda;
     }
-
+    
     public int getDiasCredito() {
         return diasCredito;
     }
-
+    
     public void setDiasCredito(int diasCredito) {
         this.diasCredito = diasCredito;
     }
-
+    
     public Calendar getHoy() {
         return hoy;
     }
-
+    
     public void setHoy(Calendar hoy) {
         this.hoy = hoy;
     }
-
+    
     public String getPago() {
         return pago;
     }
-
+    
     public void setPago(String pago) {
         this.pago = pago;
     }
-
+    
     public int getDia() {
         return dia;
     }
-
+    
     public void setDia(int dia) {
         this.dia = dia;
     }
-
+    
     public int getFolioWcxp() {
         return folioWcxp;
     }
-
+    
     public void setFolioWcxp(int folioWcxp) {
         this.folioWcxp = folioWcxp;
     }
-
+    
     public float getMiTotal() {
         return miTotal;
     }
-
+    
     public void setMiTotal(float miTotal) {
         this.miTotal = miTotal;
     }
-
+    
     public String getMiPago() {
         return miPago;
     }
-
+    
     public void setMiPago(String miPago) {
         this.miPago = miPago;
     }
-
+    
     public String getMiReferencia() {
         return miReferencia;
     }
-
+    
     public void setMiReferencia(String miReferencia) {
         this.miReferencia = miReferencia;
     }
-
+    
     public String getClaveProdServ() {
         return ClaveProdServ;
     }
-
+    
     public void setClaveProdServ(String ClaveProdServ) {
         this.ClaveProdServ = ClaveProdServ;
     }
-
+    
     public String getClaveUnidad() {
         return ClaveUnidad;
     }
-
+    
     public void setClaveUnidad(String ClaveUnidad) {
         this.ClaveUnidad = ClaveUnidad;
     }
-
+    
     public String getFacturaSAE() {
         return facturaSAE;
     }
-
+    
     public void setFacturaSAE(String facturaSAE) {
         this.facturaSAE = facturaSAE;
     }
-
+    
     public int getTamcadena() {
         return tamcadena;
     }
-
+    
     public void setTamcadena(int tamcadena) {
         this.tamcadena = tamcadena;
     }
-
+    
     public String getCondPago() {
         return condPago;
     }
-
+    
     public void setCondPago(String condPago) {
         this.condPago = condPago;
     }
-
+    
     public ConsultaCFDIService getConsulta() {
         return consulta;
     }
-
+    
     public void setConsulta(ConsultaCFDIService consulta) {
         this.consulta = consulta;
     }
-
+    
     public IConsultaCFDIService getRespuesta() {
         return respuesta;
     }
-
+    
     public void setRespuesta(IConsultaCFDIService respuesta) {
         this.respuesta = respuesta;
     }
-
+    
     public Acuse getAcuse() {
         return acuse;
     }
-
+    
     public void setAcuse(Acuse acuse) {
         this.acuse = acuse;
     }
-
+    
     public String getImpuestoIsr() {
         return impuestoIsr;
     }
-
+    
     public void setImpuestoIsr(String impuestoIsr) {
         this.impuestoIsr = impuestoIsr;
     }
-
+    
     public String getTipoFactorIsr() {
         return tipoFactorIsr;
     }
-
+    
     public void setTipoFactorIsr(String tipoFactorIsr) {
         this.tipoFactorIsr = tipoFactorIsr;
     }
-
+    
     public String getTasaCoutaIsr() {
         return tasaCoutaIsr;
     }
-
+    
     public void setTasaCoutaIsr(String tasaCoutaIsr) {
         this.tasaCoutaIsr = tasaCoutaIsr;
     }
-
+    
     public String getImporteCuotaIsr() {
         return importeCuotaIsr;
     }
-
+    
     public void setImporteCuotaIsr(String importeCuotaIsr) {
         this.importeCuotaIsr = importeCuotaIsr;
     }
-
+    
     public List<Double> getImp04() {
         return imp04;
     }
-
+    
     public void setImp04(List<Double> imp04) {
         this.imp04 = imp04;
     }
-
+    
     public List<Double> getImp06() {
         return imp06;
     }
-
+    
     public void setImp06(List<Double> imp06) {
         this.imp06 = imp06;
     }
-
+    
     public List<Double> getImp10isr() {
         return imp10isr;
     }
-
+    
     public void setImp10isr(List<Double> imp10isr) {
         this.imp10isr = imp10isr;
     }
-
+    
     public String getDescuento() {
         return descuento;
     }
-
+    
     public void setDescuento(String descuento) {
         this.descuento = descuento;
     }
-
+    
+    public List<String> getLista() {
+        return lista;
+    }
+    
+    public void setLista(List<String> lista) {
+        this.lista = lista;
+    }
+    
+    public List<String> getListaImpuestos() {
+        return listaImpuestos;
+    }
+    
+    public void setListaImpuestos(List<String> listaImpuestos) {
+        this.listaImpuestos = listaImpuestos;
+    }
+    
     public void buscarRecepcion() throws SQLException {
         this.Conectar();
         this.Conectarprov();
@@ -1073,7 +1102,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             }
             if (this.referencia.equals(this.validarReferencia)) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ, S.A. DE C.V.", "¡El número de recepción: " + this.referencia + " ya ha sido ingresado anteriormente!"));
-
+                
             } else {
                 Statement stb = this.getCn().createStatement();
                 ResultSet rsb = stb.executeQuery("SELECT CVE_DOC, SU_REFER, CAN_TOT, NUM_MONED, TIPCAMB, IMPORTE FROM COMPR01 WHERE CVE_DOC='" + this.referencia + "' AND CVE_CLPV='" + this.cveprov + "' AND STATUS<>'C'");
@@ -1092,24 +1121,24 @@ public class SubirGastosBean extends DAO implements Serializable {
                     }
                 }
             }
-
+            
         }
         //this.Cerrar();
         //this.Cerrarprov();
     }
-
+    
     public void upload(FileUploadEvent event) throws SQLException, MessagingException, JDOMException, ParseException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         try {
-
+            
             copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
             //FacesMessage msg = new FacesMessage("COLOIDALES DUCHÉ, S.A. DE C.V. ", event.getFile().getFileName() + " Archivo subido correctamente");
             Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
             //FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (IOException e) {
         }
-
+        
     }
-
+    
     public void copyFile(String fileName, InputStream in) throws MessagingException, SQLException, ParseException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         //TOMAR LA FECHA ACTUAL
@@ -1124,7 +1153,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-
+        
         File folderip = new File(rutaIp + "\\" + us.getRfc().replace(" ", "") + "\\" + año + "\\" + mes);
         if (!folderip.exists()) {
             folderip.mkdirs();
@@ -1161,7 +1190,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             }
         }
     }
-
+    
     public void leerCFDI() throws JDOMException, IOException, SQLException, ParseException, InterruptedException, MessagingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         SAXBuilder builder = new SAXBuilder();
@@ -1196,7 +1225,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         if (this.certificado == null) {
             certificado = rootNode.getAttributeValue("Certificado");
         }
-
+        
         condPago = rootNode.getAttributeValue("CondicionesDePago");
         subTotal = rootNode.getAttributeValue("subTotal");
         descuento = rootNode.getAttributeValue("Descuento");
@@ -1249,7 +1278,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                     nombreE = elementoCFDI.getAttributeValue("Nombre");
                 }
                 RegimenFiscal = elementoCFDI.getAttributeValue("RegimenFiscal");
-
+                
             }
             if (valor.equals("Receptor")) {
                 rfcR = elementoCFDI.getAttributeValue("rfc");
@@ -1266,7 +1295,24 @@ public class SubirGastosBean extends DAO implements Serializable {
             for (int j = 0; j < listaCampos.size(); j++) {
                 Element campo = (Element) listaCampos.get(j);
                 String valor2 = campo.getName();
-
+                
+                List valorT = campo.getChildren();
+                for (int k = 0; k < valorT.size(); k++) {
+                    Element eT = (Element) valorT.get(k);
+                    List valorT2 = eT.getChildren();
+                    for (int l = 0; l < valorT2.size(); l++) {
+                        Element eT2 = (Element) valorT2.get(l);
+                        
+                        List valorT3 = eT2.getChildren();
+                        for (int m = 0; m < valorT3.size(); m++) {
+                            Element eT3 = (Element) valorT3.get(m);
+                            //System.out.println(eT3.getAttributeValue("Base"));
+                            String imp = eT3.getAttributeValue("Impuesto") + " " + eT3.getAttributeValue("TipoFactor") + " " + eT3.getAttributeValue("TasaOCuota") + " | ";
+                            listaImpuestos.add(imp);
+                        }
+                        
+                    }
+                }
                 if (valor2.equals("DomicilioFiscal")) {
                     this.calleDF = campo.getAttributeValue("calle");
                     this.noExteriorDF = campo.getAttributeValue("noExterior");
@@ -1281,7 +1327,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                     RegimenFiscal = campo.getAttributeValue("Regimen");
                 }
                 if (valor2.equals("Domicilio")) {
-
+                    
                     this.calle = campo.getAttributeValue("calle");
                     this.noExterior = campo.getAttributeValue("noExterior");
                     this.noInterior = campo.getAttributeValue("noInterior");
@@ -1291,7 +1337,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                     this.pais = campo.getAttributeValue("pais");
                     this.codigoPostal = campo.getAttributeValue("codigoPostal");
                 }
-
+                
                 if (valor2.equals("TimbreFiscalDigital")) {
                     RfcProvCertif = campo.getAttributeValue("RfcProvCertif");
                     Version = campo.getAttributeValue("version");
@@ -1320,6 +1366,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                     }
                 }
                 if (valor2.equals("Concepto")) {
+                    
                     cantidad = campo.getAttributeValue("cantidad");
                     if (cantidad == null) {
                         cantidad = campo.getAttributeValue("Cantidad");//
@@ -1328,9 +1375,9 @@ public class SubirGastosBean extends DAO implements Serializable {
                     if (unidad == null) {
                         unidad = campo.getAttributeValue("Unidad");
                     }
-
+                    
                     ClaveUnidad = campo.getAttributeValue("ClaveUnidad");
-
+                    
                     descripcion = campo.getAttributeValue("descripcion");
                     if (descripcion == null) {
                         descripcion = campo.getAttributeValue("Descripcion");//
@@ -1351,14 +1398,16 @@ public class SubirGastosBean extends DAO implements Serializable {
                     lista.add(valorUnitario);
                     lista.add(importe);
                     lista.add(ClaveProdServ);
+                    lista.add(listaImpuestos.toString());
+                    listaImpuestos.clear();
                     //Para almacenar los datos del concepto en una lista
 
                 }
-
+                
                 List impuestoRet1 = campo.getChildren();
-
+                
                 for (int r = 0; r < impuestoRet1.size(); r++) {
-
+                    
                     Element campoRet = (Element) impuestoRet1.get(r);
                     List impRet = campoRet.getChildren();
                     for (int p = 0; p < impRet.size(); p++) {
@@ -1379,10 +1428,10 @@ public class SubirGastosBean extends DAO implements Serializable {
                                 }
                             }
                         }
-
+                        
                     }
                 }
-
+                
                 List otros = campo.getChildren();
                 for (int k = 0; k < otros.size(); k++) {
                     Element campo2 = (Element) otros.get(k);
@@ -1403,27 +1452,33 @@ public class SubirGastosBean extends DAO implements Serializable {
                         BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
-                        if (campo2.getAttributeValue("Impuesto").equals("001")) {
-                            impuestoIsr = campo2.getAttributeValue("impuesto");
-                            if (impuestoIsr == null) {
-                                impuestoIsr = campo2.getAttributeValue("Impuesto");
-                            }
-                            tasaCoutaIsr = campo2.getAttributeValue("tasa");
-                            if (tasaCoutaIsr == null) {
-                                tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
-                            }
-                            importeCuotaIsr = campo2.getAttributeValue("importe");
-                            if (importeCuotaIsr == null) {
-                                importeCuotaIsr = campo2.getAttributeValue("Importe");
-                            }
-                            BaseTraslado = campo2.getAttributeValue("Base");
+                        
+                        impuestoIsr = campo2.getAttributeValue("impuesto");
+                        if (impuestoIsr == null) {
+                            impuestoIsr = campo2.getAttributeValue("Impuesto");
                         }
+                        tasaCoutaIsr = campo2.getAttributeValue("tasa");
+                        if (tasaCoutaIsr == null) {
+                            tasaCoutaIsr = campo2.getAttributeValue("TasaOCuota");
+                        }
+                        if (campo2.getAttributeValue("Impuesto").equals("001")) {
+                            impuestoRetenido.setRet012500(campo2.getAttributeValue("Importe"));
+                        }
+                        if (campo2.getAttributeValue("Impuesto").equals("002")) {
+                            impuestoRetenido.setRet106667(campo2.getAttributeValue("Importe"));
+                        }
+                        importeCuotaIsr = campo2.getAttributeValue("importe");
+                        if (importeCuotaIsr == null) {
+                            importeCuotaIsr = campo2.getAttributeValue("Importe");
+                        }
+                        BaseTraslado = campo2.getAttributeValue("Base");
+                        
                     }
                     if (valor3.equals("Retenciones")) {
                         this.impuestoRet = campo2.getAttributeValue("Impuesto");
                         this.importeRet = campo2.getAttributeValue("Importe");
                     }
-
+                    
                     if (valor3.equals("Aerolineas")) {
                         this.TotalCargos = campo2.getAttributeValue("TotalCargos");
                         List otros2 = campo2.getChildren();
@@ -1434,16 +1489,16 @@ public class SubirGastosBean extends DAO implements Serializable {
                                 this.CodigoCargoOC = campo3.getAttributeValue("CodigoCargo");
                                 this.importeOC = campo3.getAttributeValue("Importe");
                             }
-
+                            
                         }
-
+                        
                     }
                 }
-
+                
             }
-
+            
         }
-
+        
         buscarFolioFactura();
         if (this.serie
                 == null) {
@@ -1465,11 +1520,11 @@ public class SubirGastosBean extends DAO implements Serializable {
                 == null) {
             this.moneda = "MXN";
         }
-
+        
         consulta = new ConsultaCFDIService();
         respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
         acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
-
+        
         if (this.validarFactura.equals(
                 this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF) && acuse.getEstado().getValue().equals("Vigente")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Factura ingresada anteriormente"));
@@ -1502,7 +1557,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             lista.clear();
         }
     }
-
+    
     public void buscarFolioFactura() throws SQLException {
         this.Conectarprov();
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
@@ -1516,7 +1571,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             }
         }
     }
-
+    
     public void buscarWCXP() throws SQLException {
         this.Conectarprov();
         Statement st = this.getCnprov().createStatement();
@@ -1527,7 +1582,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             this.miReferencia = rs.getString("REFERENCIA");
         }
     }
-
+    
     public void insertarFactura() throws SQLException, ParseException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         this.hoy = Calendar.getInstance();
@@ -1562,13 +1617,13 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setTipoCambio(bdTC);
         f.setMoneda(moneda);
         f.setMetodoPago(metodoDePago);
-
+        
         if (descuento != null) {
             f.setDescuento("0.0");
         } else {
             f.setDescuento(descuento);
         }
-
+        
         f.setTipoComprobante(tipoDeComprobante);
         f.setLugarExpedicion(LugarExpedicion);
         f.setCertificado(certificado);
@@ -1654,16 +1709,16 @@ public class SubirGastosBean extends DAO implements Serializable {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
+        
         try {
             if (this.TasaOCuota.contains("0.16")) {
                 f.setBase16(this.importe);
             }
-
+            
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
+        
         try {
             if (this.ImporteTraslado == null) {
                 this.ImporteTraslado = "0";
@@ -1671,7 +1726,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
+        
         BigDecimal bdIC = new BigDecimal(this.ImporteTraslado);
         f.setImporteCouta(bdIC);
         f.setReferencia(referencia);
@@ -1694,6 +1749,8 @@ public class SubirGastosBean extends DAO implements Serializable {
         f.setImpuestoIsr(impuestoIsr);
         f.setTasaCuotaIsr(tasaCoutaIsr);
         f.setConceptos(lista.toString());
+        f.setIsr012500(impuestoRetenido.getRet012500());
+        f.setIsr106667(impuestoRetenido.getRet106667());
 //        if (importeCuotaIsr != null) {
 //            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
 //            this.importeRet = null;
@@ -1714,7 +1771,7 @@ public class SubirGastosBean extends DAO implements Serializable {
                 i06 += imp06.get(w);
             }
         }
-
+        
         if (imp10isr.size() > 0) {
             for (int w = 0; w < imp10isr.size(); w++) {
                 i10isr += imp10isr.get(w);
@@ -1725,7 +1782,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         if (!i04.toString().equals("null")) {
             f.setIvaRet04(i04.toString());
         }
-
+        
         if (!i04.toString().equals("null")) {
             f.setIvaRet06(i06.toString());
         }
@@ -1745,7 +1802,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         imp06.clear();
         imp10isr.clear();
     }
-
+    
     public void insertaPAGA_M01() throws SQLException {
         //this.miTotal = Float.parseFloat(this.total) * this.TIPCAMB;
         this.Conectar();
@@ -1758,7 +1815,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         PreparedStatement ps = this.getCn().prepareStatement("INSERT INTO PAGA_M01 VALUES ('" + this.cveprov + "', '" + "WCXP" + this.folioWcxp + "', 1, 1, NULL,0, '" + this.facturaSAE + "', 'WCXP" + this.folioWcxp + "', '" + this.miTotal + "', GETDATE(), '" + this.miPago + "', 'A', '" + this.NUM_MONED + "', '" + this.TIPCAMB + "','" + this.total + "', GETDATE(), NULL, 'C', NULL, 1, NULL, 0, NULL, NULL, NULL, 'A')");
         ps.executeUpdate();
     }
-
+    
     public void buscarMensaje() throws SQLException {
         this.Conectarprov();
         Statement st = this.getCnprov().createStatement();
@@ -1771,19 +1828,19 @@ public class SubirGastosBean extends DAO implements Serializable {
             }
         }
     }
-
+    
     public void insertarCOMPR01() throws SQLException {
         this.Conectar();
         PreparedStatement ps = this.getCn().prepareStatement("UPDATE COMPR01 SET ENLAZADO='T', TIP_DOC_E='c',TIP_DOC_SIG='c', DOC_SIG='WCXP" + this.folioWcxp + "' WHERE CVE_CLPV='" + this.cveprov + "' AND CVE_DOC='" + this.referencia + "'");
         ps.executeUpdate();
     }
-
+    
     public void actualizarFolio() throws SQLException {
         this.Conectarprov();
         PreparedStatement ps = this.getCnprov().prepareStatement("UPDATE FACTURA_GASTOS SET FACTURA_GASTOS. FOLIOWCXP=(SELECT MAX(FACTURA_GASTOS.FOLIOWCXP)+1 FROM FACTURA_GASTOS), FECHA_RECEPCION=(SELECT CONVERT(VARCHAR(19), GETDATE(), 126)) FROM FACTURA_GASTOS WHERE FACTURA_GASTOS.FOLIOWCXP=0");
         ps.executeUpdate();
     }
-
+    
     public void insertarConcepto() {
         ConceptoGastosDao cDao = new ConceptoGastosDaoImpl();
         int a = 0;//cantidad
@@ -1793,8 +1850,9 @@ public class SubirGastosBean extends DAO implements Serializable {
         int e = 4;//valorUnitario
         int g = 5;//importe
         int ff = 6;//clave prod
+        int fff = 7;//impuestos
 
-        int tamaño = lista.size() / 7;
+        int tamaño = lista.size() / 8;
         for (String ap : lista) {
             while (tamaño > 0) {
                 part.setCantidad(lista.get(a));
@@ -1805,21 +1863,23 @@ public class SubirGastosBean extends DAO implements Serializable {
                 part.setUuid(UUIDTF);
                 part.setImporte(new BigDecimal(lista.get(g)));
                 part.setClaveProd(lista.get(ff));
+                part.setImpuestos(lista.get(fff));
                 cDao.InsertConcepto(part);
                 part = new ConceptoGastos();
-                a = a + 7;
-                b = b + 7;
-                c = c + 7;
-                d = d + 7;
-                e = e + 7;
-                g = g + 7;
-                ff = ff + 7;
+                a = a + 8;
+                b = b + 8;
+                c = c + 8;
+                d = d + 8;
+                e = e + 8;
+                g = g + 8;
+                ff = ff + 8;
+                fff = fff + 8;
                 tamaño = tamaño - 1;
             }
         }
         lista.clear();
     }
-
+    
     public void enviarAviso() throws MessagingException, SQLException {
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         if (this.TIPCAMB == 0.0) {
@@ -1841,7 +1901,7 @@ public class SubirGastosBean extends DAO implements Serializable {
         props.setProperty("mail.smtp.auth", "true");
         Session session = Session.getDefaultInstance(props, null);
         session.setDebug(false);
-
+        
         BodyPart texto = new MimeBodyPart();
         texto.setContent("<html><head><title></title></head>"
                 + "<body>"
@@ -1881,11 +1941,11 @@ public class SubirGastosBean extends DAO implements Serializable {
         DataSource fds = new FileDataSource("C:\\img\\duche.jpg");
         imagen.setDataHandler(new DataHandler(fds));
         imagen.setHeader("Content-ID", "<image>");
-
+        
         multiParte.addBodyPart(texto);
         // multiParte.addBodyPart(adjunto);
         multiParte.addBodyPart(imagen);
-
+        
         MimeMessage message = new MimeMessage(session);
 
 // Se rellena el From
@@ -1900,14 +1960,14 @@ public class SubirGastosBean extends DAO implements Serializable {
 
 // Se mete el texto y la foto adjunta.
         message.setContent(multiParte);
-
+        
         Transport t = session.getTransport("smtp");
         t.connect("portalproveedores@duche.com", "ML310gen11");
         t.sendMessage(message, message.getAllRecipients());
         t.close();
         limpiarVariables();
     }
-
+    
     public void generarPDF(String ver) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         Usuario us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombre");
         this.Conectarprov();
@@ -1918,7 +1978,7 @@ public class SubirGastosBean extends DAO implements Serializable {
             this.uuid = this.UUIDTF;
             Map parameter = new HashMap();
             parameter.put("uuid", uuid);
-             URL in = null;
+            URL in = null;
             if (ver.equals("3.3")) {
                 in = this.getClass().getResource("/mx/facturaJasper/facturaGastosPDF.jasper");
             } else if (ver.equals("4.0")) {
@@ -1937,7 +1997,7 @@ public class SubirGastosBean extends DAO implements Serializable {
 
         //RequestContext.getCurrentInstance().update("@all");
     }
-
+    
     public void limpiarVariables() throws SQLException {
         this.referencia = null;
         this.validarReferencia = null;
@@ -2036,5 +2096,5 @@ public class SubirGastosBean extends DAO implements Serializable {
         this.Cerrarprov();
         //variables para el CFDI
     }
-
+    
 }

@@ -224,5 +224,11 @@
         <property name="exportacion" type="string">
             <column name="EXPORTACION" length="25" />
         </property>
+        <property name="isr106667" type="string">
+            <column name="ISR_106667" length="150" />
+        </property>
+        <property name="isr012500" type="string">
+            <column name="ISR_012500" length="150" />
+        </property>
     </class>
 </hibernate-mapping>
