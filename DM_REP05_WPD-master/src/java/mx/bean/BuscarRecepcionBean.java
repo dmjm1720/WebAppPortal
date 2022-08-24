@@ -1450,11 +1450,11 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                                 Element v = (Element) valorRe.get(d);
                                 String TasaOCuota1 = v.getAttributeValue("TasaOCuota");
                                 String Impuest = v.getAttributeValue("Impuesto");
-                                if (TasaOCuota1.contains("0.04") && Impuest.equals("002")) {
+                                if (TasaOCuota1.contains("0.040000") && Impuest.equals("002")) {
                                     this.imp04.add(Double.valueOf(v.getAttributeValue("Importe")));
-                                } else if (TasaOCuota1.contains("0.06") && Impuest.equals("002")) {
+                                } else if (TasaOCuota1.contains("0.060000") && Impuest.equals("002")) {
                                     this.imp06.add(Double.valueOf(v.getAttributeValue("Importe")));
-                                } else if (TasaOCuota1.contains("0.10") && Impuest.equals("001")) {
+                                } else if (TasaOCuota1.contains("0.106667") && Impuest.equals("001")) {
                                     this.imp10isr.add(Double.valueOf(v.getAttributeValue("Importe")));
                                 }
                             }
@@ -1468,19 +1468,26 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                     Element campo2 = (Element) otros.get(k);
                     String valor3 = campo.getName();
                     if (valor3.equals("Traslados")) {
-                        Impuesto = campo2.getAttributeValue("impuesto");
-                        if (Impuesto == null) {
-                            Impuesto = campo2.getAttributeValue("Impuesto");
+                  String validarTasa = campo2.getAttributeValue("TasaOCuota");
+
+                        if (validarTasa.equals("0.160000")) {
+                            TasaOCuota = campo2.getAttributeValue("tasa");
+                            if (TasaOCuota == null) {
+                                TasaOCuota = campo2.getAttributeValue("TasaOCuota");
+                            }
+                            if (TasaOCuota == null) {
+                                TasaOCuota = campo2.getAttributeValue("TasaOCuota");
+                            }
+                            if (Impuesto == null) {
+                                Impuesto = campo2.getAttributeValue("Impuesto");
+                            }
+                            ImporteTraslado = campo2.getAttributeValue("importe");
+                            if (ImporteTraslado == null) {
+                                ImporteTraslado = campo2.getAttributeValue("Importe");
+                            }
+                            BaseTraslado = campo2.getAttributeValue("Base");
+
                         }
-                        TasaOCuota = campo2.getAttributeValue("tasa");
-                        if (TasaOCuota == null) {
-                            TasaOCuota = campo2.getAttributeValue("TasaOCuota");
-                        }
-                        ImporteTraslado = campo2.getAttributeValue("importe");
-                        if (ImporteTraslado == null) {
-                            ImporteTraslado = campo2.getAttributeValue("Importe");
-                        }
-                        BaseTraslado = campo2.getAttributeValue("Base");
                     }
                     if (valor3.equals("Retenciones")) {
 

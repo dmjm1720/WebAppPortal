@@ -8,7 +8,7 @@
         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.connection.password">S1st3m4S*Duch3</property>
         
-        <!--        <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-9TOA5T5\SQLEXPRESS;databaseName=PortalProvNac</property>
+<!--                <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-9TOA5T5\SQLEXPRESS;databaseName=PortalProvNac</property>
         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.connection.password">dev22</property>-->
     
