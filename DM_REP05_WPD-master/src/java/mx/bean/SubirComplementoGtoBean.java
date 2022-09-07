@@ -1681,15 +1681,35 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
     //CONCEPTO_PAGOS_COMP_GTO
     public void insertarCamposPago() throws SQLException {
         PagoComGtoDao pDao = new PagoComGtoDaoImpl();
-        int a = 0;//FechaPago
-        int b = 1;//FormaDePagoP
-        int c = 2;//MonedaP
-        int d = 3;//Monto
-        int e = 4;//NumOperacion
-        int f = 5;//RfcEmisorCtaBen
-        int g = 6;//CtaBeneficiario
+       int a = 0;//FechaPago
+        int b = 0;//FormaDePagoP
+        int c = 0;//MonedaP
+        int d = 0;//Monto
+        int e = 0;//NumOperacion
+        int f = 0;//RfcEmisorCtaBen
+        int g = 0;//CtaBeneficiario
+        int tamanoLista = 0;
+        if (VersionSAT.equals("3.3")) {
+            a = 0;//FechaPago
+            b = 1;//FormaDePagoP
+            c = 2;//MonedaP
+            d = 3;//Monto
+            e = 4;//NumOperacion
+            f = 5;//RfcEmisorCtaBen
+            g = 6;//CtaBeneficiario
+            tamanoLista = 7;
+        } else if (VersionSAT.equals("4.0")) {
+            a = 7;//FechaPago
+            b = 8;//FormaDePagoP
+            c = 9;//MonedaP
+            d = 10;//Monto
+            e = 11;//NumOperacion
+            f = 12;//RfcEmisorCtaBen
+            g = 13;//CtaBeneficiario
+            tamanoLista = 14;
+        }
 
-        int tamaño = listaPagoComp.size() / 7;
+        int tamaño = listaPagoComp.size() / tamanoLista;
         for (String ap : listaPagoComp) {
             while (tamaño > 0) {
                 pagoCompGto.setFechapago(listaPagoComp.get(a));
@@ -1702,13 +1722,13 @@ public class SubirComplementoGtoBean extends DAO implements Serializable {
                 pagoCompGto.setUuid(UUIDTF);
                 pDao.InsertPago(pagoCompGto);
                 pagoCompGto = new PagoGto();
-                a = a + 7;
-                b = b + 7;
-                c = c + 7;
-                d = d + 7;
-                e = e + 7;
-                g = g + 7;
-                f = f + 7;
+                a = a + tamanoLista;
+                b = b + tamanoLista;
+                c = c + tamanoLista;
+                d = d + tamanoLista;
+                e = e + tamanoLista;
+                g = g + tamanoLista;
+                f = f + tamanoLista;
                 tamaño = tamaño - 1;
             }
         }

@@ -38,8 +38,8 @@ public class DAO {
     public void Conectar() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=SAE80Empre01", "sa", "dev22");
-            cn = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE80Empre01", "sa", "Aspel**2013");
+           // cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=SAE80Empre01", "sa", "dev22");
+           cn = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE80Empre01", "sa", "Aspel**2013");
         } catch (ClassNotFoundException | SQLException e) {
         }
 

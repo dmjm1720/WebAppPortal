@@ -1380,8 +1380,7 @@ public class SubirComplementoBean extends DAO implements Serializable {
         respuesta = consulta.getBasicHttpBindingIConsultaCFDIService();
         acuse = respuesta.consulta("?re=" + this.rfcE + "&rr=" + this.rfcR + "&tt=" + this.total + "&id=" + this.UUIDTF);
 
-        validarXML();///VALIDAMOS QUE EXISTA EL DOCUMENTO RELACIONADO CON LA FACTURA
-
+        validarXML();///VALIDAR QUE EXISTA EL DOCUMENTO RELACIONADO CON LA FACTURA
         if (this.validarFactura.equals(this.serie + this.folio) || this.validarUUID.equals(this.UUIDTF)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "COLOIDALES DUCHÉ S.A. DE C.V.", "Comprobante de pago ingresado anteriormente"));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
@@ -1391,12 +1390,12 @@ public class SubirComplementoBean extends DAO implements Serializable {
         } else if (this.rfcR.equals("CDU590909BQ3") && this.validadUUIDVacio.equals("SI") && this.rfcE.equals(us.getRfc().replace(" ", "")) && acuse.getEstado().getValue().equals("Vigente")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "COLOIDALES DUCHÉ S.A. DE C.V.", ""));
             RequestContext.getCurrentInstance().execute("PF('dlgXML').hide()");
-            insertarFactura();
+            insertarFactura();//FACTURA_COMPLEMENTO
             actualizarFolio();
             //buscarWCXP();
-            insertarConcepto();
-            insertarConceptoPago();
-            insertarCamposPago();
+            insertarConcepto();//CONCEPTO_COMPLEMENTO
+            insertarConceptoPago();//CONCEPTO_PAGOS_COMP
+            insertarCamposPago();//PAGO
             generarPDF();
             enviarAviso();
         } else {
@@ -1621,14 +1620,34 @@ public class SubirComplementoBean extends DAO implements Serializable {
     public void insertarCamposPago() throws SQLException {
         PagoComDao pDao = new PagoComDaoImpl();
         int a = 0;//FechaPago
-        int b = 1;//FormaDePagoP
-        int c = 2;//MonedaP
-        int d = 3;//Monto
-        int e = 4;//NumOperacion
-        int f = 5;//RfcEmisorCtaBen
-        int g = 6;//CtaBeneficiario
+        int b = 0;//FormaDePagoP
+        int c = 0;//MonedaP
+        int d = 0;//Monto
+        int e = 0;//NumOperacion
+        int f = 0;//RfcEmisorCtaBen
+        int g = 0;//CtaBeneficiario
+        int tamanoLista = 0;
+        if (VersionSAT.equals("3.3")) {
+            a = 0;//FechaPago
+            b = 1;//FormaDePagoP
+            c = 2;//MonedaP
+            d = 3;//Monto
+            e = 4;//NumOperacion
+            f = 5;//RfcEmisorCtaBen
+            g = 6;//CtaBeneficiario
+            tamanoLista = 7;
+        } else if (VersionSAT.equals("4.0")) {
+            a = 7;//FechaPago
+            b = 8;//FormaDePagoP
+            c = 9;//MonedaP
+            d = 10;//Monto
+            e = 11;//NumOperacion
+            f = 12;//RfcEmisorCtaBen
+            g = 13;//CtaBeneficiario
+            tamanoLista = 14;
+        }
 
-        int tamaño = listaPagoComp.size() / 7;
+        int tamaño = listaPagoComp.size() / tamanoLista;
         for (String ap : listaPagoComp) {
             while (tamaño > 0) {
                 pagoComp.setFechapago(listaPagoComp.get(a));
@@ -1641,13 +1660,13 @@ public class SubirComplementoBean extends DAO implements Serializable {
                 pagoComp.setUuid(UUIDTF);
                 pDao.InsertPago(pagoComp);
                 pagoComp = new Pago();
-                a = a + 7;
-                b = b + 7;
-                c = c + 7;
-                d = d + 7;
-                e = e + 7;
-                g = g + 7;
-                f = f + 7;
+                a = a + tamanoLista;
+                b = b + tamanoLista;
+                c = c + tamanoLista;
+                d = d + tamanoLista;
+                e = e + tamanoLista;
+                g = g + tamanoLista;
+                f = f + tamanoLista;
                 tamaño = tamaño - 1;
             }
         }
