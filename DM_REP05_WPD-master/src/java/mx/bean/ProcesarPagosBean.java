@@ -222,7 +222,9 @@ public class ProcesarPagosBean extends DAO implements Serializable {
             this.Conectarprov();//Conexión Portal
             this.ConectarBan();//Conexión Bancos
             Statement st = this.getCn().createStatement();
-            ResultSet rs = st.executeQuery("SELECT CVE_PROV, REFER, FECHA_APLI, DOCTO, NUM_CPTO, NO_FACTURA FROM INSOFTEC_AVISOS_PAGO WHERE PROCESADO=0 AND REFER LIKE '%WCXP%' AND NUM_CPTO=27 OR NUM_CPTO=11");
+            ResultSet rs = st.executeQuery("SELECT CVE_PROV, REFER, FECHA_APLI, DOCTO, NUM_CPTO, NO_FACTURA, PROCESADO FROM INSOFTEC_AVISOS_PAGO WHERE NUM_CPTO IN (27,11) AND PROCESADO=0 AND REFER LIKE '%WCXP%'");
+            //SE CAMBIA --OR-- POR --IN-- PARA LA BÚSQUEDA DE LAS CUENTAS POR PAGAR
+            //ResultSet rs = st.executeQuery("SELECT CVE_PROV, REFER, FECHA_APLI, DOCTO, NUM_CPTO, NO_FACTURA FROM INSOFTEC_AVISOS_PAGO WHERE PROCESADO=0 AND REFER LIKE '%WCXP%' AND NUM_CPTO=27 OR NUM_CPTO=11");
             if (!rs.isBeforeFirst()) {
                 System.out.println("Ningún pago detectado en sistema...");
             } else {

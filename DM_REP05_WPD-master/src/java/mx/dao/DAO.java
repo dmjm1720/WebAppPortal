@@ -38,7 +38,7 @@ public class DAO {
     public void Conectar() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-           // cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=SAE80Empre01", "sa", "dev22");
+           //cn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=SAE80Empre01", "sa", "dev22");
            cn = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=SAE80Empre01", "sa", "Aspel**2013");
         } catch (ClassNotFoundException | SQLException e) {
         }
@@ -62,7 +62,7 @@ public class DAO {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             //cnprov = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=PortalProvNac", "sa", "dev22");
-            cnprov = DriverManager.getConnection("jdbc:sqlserver://192.168.0.11;databaseName=PortalProvNac", "sa", "S1st3m4S*Duch3");
+           cnprov = DriverManager.getConnection("jdbc:sqlserver://192.168.0.11;databaseName=PortalProvNac", "sa", "S1st3m4S*Duch3");
         } catch (ClassNotFoundException | SQLException e) {
         }
 
@@ -84,8 +84,8 @@ public class DAO {
     public void ConectarBan() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //cnban = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-557O6CE\\SQLEXPRESS;databaseName=BAN50EMPRE01", "sa", "dmsistemas");
-            cnban = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=BAN50EMPRE01", "sa", "Aspel**2013");
+            //cnban = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=BAN60EMPRE01", "sa", "dev22");
+            cnban = DriverManager.getConnection("jdbc:sqlserver://192.168.1.37\\SQLEXPRESS;databaseName=BAN60EMPRE01", "sa", "Aspel**2013");
         } catch (ClassNotFoundException | SQLException e) {
         }
 
