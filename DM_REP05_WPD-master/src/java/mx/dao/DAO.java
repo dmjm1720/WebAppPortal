@@ -61,7 +61,7 @@ public class DAO {
     public void Conectarprov() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //cnprov = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-9TOA5T5\\SQLEXPRESS:1433;databaseName=PortalProvNac", "sa", "dev22");
+            //cnprov = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=PortalProvNac", "sa", "Dev23DMJMS1t3m45");
            cnprov = DriverManager.getConnection("jdbc:sqlserver://192.168.0.11;databaseName=PortalProvNac", "sa", "S1st3m4S*Duch3");
         } catch (ClassNotFoundException | SQLException e) {
         }

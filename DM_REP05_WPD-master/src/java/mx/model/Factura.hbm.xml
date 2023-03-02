@@ -230,5 +230,8 @@
         <property name="isr012500" type="string">
             <column name="ISR_012500" length="150" />
         </property>
+        <property name="camplib10" type="string">
+            <column name="CAMPLIB10" length="150" />
+        </property>
     </class>
 </hibernate-mapping>

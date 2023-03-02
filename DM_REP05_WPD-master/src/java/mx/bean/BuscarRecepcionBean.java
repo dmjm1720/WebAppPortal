@@ -65,6 +65,7 @@ import mx.dao.ImpuestoRetenido;
 import mx.sat.Acuse;
 import mx.sat.ConsultaCFDIService;
 import mx.sat.IConsultaCFDIService;
+import net.bootsfaces.utils.BsfUtils;
 
 @Named(value = "buscarRecepcionBean")
 @ViewScoped
@@ -1468,7 +1469,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                     Element campo2 = (Element) otros.get(k);
                     String valor3 = campo.getName();
                     if (valor3.equals("Traslados")) {
-                  String validarTasa = campo2.getAttributeValue("TasaOCuota");
+                        String validarTasa = campo2.getAttributeValue("TasaOCuota");
 
                         if (validarTasa.equals("0.160000")) {
                             TasaOCuota = campo2.getAttributeValue("tasa");
@@ -1929,12 +1930,17 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setNoCertificadoSat(NoCertificadoSAT);
         f.setEstatusCom("NO EMITIDO");
         f.setOc(this.DOC_ANT);
+        if ("SIN DATO".equals(buscarComp(DOC_ANT))) {
+            f.setCamplib10("");
+        } else {
+            f.setCamplib10(buscarComp(DOC_ANT));
+        }
         f.setImpuestoIsr(impuestoIsr);
         f.setTasaCuotaIsr(tasaCoutaIsr);
         f.setConceptos(lista.toString());
         f.setIsr012500(impuestoRetenido.getRet012500());
         f.setIsr106667(impuestoRetenido.getRet106667());
-        
+
 //        if (importeCuotaIsr != null) {
 //            f.setImporteCuotaIsr(new BigDecimal(importeCuotaIsr));
 //            this.importeRet = null;
@@ -1944,7 +1950,6 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
 //                f.setIvaRet(new BigDecimal(importeRet));
 //            }
 //        }
-
         Double i04 = 0.0;
         Double i06 = 0.0;
         Double i10isr = 0.0;
@@ -2035,6 +2040,24 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                 this.avisoCorreo = rs.getString("avisoCorreo");
             }
         }
+    }
+
+    public String buscarComp(String oc) {
+        String camplib10 = "";
+        try {
+            Conectarprov();
+            Statement st = this.getCnprov().createStatement();
+            ResultSet rs = st.executeQuery("SELECT CAMPLIB10 FROM COMPO_CLIB01 WHERE CLAVE_DOC='" + oc + "'");
+            if (!rs.isBeforeFirst()) {
+                camplib10 = "SIN DATO";
+            } else {
+                while (rs.next()) {
+                    camplib10 = rs.getString("CAMPLIB10");
+                }
+            }
+        } catch (SQLException e) {
+        }
+        return camplib10;
     }
 
     public void insertarCOMPR01() {

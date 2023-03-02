@@ -120,6 +120,9 @@
                                 <p:column  filterBy="#{tbl.foliowcxp}" sortBy="#{tbl.foliowcxp}" headerText="WCXP NO.">
                                     <h:outputText value="WCXP#{tbl.foliowcxp}"></h:outputText>
                                 </p:column>
+                                <p:column filterBy="#{tbl.camplib10}" sortBy="#{tbl.oc}"  headerText="CÓDIGO">
+                                    <h:outputText value="#{tbl.camplib10}"></h:outputText>
+                                </p:column>
                                 <p:column filterBy="#{tbl.fechaRecepcion}" sortBy="#{tbl.fechaRecepcion}" headerText="FECHA DE RECEPCIÓN">
                                     <h:outputText value="#{tbl.fechaRecepcion.substring(0,19)}"></h:outputText>
                                 </p:column>
