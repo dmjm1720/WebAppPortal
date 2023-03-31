@@ -1930,11 +1930,8 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
         f.setNoCertificadoSat(NoCertificadoSAT);
         f.setEstatusCom("NO EMITIDO");
         f.setOc(this.DOC_ANT);
-        if ("SIN DATO".equals(buscarComp(DOC_ANT))) {
-            f.setCamplib10("");
-        } else {
-            f.setCamplib10(buscarComp(DOC_ANT));
-        }
+        f.setCamplib10(buscarComp(DOC_ANT));
+
         f.setImpuestoIsr(impuestoIsr);
         f.setTasaCuotaIsr(tasaCoutaIsr);
         f.setConceptos(lista.toString());
@@ -2045,8 +2042,8 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
     public String buscarComp(String oc) {
         String camplib10 = "";
         try {
-            Conectarprov();
-            Statement st = this.getCnprov().createStatement();
+            Conectar();
+            Statement st = this.getCn().createStatement();
             ResultSet rs = st.executeQuery("SELECT CAMPLIB10 FROM COMPO_CLIB01 WHERE CLAVE_DOC='" + oc + "'");
             if (!rs.isBeforeFirst()) {
                 camplib10 = "SIN DATO";
@@ -2055,6 +2052,7 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                     camplib10 = rs.getString("CAMPLIB10");
                 }
             }
+            Cerrar();
         } catch (SQLException e) {
         }
         return camplib10;
