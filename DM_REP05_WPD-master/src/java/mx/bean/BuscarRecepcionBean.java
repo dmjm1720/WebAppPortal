@@ -59,6 +59,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import java.net.URL;
 import java.util.Date;
+import java.util.Optional;
 import mx.dao.ImpuestoRetenido;
 
 //Web Service SAT 
@@ -1469,8 +1470,10 @@ public class BuscarRecepcionBean extends DAO implements Serializable {
                     Element campo2 = (Element) otros.get(k);
                     String valor3 = campo.getName();
                     if (valor3.equals("Traslados")) {
-                        String validarTasa = campo2.getAttributeValue("TasaOCuota");
-
+                        //String validarTasa = campo2.getAttributeValue("TasaOCuota");
+                        String validarTasa = "";
+                        Optional<String> validaTasa = Optional.ofNullable(campo2.getAttributeValue("TasaOCuota"));
+                        validarTasa = validaTasa.orElse("NO DATA");
                         if (validarTasa.equals("0.160000")) {
                             TasaOCuota = campo2.getAttributeValue("tasa");
                             if (TasaOCuota == null) {
