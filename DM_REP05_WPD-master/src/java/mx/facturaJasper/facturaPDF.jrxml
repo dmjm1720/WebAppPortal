@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaPDF" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f9df871-7b2d-4755-9d8f-da3bec7b82d0">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="618"/>
-	<property name="ireport.y" value="227"/>
+	<property name="ireport.x" value="486"/>
+	<property name="ireport.y" value="1432"/>
 	<parameter name="uuid" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT        dbo.FACTURA.IMPORTE, dbo.FACTURA.IMPORTE_COUTA, dbo.FACTURA.VERSIONCFDI, dbo.FACTURA.FACTURA, dbo.FACTURA.UUID, dbo.FACTURA.RFC_E, dbo.FACTURA.NOMBRE_E, dbo.FACTURA.ESTATUS_SAT,dbo.FACTURA.TOTAL, dbo.FACTURA.FECHA,
 				dbo.FACTURA.NOMBRE_R, dbo.FACTURA.RFC_R, dbo.FACTURA.LUGAR_EXPEDICION, dbo.FACTURA.SELLO_CFD, dbo.FACTURA.SELLO_SAT, dbo.FACTURA.FECHA_TIMBRADO, dbo.FACTURA.CERTIFICADO, dbo.FACTURA.VERSIONCFD,
-				dbo.FACTURA.NO_CERTIFICADO, dbo.FACTURA.RFC_PROV_CERT, dbo.FACTURA.TIPO_CAMBIO, dbo.FACTURA.MONEDA, dbo.FACTURA.TIPO_COMPROBANTE, dbo.FACTURA.METODO_PAGO, dbo.FACTURA.FORMA_PAGO,dbo.FACTURA.NO_CERTIFICADO_SAT,dbo.FACTURA.CONDICIONES_PAGO,dbo.FACTURA.USO_CFDI,     FACTURA.IMPORTE_CUOTA_ISR,FACTURA.IVA_RET_04,FACTURA.IVA_RET_06,FACTURA.IVA_TASA_0,FACTURA.DESCUENTO,
+				dbo.FACTURA.NO_CERTIFICADO, dbo.FACTURA.RFC_PROV_CERT, dbo.FACTURA.TIPO_CAMBIO, dbo.FACTURA.MONEDA, dbo.FACTURA.TIPO_COMPROBANTE, dbo.FACTURA.METODO_PAGO, dbo.FACTURA.FORMA_PAGO,dbo.FACTURA.NO_CERTIFICADO_SAT,dbo.FACTURA.CONDICIONES_PAGO,dbo.FACTURA.USO_CFDI,     FACTURA.IMPORTE_CUOTA_ISR,FACTURA.IVA_RET_04,FACTURA.IVA_RET_06,FACTURA.IVA_TASA_0,FACTURA.ISR_012500,FACTURA.DESCUENTO,
 				dbo.CONCEPTO.CANTIDAD, dbo.CONCEPTO.CLAVE_UNIDAD, dbo.CONCEPTO.DESCRIPCION, dbo.CONCEPTO.IMPORTE as IMP, dbo.CONCEPTO.PRECIO_UNITARIO, dbo.CONCEPTO.UNIDAD,dbo.CONCEPTO.CLAVE_PROD
 FROM            dbo.FACTURA INNER JOIN
                          dbo.CONCEPTO ON dbo.FACTURA.UUID = dbo.CONCEPTO.UUID where dbo.FACTURA.UUID=$P{uuid}]]>
 	</queryString>
 	<field name="IMPORTE" class="java.lang.Double"/>
-	<field name="IMPORTE_COUTA" class="java.lang.Double"/>
+	<field name="IMPORTE_COUTA" class="java.math.BigDecimal"/>
 	<field name="VERSIONCFDI" class="java.lang.String"/>
 	<field name="FACTURA" class="java.lang.String"/>
 	<field name="UUID" class="java.lang.String"/>
@@ -42,10 +42,11 @@ FROM            dbo.FACTURA INNER JOIN
 	<field name="NO_CERTIFICADO_SAT" class="java.lang.String"/>
 	<field name="CONDICIONES_PAGO" class="java.lang.String"/>
 	<field name="USO_CFDI" class="java.lang.String"/>
-	<field name="IMPORTE_CUOTA_ISR" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_CUOTA_ISR" class="java.lang.String"/>
 	<field name="IVA_RET_04" class="java.lang.String"/>
 	<field name="IVA_RET_06" class="java.lang.String"/>
 	<field name="IVA_TASA_0" class="java.lang.String"/>
+	<field name="ISR_012500" class="java.lang.String"/>
 	<field name="DESCUENTO" class="java.lang.Double"/>
 	<field name="CANTIDAD" class="java.lang.String"/>
 	<field name="CLAVE_UNIDAD" class="java.lang.String"/>
@@ -626,7 +627,7 @@ FROM            dbo.FACTURA INNER JOIN
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="110" splitType="Stretch">
+		<band height="123" splitType="Stretch">
 			<staticText>
 				<reportElement mode="Transparent" x="467" y="1" width="44" height="11" forecolor="#000000" backcolor="#CC0033" uuid="5bb45c79-46dd-4df3-8273-30511251d5d1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -668,7 +669,7 @@ FROM            dbo.FACTURA INNER JOIN
 				<text><![CDATA[RETENCIÓN 4%]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="440" y="92" width="70" height="17" forecolor="#000000" backcolor="#CC0033" uuid="1dc32adf-c793-48ce-85c2-59e155316e7a"/>
+				<reportElement mode="Transparent" x="441" y="102" width="70" height="17" forecolor="#000000" backcolor="#CC0033" uuid="1dc32adf-c793-48ce-85c2-59e155316e7a"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -682,7 +683,7 @@ FROM            dbo.FACTURA INNER JOIN
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="0" y="109" width="572" height="1" uuid="7e54a9d4-e1f5-4e86-b63e-28637367e171"/>
+				<reportElement x="0" y="122" width="572" height="1" uuid="7e54a9d4-e1f5-4e86-b63e-28637367e171"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -704,7 +705,7 @@ FROM            dbo.FACTURA INNER JOIN
 				<textFieldExpression><![CDATA[$F{IVA_TASA_0}!=null ?"":($F{IMPORTE}-$F{DESCUENTO})]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.0000" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="510" y="92" width="60" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="6997fdc7-6c13-4e0e-b497-f4e13dd6cf81"/>
+				<reportElement mode="Transparent" x="511" y="102" width="60" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="6997fdc7-6c13-4e0e-b497-f4e13dd6cf81"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -782,6 +783,22 @@ FROM            dbo.FACTURA INNER JOIN
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTE_COUTA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="417" y="91" width="94" height="11" forecolor="#000000" backcolor="#CC0033" uuid="83ff7b9a-c906-40be-982b-7a094145d531"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[RETENCIÓN 1.25%]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="511" y="91" width="61" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="b45d7d58-2eac-4a3b-a035-63b37611ed67"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ISR_012500}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

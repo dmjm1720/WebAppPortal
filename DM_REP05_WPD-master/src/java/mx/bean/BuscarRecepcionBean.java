@@ -66,7 +66,6 @@ import mx.dao.ImpuestoRetenido;
 import mx.sat.Acuse;
 import mx.sat.ConsultaCFDIService;
 import mx.sat.IConsultaCFDIService;
-import net.bootsfaces.utils.BsfUtils;
 
 @Named(value = "buscarRecepcionBean")
 @ViewScoped

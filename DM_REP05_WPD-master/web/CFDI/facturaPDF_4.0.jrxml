@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaPDF" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f9df871-7b2d-4755-9d8f-da3bec7b82d0">
 	<property name="ireport.zoom" value="2.7272727272727275"/>
-	<property name="ireport.x" value="600"/>
-	<property name="ireport.y" value="1010"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="351"/>
 	<parameter name="uuid" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -204,7 +204,7 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 			<textField>
 				<reportElement x="0" y="154" width="152" height="12" forecolor="#000000" uuid="db7c5561-94bc-4f85-b194-190bff1d5a65"/>
 				<textElement verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{UUID}]]></textFieldExpression>
 			</textField>
@@ -791,7 +791,7 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="110" splitType="Stretch">
+		<band height="122" splitType="Stretch">
 			<staticText>
 				<reportElement mode="Transparent" x="467" y="1" width="44" height="11" forecolor="#000000" backcolor="#CC0033" uuid="5bb45c79-46dd-4df3-8273-30511251d5d1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -817,12 +817,12 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 				<text><![CDATA[SUBTOTAL TASA 16%]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="440" y="81" width="71" height="11" forecolor="#000000" backcolor="#CC0033" uuid="c0d78b19-50c9-4cab-a198-203b31aebdec"/>
+				<reportElement mode="Transparent" x="412" y="81" width="99" height="11" forecolor="#000000" backcolor="#CC0033" uuid="c0d78b19-50c9-4cab-a198-203b31aebdec"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[RETENCIÓN 10%]]></text>
+				<text><![CDATA[RETENCIÓN 1.25%]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="439" y="59" width="72" height="11" forecolor="#000000" backcolor="#CC0033" uuid="199d3932-6cb7-4de6-af32-45a5846db488"/>
@@ -833,7 +833,7 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 				<text><![CDATA[RETENCIÓN 4%]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="440" y="92" width="70" height="17" forecolor="#000000" backcolor="#CC0033" uuid="1dc32adf-c793-48ce-85c2-59e155316e7a"/>
+				<reportElement mode="Transparent" x="441" y="103" width="70" height="17" forecolor="#000000" backcolor="#CC0033" uuid="1dc32adf-c793-48ce-85c2-59e155316e7a"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -847,7 +847,7 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="0" y="109" width="572" height="1" uuid="7e54a9d4-e1f5-4e86-b63e-28637367e171"/>
+				<reportElement x="0" y="121" width="572" height="1" uuid="7e54a9d4-e1f5-4e86-b63e-28637367e171"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -869,7 +869,7 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 				<textFieldExpression><![CDATA[$F{IVA_TASA_0}!=null ?"":($F{IMPORTE}-$F{DESCUENTO})]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.0000" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="510" y="92" width="60" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="6997fdc7-6c13-4e0e-b497-f4e13dd6cf81"/>
+				<reportElement mode="Transparent" x="511" y="103" width="60" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="6997fdc7-6c13-4e0e-b497-f4e13dd6cf81"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -882,7 +882,7 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{IMPORTE_CUOTA_ISR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ISR_012500}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="511" y="59" width="61" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="ea73751d-186c-4a7b-a11e-f0ccfd2780bd"/>
@@ -948,6 +948,22 @@ where dbo.FACTURA.UUID =$P{uuid}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTE_COUTA}]]></textFieldExpression>
 			</textField>
+			<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="511" y="92" width="61" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="0eab59ba-6999-4a2d-8d6d-ebe60a3c52f1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IMPORTE_CUOTA_ISR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="440" y="92" width="71" height="11" forecolor="#000000" backcolor="#CC0033" uuid="10060f9e-e207-4b1e-bca2-ea46e73f06e1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[RETENCIÓN 10%]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

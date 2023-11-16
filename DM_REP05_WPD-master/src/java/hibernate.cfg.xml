@@ -8,9 +8,9 @@
         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.connection.password">S1st3m4S*Duch3</property>
         
-<!--        <property name="hibernate.connection.url">jdbc:sqlserver://DESKTOP-JLICRL9\SQLEXPRESS;databaseName=PortalProvNac</property>
+<!--        <property name="hibernate.connection.url">jdbc:sqlserver://localhost;databaseName=PortalProvNac</property>
         <property name="hibernate.connection.username">sa</property>
-        <property name="hibernate.connection.password">desarrollo</property>-->
+        <property name="hibernate.connection.password">Pr4xi5A5a*</property>-->
     
         <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
         <property name="hibernate.format_sql">true</property>
